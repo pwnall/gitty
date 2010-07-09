@@ -1,0 +1,47 @@
+#!/usr/bin/env ruby
+# This command needs to be run once as root, to setup the machine.
+
+require 'etc'
+require 'fileutils'
+
+
+# Parameter processing.
+
+if Process.euid != 0
+  puts "This script needs to be run with superuser powers."
+  exit
+end
+if ARGV.length != 2
+  puts <<END_USAGE
+Usage: sudo #{!0} git_username webserver_username
+git_username: the name of the git user (will be created by the script)
+webserver_username: the user name for the Rails server process
+
+Example: sudo #{!0} git #{Etc.getlogin}
+END_USAGE
+  exit
+end
+git_user = ARGV[0]
+web_group = Etc.getgrgid(Etc.getpwnam(ARGV[1]).gid).name
+
+# Create git user.
+
+new_user_command = "useradd --group #{web_group} --no-create-home " +
+    "--no-user-group --comment \"User for Dexter's Git repos\" #{git_user}"
+unless Kernel.system(new_user_command)
+  puts "Failed to create user #{git_user}"
+  exit
+end
+
+# Set up git user's homedir.
+
+git_home = "/home/#{git_user}"
+git_ssh_dir = File.join git_home, '.ssh'
+git_keys = File.join git_ssh_dir, 'authorized_keys'
+FileUtils.mkdir_p git_ssh_dir
+File.open(git_keys, 'w') { |f| f.write '\n' }
+
+# Set up permissions so that both ssh and Rails can access the homedir.
+
+FileUtils.chown_R git_user, web_group, git_home
+FileUtils.chmod_R 0770, git_home
