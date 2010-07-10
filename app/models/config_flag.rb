@@ -8,7 +8,7 @@ class ConfigFlag < ActiveRecord::Base
 
   # Access configuration flags by ConfigFlag['flag_name'].
   def self.[](name)
-    unless flag = select(:name => name).first
+    unless flag = where(:name => name).first
       raise IndexError, "Configuration flag #{name} not found"
     end
     flag.value
@@ -16,7 +16,7 @@ class ConfigFlag < ActiveRecord::Base
   
   # Set configuration flags by ConfigFlag['flag_name'] = 'flag_value'.
   def self.[]=(name, value)
-    flag = select(:name => name).first
+    flag = where(:name => name).first
     flag ||= new :name => name
     flag.value = value
     flag.save!

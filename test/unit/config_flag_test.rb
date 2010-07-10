@@ -22,6 +22,6 @@ class ConfigFlagTest < ActiveSupport::TestCase
   test "convenience set" do
     ConfigFlag['other_flag'] = 'other_value'
     assert_equal 'other_value',
-                 ConfigFlag.select(:name => 'other_flag').first.value
+                 ConfigFlag.where(:name => 'other_flag').first.value
   end
 end
