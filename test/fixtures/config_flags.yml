@@ -1,5 +1,3 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
-
 git_user:
   name: git_user
   value: git

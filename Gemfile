@@ -29,3 +29,6 @@ gem 'grit'
 # group :development, :test do
 #   gem 'webrat'
 # end
+group :test do
+  gem 'flexmock', :require => 'flexmock/test_unit'
+end
