@@ -9,13 +9,44 @@ class SshKey < ActiveRecord::Base
 
   # Updates the fingerprint automatically when the key line changes.  
   def key_line=(new_key_line)
+    new_key_line = new_key_line.strip
     self.fprint = self.class.fingerprint new_key_line
-    super
+    super(new_key_line)
   end
 
   # A key's fingerprint uniquely identifies the key.  
   def self.fingerprint(key_line)
     key_blob = key_line.split(' ')[1].unpack('m*').first
     Net::SSH::Buffer.new(key_blob).read_key.fingerprint
+  end
+end
+
+
+# :nodoc: authorized_keys file generation
+class SshKey
+  # The location of the file containing SSH keys for the git user.
+  def self.keyfile_path
+    File.join '/home', ConfigFlag['git_user'], '.ssh', 'authorized_keys'
+  end
+  
+  # The authorized_keys line for this key.
+  def keyfile_line
+    command = [
+      Rails.root.join('script', 'git_shell.rb'),
+      ConfigFlag['app_uri'], id, '$SSH_ORIGINAL_COMMAND'
+    ].join(' ')
+    
+    
+    %Q|command="#{command}",no-agent-forwarding,no-port-forwarding,no-pty,| +
+        'no-X11-forwarding ' + key_line
+  end
+  
+  # Re-generate the file containing SSH keys for the git user.
+  def self.write_keyfile
+    File.open(keyfile_path, 'w') do |f|
+      SshKey.all.each { |key| f.write key.keyfile_line + "\n" }
+    end
+    FileUtils.chmod 0750, keyfile_path
+    # FileUtils.chown ConfigFlag['git_user'], nil, keyfile_path
   end
 end

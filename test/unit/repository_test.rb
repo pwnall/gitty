@@ -1,8 +1,6 @@
 require 'test_helper'
 
-class RepositoryTest < ActiveSupport::TestCase
-  setup :mock_repo_path
-  
+class RepositoryTest < ActiveSupport::TestCase 
   def setup
     @repo = Repository.new :name => 'awesome'
   end
@@ -10,19 +8,20 @@ class RepositoryTest < ActiveSupport::TestCase
   # Override the local repository path so it's in a temp directory.
   def mock_repo_path
     return if Repository.respond_to?(:real_local_path)
-      
-    Repository.class_eval do
-      class <<self
-        alias_method :real_local_path, :local_path
-        define_method :local_path do |name|
-          Rails.root.join('tmp', 'test_git_root', name + '.git').to_s
-        end
-      end
-    end
-    
+
     repo_root = Rails.root.join 'tmp', 'test_git_root'
     FileUtils.mkdir_p repo_root    
+
+    Repository.class_eval do
+      (class <<self; self; end).class_eval do
+        alias_method :real_local_path, :local_path
+        define_method :local_path do |name|
+          repo_root.join(name + '.git').to_s
+        end
+      end
+    end    
   end
+  setup :mock_repo_path  
   
   test 'setup' do
     assert @repo.valid?

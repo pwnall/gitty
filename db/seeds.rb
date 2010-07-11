@@ -6,4 +6,5 @@
 #   cities = City.create([{ :name => 'Chicago' }, { :name => 'Copenhagen' }])
 #   Mayor.create(:name => 'Daley', :city => cities.first)
 
+ConfigFlag['app_uri'] = 'http://localhost:3000'
 ConfigFlag['git_user'] = 'git'
