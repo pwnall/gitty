@@ -1,4 +1,6 @@
 Dexter::Application.routes.draw do
+  resources :repositories
+
   resources :config_flags
 
   # The priority is based upon order of creation:
