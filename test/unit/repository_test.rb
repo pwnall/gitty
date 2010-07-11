@@ -15,12 +15,12 @@ class RepositoryTest < ActiveSupport::TestCase
       class <<self
         alias_method :real_local_path, :local_path
         define_method :local_path do |name|
-          File.join Rails.root, 'tmp', 'test_git_root', name + '.git'
+          Rails.root.join('tmp', 'test_git_root', name + '.git').to_s
         end
       end
     end
     
-    repo_root = File.join Rails.root, 'tmp', 'test_git_root'
+    repo_root = Rails.root.join 'tmp', 'test_git_root'
     FileUtils.mkdir_p repo_root    
   end
   

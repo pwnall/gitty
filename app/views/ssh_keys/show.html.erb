@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @ssh_key.name %>
+</p>
+
+<p>
+  <b>Key line:</b>
+  <%= @ssh_key.key_line %>
+</p>
+
+
+<%= link_to 'Edit', edit_ssh_key_path(@ssh_key) %> |
+<%= link_to 'Back', ssh_keys_path %>

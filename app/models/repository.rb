@@ -1,3 +1,4 @@
+# Git repository hosted on this server.
 class Repository < ActiveRecord::Base
   # The repository name.
   validates :name, :length => 1..64, :format => /\A\w+\Z/, :presence => true,

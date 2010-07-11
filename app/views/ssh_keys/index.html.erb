@@ -1,0 +1,25 @@
+<h1>Listing ssh_keys</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Key line</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @ssh_keys.each do |ssh_key| %>
+  <tr>
+    <td><%= ssh_key.name %></td>
+    <td><%= ssh_key.key_line %></td>
+    <td><%= link_to 'Show', ssh_key %></td>
+    <td><%= link_to 'Edit', edit_ssh_key_path(ssh_key) %></td>
+    <td><%= link_to 'Destroy', ssh_key, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Ssh key', new_ssh_key_path %>

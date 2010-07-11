@@ -1,0 +1,11 @@
+<% _rsa_key = File.read('test/fixtures/ssh_keys/id_rsa.pub') %>
+rsa:
+  name: Test RSA Key
+  key_line: <%= _rsa_key.inspect %>
+  fprint: <%= SshKey.fingerprint(_rsa_key).inspect %>
+
+<% _dsa_key = File.read('test/fixtures/ssh_keys/id_dsa.pub') %>
+dsa:
+  name: Test DSA Key
+  key_line: <%= _dsa_key.inspect %>
+  fprint: <%= SshKey.fingerprint(_dsa_key).inspect %>

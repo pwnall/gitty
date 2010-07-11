@@ -61,6 +61,7 @@ GEM
       mime-types
       treetop (>= 1.4.5)
     mime-types (1.16)
+    net-ssh (2.0.23)
     polyglot (0.3.1)
     rack (1.2.1)
     rack-test (0.5.4)
@@ -78,5 +79,6 @@ PLATFORMS
 DEPENDENCIES
   flexmock
   grit
+  net-ssh
   rails!
   sqlite3-ruby

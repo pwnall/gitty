@@ -1,4 +1,6 @@
 Dexter::Application.routes.draw do
+  resources :ssh_keys
+
   resources :repositories
 
   resources :config_flags

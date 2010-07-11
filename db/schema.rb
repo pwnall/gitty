@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100711061457) do
+ActiveRecord::Schema.define(:version => 20100711203913) do
 
   create_table "config_flags", :force => true do |t|
     t.string "name",  :null => false
@@ -26,5 +26,15 @@ ActiveRecord::Schema.define(:version => 20100711061457) do
   end
 
   add_index "repositories", ["name"], :name => "index_repositories_on_name", :unique => true
+
+  create_table "ssh_keys", :force => true do |t|
+    t.string   "fprint",     :limit => 128,  :null => false
+    t.string   "name",       :limit => 128,  :null => false
+    t.text     "key_line",   :limit => 1024, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "ssh_keys", ["fprint"], :name => "index_ssh_keys_on_fprint", :unique => true
 
 end
