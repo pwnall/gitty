@@ -33,7 +33,7 @@ class SshKey
   def keyfile_line
     command = [
       Rails.root.join('script', 'git_shell.rb'),
-      ConfigFlag['app_uri'], id, '$SSH_ORIGINAL_COMMAND'
+      id, ConfigFlag['app_uri'], '$SSH_ORIGINAL_COMMAND'
     ].join(' ')
     
     

@@ -33,7 +33,8 @@ class RepositoryTest < ActiveSupport::TestCase
   end  
   
   test 'original local_path' do
-    assert_equal '/home/git/awesome.git', Repository.real_local_path('awesome')
+    assert_equal '/home/git-test/awesome.git',
+                 Repository.real_local_path('awesome')
   end
   
   test 'model-repository lifetime sync' do

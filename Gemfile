@@ -18,6 +18,7 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 
 # Bundle the extra gems:
 gem 'grit'
+gem 'json'
 gem 'net-ssh', :require => 'net/ssh'
 
 # gem 'bj'

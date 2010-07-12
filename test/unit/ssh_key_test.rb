@@ -37,7 +37,7 @@ class SshKeyTest < ActiveSupport::TestCase
   end
 
   test 'original keyfile_path' do
-    assert_equal '/home/git/.ssh/authorized_keys', SshKey.real_keyfile_path
+    assert_equal '/home/git-test/.ssh/authorized_keys', SshKey.real_keyfile_path
   end
   
   test 'keyfile_line' do

@@ -1,7 +1,7 @@
 app_uri:
   name: app_uri
-  value: "http://test/"
+  value: "http://localhost:3800/"
 
 git_user:
   name: git_user
-  value: git
+  value: git-test
