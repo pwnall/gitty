@@ -10,14 +10,14 @@ class SshKeyTest < ActiveSupport::TestCase
   def mock_authorized_keys
     return if SshKey.respond_to?(:real_keyfile_path)
     
-    ssh_path = Rails.root.join 'tmp', 'test_git_root', '.ssh'
+    ssh_path = Rails.root.join 'tmp', 'test_git_root'
     FileUtils.mkdir_p ssh_path
     
     SshKey.class_eval do
       (class <<self; self; end).class_eval do
         alias_method :real_keyfile_path, :keyfile_path
         define_method :keyfile_path do
-          ssh_path.join('authorized_keys').to_s
+          ssh_path.join('.ssh_keys').to_s
         end
       end
     end
@@ -37,7 +37,7 @@ class SshKeyTest < ActiveSupport::TestCase
   end
 
   test 'original keyfile_path' do
-    assert_equal '/home/git-test/.ssh/authorized_keys', SshKey.real_keyfile_path
+    assert_equal '/home/git-test/repos/.ssh_keys', SshKey.real_keyfile_path
   end
   
   test 'keyfile_line' do
@@ -53,13 +53,13 @@ class SshKeyTest < ActiveSupport::TestCase
   test 'keyfile' do
     SshKey.write_keyfile
     
-    assert File.exist?('tmp/test_git_root/.ssh/authorized_keys'),
+    assert File.exist?('tmp/test_git_root/.ssh_keys'),
            'keyfile not created'
     
-    assert File.readlines('tmp/test_git_root/.ssh/authorized_keys').
+    assert File.readlines('tmp/test_git_root/.ssh_keys').
                 map(&:strip).include?(ssh_keys(:rsa).keyfile_line),
            'keyfile does not contain a line for the RSA key'
     
-    File.unlink 'tmp/test_git_root/.ssh/authorized_keys'
+    File.unlink 'tmp/test_git_root/.ssh_keys'
   end
 end

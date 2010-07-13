@@ -80,4 +80,25 @@ class RepositoriesController < ApplicationController
       format.xml  { head :ok }
     end
   end
+  
+  # GET /check_access.json?repo_path=awesome.git&ssh_key_id=1&commit_access=true
+  def check_access
+    @repository_path = params[:repo_path]
+    @ssh_key = SshKey.find(params[:ssh_key_id])
+    @commit_access = params[:commit_access] == 'true'
+    
+    respond_to do |format|
+      format.json { render :json => { :access => true } }
+    end
+  end
+  
+  # POST /change_notice.json?repo_path=awesome.git
+  protect_from_forgery :except => :change_notice
+  def change_notice
+    @repository_path = params[:repo_path]
+    
+    respond_to do |format|
+      format.json { render :json => { :success => true } }
+    end
+  end
 end

@@ -14,12 +14,12 @@ class Repository < ActiveRecord::Base
   # Args:
   #   name:: the repository's name
   def self.local_path(name)
-    File.join '/home', ConfigFlag['git_user'], name + ".git"
+    File.join '/home', ConfigFlag['git_user'], 'repos', name + '.git'
   end
   
   # The repository's URL for SSH access.
   def ssh_uri
-    "#{ConfigFlag['git_user']}@#{request.host}:/#{name}"
+    "#{ConfigFlag['git_user']}@#{ConfigFlag['ssh_host']}:#{name}.git"
   end
     
   # The Grit::Repo object for this repository.
@@ -40,8 +40,7 @@ class Repository
   def create_local_repository
     # TODO: background job.
     @grit_repo = Grit::Repo.init_bare local_path
-    # FileUtils.chmod_R 0770, local_path
-    # FileUtils.chown_R ConfigFlag['git_user'], Process.egid, local_path
+    FileUtils.chmod_R 0770, local_path
     
     @grit_repo
   end

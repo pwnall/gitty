@@ -5,7 +5,7 @@ source 'http://rubygems.org'
 # Bundle edge Rails instead:
 gem 'rails', :git => 'git://github.com/rails/rails.git'
 
-gem 'sqlite3-ruby', :require => 'sqlite3'
+gem 'mysql'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -34,4 +34,5 @@ gem 'net-ssh', :require => 'net/ssh'
 # end
 group :test do
   gem 'flexmock', :require => 'flexmock/test_unit'
+  gem 'thin'
 end

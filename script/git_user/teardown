@@ -1,0 +1,38 @@
+#!/usr/bin/env ruby
+# This command reverts the effects of machine_setup. It should be run as root.
+
+require 'etc'
+require 'fileutils'
+
+
+# Parameter processing.
+
+if Process.euid != 0
+  puts "This script needs to be run as superuser. Enter your password below."
+  exec *(['sudo', $0] + ARGV)
+end
+
+if ARGV.length != 2
+  puts <<END_USAGE
+Usage: sudo #{$0} git_username webserver_username
+git_username: the name of the git user (will be created by the script)
+webserver_username: the user name for the Rails server process
+
+Example: sudo #{$0} git #{Etc.getlogin}
+END_USAGE
+  exit 1
+end
+git_user = ARGV[0]
+web_group = Etc.getgrgid(Etc.getpwnam(ARGV[1]).gid).name
+
+# Blow up the git user's homedir.
+
+git_home = "/home/#{git_user}"
+FileUtils.rm_r git_home
+
+# Erase the git user.
+delete_user_command = "userdel #{git_user}"
+unless Kernel.system(delete_user_command)
+  puts "Failed to destroy user #{git_user}"
+  exit 1
+end

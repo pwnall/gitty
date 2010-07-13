@@ -1,0 +1,73 @@
+#!/usr/bin/env ruby
+# This command needs to be run once as root, to setup the machine.
+
+require 'etc'
+require 'fileutils'
+
+
+# Parameter processing.
+
+if Process.euid != 0
+  puts "This script needs to be run as superuser. Enter your password below."
+  exec *(['sudo', $0] + ARGV)
+end
+
+if ARGV.length != 2
+  puts <<END_USAGE
+Usage: sudo #{$0} git_username webserver_username
+git_username: the name of the git user (will be created by the script)
+webserver_username: the user name for the Rails server process
+
+Example: sudo #{$0} git #{Etc.getlogin}
+END_USAGE
+  exit
+end
+git_user = ARGV[0]
+web_group = Etc.getgrgid(Etc.getpwnam(ARGV[1]).gid).name
+
+# Create git user.
+
+new_user_command = ['useradd', '--gid', web_group, '--no-create-home',
+    '--no-user-group', '--comment', "User for Dexter's Git repos", git_user]
+unless Kernel.system(*new_user_command)
+  puts "Failed to create user #{git_user}"
+  exit
+end
+
+# Set up git user's homedir.
+
+git_home = File.join '/home', git_user
+FileUtils.mkdir_p git_home
+FileUtils.chmod_R 0750, git_home
+
+git_ssh_dir = File.join git_home, '.ssh'
+FileUtils.mkdir_p git_ssh_dir
+FileUtils.chmod_R 0700, git_ssh_dir
+
+git_keys = File.join git_ssh_dir, 'authorized_keys'
+File.open(git_keys, 'w') { |f| f.write "\n" }
+FileUtils.chmod 0600, git_keys
+
+git_repos = File.join git_home, 'repos'
+git_repo_keys = File.join git_repos, '.ssh_keys'
+FileUtils.mkdir_p git_repos
+FileUtils.chmod 0770, git_repos
+
+install_keys_src = File.join git_home, 'install_keys.c'
+File.open install_keys_src, 'w' do |f|
+  f.write <<END_SOURCE
+#include <unistd.h>
+void main() { execl("/bin/cp", "cp", "#{git_repo_keys}", "#{git_keys}", NULL); }
+END_SOURCE
+end
+install_keys = File.join git_home, 'install_keys'
+unless Kernel.system('gcc', '-o', install_keys, install_keys_src)
+  puts "Failed to compile #{install_keys}"
+  exit
+end
+FileUtils.rm install_keys_src
+
+FileUtils.chown_R git_user, web_group, git_home
+
+# NOTE: if the file is chowned after chmodding, the setuid bit is lost
+FileUtils.chmod 04770, install_keys

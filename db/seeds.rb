@@ -8,3 +8,4 @@
 
 ConfigFlag['app_uri'] = 'http://localhost:3000'
 ConfigFlag['git_user'] = 'git'
+ConfigFlag['ssh_host'] = Socket.gethostname

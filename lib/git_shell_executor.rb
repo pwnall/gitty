@@ -4,7 +4,7 @@ class GitShellExecutor
   def run(args)
     read_args args
     check_access @repository, @ssh_key_id, @commit_access
-    success = exec_git @command, @repository
+    success = exec_git(@command, "repos/" + @repository)
     error 'Git operation failed.' unless success
     notify_server @repository if @commit_access
   end
@@ -20,12 +20,16 @@ class GitShellExecutor
     @repository = args[3]
     
     commands = ['git-receive-pack', 'git-upload-archive', 'git-upload-pack']
-    commit_commands = ['git-receive-pack'] 
-
+    commit_commands = ['git-receive-pack']
     if args.length != 4 || !commands.include?(@command)
       error 'This shell only accepts git+ssh.'
     else
       @commit_access = commit_commands.include? @command
+    end
+
+    quotes = ["'", '"']
+    if quotes.include?(@repository[0, 1]) && quotes.include?(@repository[-1, 1])
+      @repository = @repository[1...-1]
     end
   end
   
@@ -39,17 +43,22 @@ class GitShellExecutor
   # If the owner doesn't have access to the repository, the shell is terminated
   # by a call to GitShellExecutor#error.
   def check_access(repository, key_id, commit_access)
-    request = "check_access.json?repo_dir=#{URI.encode repository}&" +
+    request = "check_access.json?repo_path=#{URI.encode repository}&" +
               "ssh_key_id=#{key_id}&commit=#{commit_access}"
-    response = JSON.parse app_request(false, @backend_url, request)
+    response = begin
+      JSON.parse app_request(nil, @backend_url, request)
+    rescue JSON::JSONError
+      error "Backend server error, please retry later."
+    end
     error "Access denied: #{response['message']}" unless response['access']
   end
   
   # Notifies the application server that a repository has changed.
   def notify_server(repository)
-    request = "change_notice.json?repo_dir=#{URI.encode(repository)}"
     3.times do
-      response = JSON.parse app_request(true, @backend_url, request)
+      body = app_request({'repo_path' => repository}, @backend_url,
+                         'change_notice.json')
+      response = JSON.parse(body) rescue {}
       return if response['success']
     end
     error 'Backend server error, please retry later.'
@@ -58,11 +67,11 @@ class GitShellExecutor
   # Performs a HTTP request to the application server.
   #
   # Returns the response's body.
-  def app_request(use_post, backend_url, request)
+  def app_request(post_data, backend_url, request)
     request_uri = URI.parse File.join(backend_url, request)
     begin
-      if use_post
-        Net::HTTP.post request_uri
+      if post_data
+        Net::HTTP.post_form(request_uri, post_data).body
       else
         Net::HTTP.get request_uri
       end
@@ -73,7 +82,7 @@ class GitShellExecutor
   
   # Aborts the shell due to an error.
   def error(error_text)
-    STDERR.puts error_text
+    STDERR.puts error_text + "\r\n"
     exit 1
   end
   
@@ -87,8 +96,8 @@ class GitShellExecutor
     else
       # In parent.
       loop do      
-        pid, exit_status = *Process.waitpid(child_pid)
-        return exit_status == 0 if pid == child_pid
+        pid, status = *Process.wait2(child_pid)
+        return status.exitstatus == 0 if pid == child_pid
       end
     end
   end  

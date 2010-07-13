@@ -5,3 +5,7 @@ app_uri:
 git_user:
   name: git_user
   value: git-test
+
+ssh_host:
+  name: ssh_host
+  value: localhost

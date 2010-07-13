@@ -33,8 +33,12 @@ class RepositoryTest < ActiveSupport::TestCase
   end  
   
   test 'original local_path' do
-    assert_equal '/home/git-test/awesome.git',
+    assert_equal '/home/git-test/repos/awesome.git',
                  Repository.real_local_path('awesome')
+  end
+  
+  test 'ssh_uri' do
+    assert_equal 'git-test@localhost:awesome.git', @repo.ssh_uri
   end
   
   test 'model-repository lifetime sync' do
