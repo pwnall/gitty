@@ -1,25 +1,32 @@
 # Git repository hosted on this server.
 class Repository < ActiveRecord::Base
+  # The profile representing the repository's author.
+  belongs_to :profile
+  validates :profile, :presence => true
+  
   # The repository name.
   validates :name, :length => 1..64, :format => /\A\w+\Z/, :presence => true,
-                   :uniqueness => true
+                   :uniqueness => { :scope => :profile_id }
 
   # The repository's location on disk.
   def local_path
-    self.class.local_path name
+    self.class.local_path profile.name, name
   end
   
   # The on-disk location of a repository.
   #
   # Args:
+  #   profile_name:: the name of the profile owning the repository
   #   name:: the repository's name
-  def self.local_path(name)
-    File.join '/home', ConfigFlag['git_user'], 'repos', name + '.git'
+  def self.local_path(profile_name, name)
+    File.join '/home', ConfigFlag['git_user'], 'repos', profile_name,
+              name + '.git'
   end
   
   # The repository's URL for SSH access.
   def ssh_uri
-    "#{ConfigFlag['git_user']}@#{ConfigFlag['ssh_host']}:#{name}.git"
+    ssh_root = "#{ConfigFlag['git_user']}@#{ConfigFlag['ssh_host']}" 
+    "#{ssh_root}:#{profile.name}/#{name}.git"
   end
     
   # The Grit::Repo object for this repository.
@@ -46,10 +53,10 @@ class Repository
   end
   
   # Relocates a Git repository on disk.
-  def self.relocate_local_repository(old_name, new_name)
+  def self.relocate_local_repository(profile_name, old_name, new_name)
     # TODO: maybe this should be a background job.
-    old_path = local_path old_name
-    new_path = local_path new_name
+    old_path = local_path profile_name, old_name
+    new_path = local_path profile_name, new_name
     FileUtils.mv old_path, new_path
   end
   
@@ -63,7 +70,7 @@ class Repository
     old_name = @_old_repository_name    
     
     return if name == old_name
-    self.class.relocate_local_repository old_name, name
+    self.class.relocate_local_repository profile.name, old_name, name
     @grit_repo = nil
   end    
   

@@ -27,8 +27,8 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     
     @key_id = ssh_keys(:rsa).to_param
     @server = 'http://test:1234/'
-    @repo = repositories(:ghost)
-    @repo_path = @repo.name + 'repo_uri'
+    @repo = repositories(:dexter_ghost)
+    @repo_path = @repo.profile.name + '/' + @repo.name + '.git'
     @repo_dir = 'repos/' + @repo_path
   end
   

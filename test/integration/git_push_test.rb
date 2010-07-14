@@ -19,9 +19,10 @@ class GitPushTest < ActionDispatch::IntegrationTest
     Kernel.system 'sudo', setup_script, ConfigFlag['git_user'], Etc.getlogin
     SshKey.write_keyfile
   
-    @win_repository = Repository.create! :name => 'rwin'
-    @fail_repository = Repository.create! :name => 'rfail'
-    
+    @win_repository = Repository.create! :name => 'rwin',
+                                         :profile => profiles(:dexter)
+    @fail_repository = Repository.create! :name => 'rfail',
+                                         :profile => profiles(:dexter)
 
     @keyfile = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'id_rsa'
     ssh_wrapper = File.join(@temp_dir, 'git-ssh.sh')
@@ -33,6 +34,8 @@ exec ssh -i "#{@keyfile}" #{options} "$@"
 END_SHELL
     end
     File.chmod 0700, ssh_wrapper
+    
+    @fixture_repo_path = Rails.root.join 'test', 'fixtures', 'repo.git'
 
     # Wait until the Rails server has booted.
     loop do
@@ -56,17 +59,36 @@ END_SHELL
     Kernel.system teardown_script, ConfigFlag['git_user'], Etc.getlogin
   end
 
-  test "repository push" do    
+  test "initial repository push" do    
     Dir.chdir @temp_dir do      
       assert Kernel.system('git init'), 'Failed to initialize repository'
       assert Kernel.system("git remote add origin #{@win_repository.ssh_uri}"),
              'Failed to add remote'
-      assert Kernel.system('git add .'), 'Failed to add initial content'
-      assert Kernel.system('git commit -a -m "Integration test commit"'),
-             'Failed to make initial commit'
-      ENV['GIT_SSH'] = './git-ssh.sh'
-      assert Kernel.system('git push origin master'),
-             'Git push failed'
+      add_commit_push
     end
+  end
+    
+  test "repository clone and push" do
+    FileUtils.rm_r @win_repository.local_path
+    FileUtils.cp_r @fixture_repo_path, @win_repository.local_path
+    FileUtils.chmod_R 0770, @win_repository.local_path    
+    
+    Dir.chdir @temp_dir do
+      assert Kernel.system("git clone #{@win_repository.ssh_uri}"),
+             'Failed to clone repository'
+      FileUtils.cp 'git-ssh.sh', 'rwin'
+      Dir.chdir 'rwin' do
+        add_commit_push
+      end
+    end
+  end
+
+  def add_commit_push
+    assert Kernel.system('git add .'), 'Failed to add initial content'
+    assert Kernel.system('git commit -a -m "Integration test commit"'),
+           'Failed to make initial commit'
+    ENV['GIT_SSH'] = './git-ssh.sh'
+    assert Kernel.system('git push origin master'),
+           'Git push failed'
   end
 end

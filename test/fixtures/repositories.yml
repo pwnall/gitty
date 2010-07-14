@@ -1,2 +1,7 @@
-ghost:
+costan_ghost:
   name: ghost
+  profile: costan
+  
+dexter_ghost:
+  name: ghost
+  profile: dexter
