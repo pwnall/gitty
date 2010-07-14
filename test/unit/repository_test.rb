@@ -1,24 +1,8 @@
 require 'test_helper'
 
-class RepositoryTest < ActiveSupport::TestCase   
-  # Override the local repository path so it's in a temp directory.
-  def mock_repo_path
-    return if Repository.respond_to?(:real_local_path)
+class RepositoryTest < ActiveSupport::TestCase
+  setup :mock_profile_paths
 
-    repo_root = Rails.root.join 'tmp', 'test_git_root'
-    FileUtils.mkdir_p repo_root    
-
-    Repository.class_eval do
-      (class <<self; self; end).class_eval do
-        alias_method :real_local_path, :local_path
-        define_method :local_path do |profile_name, name|
-          repo_root.join(profile_name, name + '.git').to_s
-        end
-      end
-    end    
-  end
-  setup :mock_repo_path
-  
   def setup
     @repo = Repository.new :name => 'awesome', :profile => profiles(:dexter)
   end  
@@ -27,7 +11,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert @repo.valid?
   end
     
-  test 'profile has to be assigned' do
+  test 'profile has to be set' do
     @repo.profile = nil
     assert !@repo.valid?
   end
@@ -44,16 +28,16 @@ class RepositoryTest < ActiveSupport::TestCase
     end    
   end
   
-  test 'original local_path' do
-    assert_equal '/home/git-test/repos/dexter/awesome.git',
-                 Repository.real_local_path('dexter', 'awesome')
-  end
+  test 'local_path' do
+    mock_profile_paths_undo
+    assert_equal '/home/git-test/repos/dexter/awesome.git', @repo.local_path
+  end  
   
   test 'ssh_uri' do
     assert_equal 'git-test@localhost:dexter/awesome.git', @repo.ssh_uri
   end
   
-  test 'model-repository lifetime sync' do
+  test 'model-repository lifetime sync' do    
     @repo.save!
     assert File.exist?('tmp/test_git_root/dexter/awesome.git/objects'),
            'Repository not created on disk'
@@ -70,7 +54,7 @@ class RepositoryTest < ActiveSupport::TestCase
            'The Grit repository object is broken after rename'
 
     @repo.destroy
-    assert !File.exist?('tmp/test_git_root/dexter/awesome.git/objects'),
+    assert !File.exist?('tmp/test_git_root/dexter/pwnage.git/objects'),
            'Old repository not deleted on rename'
     assert !@repo.grit_repo, 'The Grit repository object exists after deletion'
   end

@@ -11,3 +11,6 @@ class ActiveSupport::TestCase
 
   # Add more helper methods to be used by all tests here...
 end
+
+require File.expand_path('../helpers/mock_profile_paths.rb', __FILE__)
+require File.expand_path('../helpers/mock_profile_paths.rb', __FILE__)

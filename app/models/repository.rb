@@ -10,17 +10,16 @@ class Repository < ActiveRecord::Base
 
   # The repository's location on disk.
   def local_path
-    self.class.local_path profile.name, name
+    self.class.local_path profile, name
   end
   
   # The on-disk location of a repository.
   #
   # Args:
-  #   profile_name:: the name of the profile owning the repository
+  #   profile:: the profile owning the repository
   #   name:: the repository's name
-  def self.local_path(profile_name, name)
-    File.join '/home', ConfigFlag['git_user'], 'repos', profile_name,
-              name + '.git'
+  def self.local_path(profile, name)
+    File.join profile.local_path, name + '.git'
   end
   
   # The repository's URL for SSH access.
@@ -53,10 +52,10 @@ class Repository
   end
   
   # Relocates a Git repository on disk.
-  def self.relocate_local_repository(profile_name, old_name, new_name)
+  def self.relocate_local_repository(profile, old_name, new_name)
     # TODO: maybe this should be a background job.
-    old_path = local_path profile_name, old_name
-    new_path = local_path profile_name, new_name
+    old_path = local_path profile, old_name
+    new_path = local_path profile, new_name
     FileUtils.mv old_path, new_path
   end
   
@@ -70,7 +69,7 @@ class Repository
     old_name = @_old_repository_name    
     
     return if name == old_name
-    self.class.relocate_local_repository profile.name, old_name, name
+    self.class.relocate_local_repository profile, old_name, name
     @grit_repo = nil
   end    
   

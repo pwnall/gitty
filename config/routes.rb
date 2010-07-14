@@ -1,4 +1,10 @@
 Dexter::Application.routes.draw do
+  resources :profiles
+
+  resources :commits
+
+  resources :branches
+
   resources :ssh_keys
 
   resources :repositories
