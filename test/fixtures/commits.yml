@@ -1,0 +1,23 @@
+commit1:
+  repository: dexter_ghost
+  gitid: bf28647e6740e2970b8e9e3de1484000c4637e58
+  author_name: Victor Costan
+  author_email: costan@gmail.com
+  committer_name: Victor Costan
+  committer_email: costan@gmail.com
+  authored_at: 'Tue Jul 13 23:09:32 -0400 2010'
+  committed_at: 'Tue Jul 13 23:09:32 -0400 2010'
+  tree: commit1_root
+  message: Commit 1.
+
+commit2:
+  repository: dexter_ghost
+  gitid: '15f49486892eb05391b6b70fd395fb3908365417'
+  author_name: Victor Costan
+  author_email: costan@gmail.com
+  committer_name: Victor Costan
+  committer_email: costan@gmail.com
+  authored_at: 'Tue Jul 13 23:13:07 -0400 2010'
+  committed_at: 'Tue Jul 13 23:13:07 -0400 2010'
+  tree: commit2_root
+  message: Commit 2.

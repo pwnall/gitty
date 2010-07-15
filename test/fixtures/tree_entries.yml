@@ -1,0 +1,29 @@
+commit1_d1:
+  tree: commit1_root
+  child: commit1_d1 (Tree)
+  name: d1
+
+commit1_d1_d2:
+  tree: commit1_d1
+  child: d1_d2 (Tree)
+  name: d2
+
+d1_d2_a:
+  tree: d1_d2
+  child: commit1_d1_d2 (Blob)
+  name: a
+
+commit2_d1:
+  tree: commit2_root
+  child: commit2_d1 (Tree)
+  name: d1
+
+commit2_d1_d2:
+  tree: commit2_d1
+  child: d1_d2 (Tree)
+  name: d2
+
+commit2_d1_b:
+  tree: commit2_d1
+  child: d1_b (Blob)
+  name: b

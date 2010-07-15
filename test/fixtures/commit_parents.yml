@@ -1,0 +1,3 @@
+commit2_commit1:
+  commit: commit2
+  parent: commit1

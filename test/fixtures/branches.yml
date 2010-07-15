@@ -1,0 +1,14 @@
+master:
+  name: master
+  commit: commit1
+  repository: dexter_ghost
+
+branch1:
+  name: branch1
+  commit: commit2
+  repository: dexter_ghost
+  
+deleted:
+  name: deleted
+  commit: commit2
+  repository: dexter_ghost

@@ -10,12 +10,22 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100714032151) do
+ActiveRecord::Schema.define(:version => 20100715071003) do
+
+  create_table "blobs", :force => true do |t|
+    t.integer "repository_id",               :null => false
+    t.string  "gitid",         :limit => 64, :null => false
+  end
+
+  add_index "blobs", ["repository_id", "gitid"], :name => "index_blobs_on_repository_id_and_gitid", :unique => true
 
   create_table "branches", :force => true do |t|
     t.string  "name",          :limit => 128, :null => false
     t.integer "repository_id",                :null => false
+    t.integer "commit_id",                    :null => false
   end
+
+  add_index "branches", ["repository_id", "name"], :name => "index_branches_on_repository_id_and_name", :unique => true
 
   create_table "commit_parents", :force => true do |t|
     t.integer "commit_id", :null => false
@@ -25,13 +35,16 @@ ActiveRecord::Schema.define(:version => 20100714032151) do
   add_index "commit_parents", ["commit_id", "parent_id"], :name => "index_commit_parents_on_commit_id_and_parent_id", :unique => true
 
   create_table "commits", :force => true do |t|
-    t.integer  "repository_id",                 :null => false
-    t.string   "gitid",          :limit => 64,  :null => false
-    t.integer  "tree_id",                       :null => false
-    t.string   "author",         :limit => 256, :null => false
-    t.string   "committer",      :limit => 256, :null => false
-    t.datetime "author_time",                   :null => false
-    t.datetime "committer_time",                :null => false
+    t.integer  "repository_id",                  :null => false
+    t.string   "gitid",           :limit => 64,  :null => false
+    t.integer  "tree_id",                        :null => false
+    t.string   "author_name",     :limit => 128, :null => false
+    t.string   "author_email",    :limit => 128, :null => false
+    t.string   "committer_name",  :limit => 128, :null => false
+    t.string   "committer_email", :limit => 128, :null => false
+    t.datetime "authored_at",                    :null => false
+    t.datetime "committed_at",                   :null => false
+    t.text     "message",                        :null => false
   end
 
   add_index "commits", ["repository_id", "gitid"], :name => "index_commits_on_repository_id_and_gitid", :unique => true
@@ -72,6 +85,16 @@ ActiveRecord::Schema.define(:version => 20100714032151) do
 
   add_index "ssh_keys", ["fprint"], :name => "index_ssh_keys_on_fprint", :unique => true
   add_index "ssh_keys", ["profile_id"], :name => "index_ssh_keys_on_profile_id"
+
+  create_table "tree_entries", :force => true do |t|
+    t.integer "tree_id",                   :null => false
+    t.string  "child_type", :limit => 8,   :null => false
+    t.integer "child_id",                  :null => false
+    t.string  "name",       :limit => 128, :null => false
+  end
+
+  add_index "tree_entries", ["tree_id", "child_type", "child_id"], :name => "index_tree_entries_on_tree_id_and_child_type_and_child_id", :unique => true
+  add_index "tree_entries", ["tree_id", "name"], :name => "index_tree_entries_on_tree_id_and_name", :unique => true
 
   create_table "trees", :force => true do |t|
     t.integer "repository_id"
