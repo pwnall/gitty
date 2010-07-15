@@ -28,7 +28,7 @@ web_group = Etc.getgrgid(Etc.getpwnam(ARGV[1]).gid).name
 # Create git user.
 
 new_user_command = ['useradd', '--gid', web_group, '--no-create-home',
-    '--no-user-group', '--comment', "User for Dexter's Git repos", git_user]
+    '--no-user-group', '--comment', "User for Gitty's Git repos", git_user]
 unless Kernel.system(*new_user_command)
   puts "Failed to create user #{git_user}"
   exit

@@ -1,24 +1,24 @@
 dev_pgsql: &dev_pgsql
   adapter: postgresql
-  database: dexter_dev
+  database: gitty_dev
   username: root
   password: ""
 
 dev_mysql: &dev_mysql
   adapter: mysql
-  database: dexter_dev
+  database: gitty_dev
   username: root
   password: 
 
 test_pgsql: &test_pgsql
   adapter: postgresql
-  database: dexter_test
+  database: gitty_test
   username: root
   password: ""
 
 test_mysql: &test_mysql
   adapter: mysql
-  database: dexter_test
+  database: gitty_test
   username: root
   password:
   

@@ -4,4 +4,4 @@
 require File.expand_path('../config/application', __FILE__)
 require 'rake'
 
-Dexter::Application.load_tasks
+Gitty::Application.load_tasks

@@ -1,9 +1,5 @@
-Dexter::Application.routes.draw do
+Gitty::Application.routes.draw do
   resources :profiles
-
-  resources :commits
-
-  resources :branches
 
   resources :ssh_keys
 
