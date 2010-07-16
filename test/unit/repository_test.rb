@@ -159,4 +159,60 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal [commit_b2, commit_c], commit_ids,
                  'Added commits on all branches'
   end
+  
+  test 'contents_added with empty db' do
+    @repo.save!
+    mock_repository_path @repo
+    
+    commit_a = @repo.grit_repo.commit(commits(:commit1).gitid)
+    commit_b1 = @repo.grit_repo.commit(commits(:commit2).gitid)
+    
+    bits = @repo.contents_added([commit_a, commit_a])
+    assert_equal [blobs(:d1_d2_a).gitid], bits[:blobs].map(&:id),
+                 'Blobs for commit 1'
+    assert_equal [trees(:d1_d2), trees(:commit1_d1), trees(:commit1_root)].
+                 map(&:gitid), bits[:trees].map(&:id), 'Trees for commit 1'    
+  
+    # NOTE: order dependent on topological sort implementation details, but not
+    #       on Grit implementation
+
+    bits = @repo.contents_added([commit_a, commit_b1])
+    assert_equal [blobs(:d1_b), blobs(:d1_d2_a)].map(&:gitid),
+                 bits[:blobs].map(&:id), 'Blobs for commit 2'
+    assert_equal [trees(:d1_d2), trees(:commit2_d1), trees(:commit1_d1),
+                  trees(:commit2_root), trees(:commit1_root)].map(&:gitid),
+                 bits[:trees].map(&:id), 'Trees for commit 2'
+  end
+  
+  test 'contents_added with fixtures' do
+    repo = repositories(:dexter_ghost)
+    mock_repository_path repo
+
+    commit_a = repo.grit_repo.commit commits(:commit1).gitid
+    commit_b1 = repo.grit_repo.commit commits(:commit2).gitid
+    commit_b2 = repo.grit_repo.commit 'becaeef98b57cfcc17472c001ebb5a4af5e4347b'
+    commit_c = repo.grit_repo.commit '7ab1d7b5c5ddf87c73636109a9b256c23c3e0bed'
+    d1_b2 = '5146ab699d565600dc54251c226d6e528b448b93'
+    commit2_root = 'c5411c50d6c35cb4c1d0c75e16db82bd3a12113d'
+    commit2_d1 = '0583a12952e34e9e1e8387963f61bca56e7025ad'
+    commit2_d1_d2 = 'd11a38de02c1bd03dd14ec0928748cc8aa86d6c2'
+    commit3_root = 'd8949111e5d63fa7e82888efd340844cbaa1cc0e'
+    commit3_d1 = '0c5e66ffb62b42f6ea7138cae8dff7e24a125c35'
+    
+    bits = repo.contents_added([commit_a, commit_b1])
+    assert_equal [], bits[:blobs], 'No new blobs in commit 2'
+    assert_equal [], bits[:trees], 'No new trees for commit 2'
+    
+    bits = repo.contents_added([commit_a, commit_b1, commit_b2])
+    assert_equal [d1_b2], bits[:blobs].map(&:id), 'Blobs for commit 3'
+    assert_equal [commit2_d1_d2, commit2_d1, commit2_root],
+                 bits[:trees].map(&:id), 'Trees for commit 3'
+    
+    bits = repo.contents_added([commit_a, commit_b1, commit_c, commit_b2])
+    assert_equal [d1_b2], bits[:blobs].map(&:id), 'Blobs for merge commit'
+    assert_equal [commit2_d1_d2, commit2_d1, commit3_d1, commit2_root,
+                  commit3_root],
+                 bits[:trees].map(&:id), 'Trees for merge commit'
+    
+  end
 end

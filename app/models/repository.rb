@@ -5,13 +5,13 @@ class Repository < ActiveRecord::Base
   validates :profile, :presence => true
   
   # Branch information cached from the on-disk repository.
-  has_many :branches, :dependent => :destroy
-  
+  has_many :branches, :dependent => :destroy  
   # Commit information cached from the on-disk repository.
-  has_many :commits, :dependent => :destroy
-  
+  has_many :commits, :dependent => :destroy  
   # Tree information cached from the on-disk repository.
-  has_many :trees, :dependent => :destroy
+  has_many :trees, :dependent => :destroy  
+  # Blob information cached from the on-disk repository.
+  has_many :blobs, :dependent => :destroy
   
   # The repository name.
   validates :name, :length => 1..64, :format => /\A\w+\Z/, :presence => true,
@@ -178,7 +178,9 @@ class Repository
     git_commits.each do |commit| 
       next if visited.include? commit.tree.id
       visited << commit.tree.id
-      queue << commit.tree unless self.trees.where(:gitid => child.id).first
+      unless self.trees.where(:gitid => commit.tree.id).first
+        queue << commit.tree
+      end
     end
     
     i = 0
