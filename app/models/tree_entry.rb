@@ -10,4 +10,23 @@ class TreeEntry < ActiveRecord::Base
 
   # The child's name.
   validates :name, :length => 1..256, :presence => true
+
+  # Tree entries for an on-disk tree (directory).
+  #
+  # Args:
+  #   git_tree:: a Grit::Tree object
+  #   repository:: the Repository that this commit will belong to
+  #   tree:: the Tree model for the Grit::Tree object (optional, will be looked
+  #          up if not provided)
+  #
+  # Returns an array of unsaved TreeEntry models.
+  def self.from_git_tree(git_tree, repository, tree)
+    tree ||= repository.trees.where(:gitid => git_tree.id).first
+    blobs, trees = repository.blobs, repository.trees
+    git_tree.contents.map do |git_child|
+      collection = git_child.kind_of?(Grit::Blob) ? blobs : trees
+      child = collection.where(:gitid => git_child.id).first
+      self.new :tree => tree, :child => child, :name => git_child.name
+    end
+  end
 end

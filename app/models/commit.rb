@@ -2,6 +2,7 @@
 class Commit < ActiveRecord::Base
   # The repository that the commit is a part of.
   belongs_to :repository
+  validates :repository, :presence => true
   
   # The tree committed by this commit.
   belongs_to :tree
@@ -16,11 +17,31 @@ class Commit < ActiveRecord::Base
   validates :author_email, :length => 1..128, :presence => true
   
   # The committer's name.
-  validates :committer, :length => 1..128, :presence => true
+  validates :committer_name, :length => 1..128, :presence => true
   # The committer's email.  
   validates :committer_email, :length => 1..128, :presence => true
   
   # The commit's parents.
   has_many :commit_parents, :dependent => :destroy
   has_many :parents, :through => :commit_parents
+
+  # Commit model for an on-disk commit.
+  #
+  # Args:
+  #   git_commit:: a Grit::Commit object
+  #   repository:: the Repository that this commit will belong to
+  #
+  # Returns an unsaved Commit model. It needs to be saved before parent links
+  # are created by calling CommitParent#from_git_commit.
+  def self.from_git_commit(git_commit, repository)
+    tree = repository.trees.where(:gitid => git_commit.tree.id).first
+    self.new :repository => repository, :gitid => git_commit.id, :tree => tree,
+        :author_name => git_commit.author.name,
+        :author_email => git_commit.author.email,
+        :committer_name => git_commit.committer.name,
+        :committer_email => git_commit.committer.email,
+        :authored_at => git_commit.authored_date,
+        :committed_at => git_commit.committed_date,
+        :message => git_commit.message
+  end
 end

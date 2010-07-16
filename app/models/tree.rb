@@ -10,4 +10,16 @@ class Tree < ActiveRecord::Base
 
   # The tree's contents.
   has_many :entries
+  
+  # Tree model for an on-disk tree (directory).
+  #
+  # Args:
+  #   git_tree:: a Grit::Tree object
+  #   repository:: the Repository that this tree will belong to
+  #
+  # Returns an unsaved Blob model. It needs to be saved before child links to it
+  # are created by calling TreeEntry#from_git_tree.
+  def self.from_git_tree(git_tree, repository)
+    self.new :repository => repository, :gitid => git_tree.id
+  end
 end
