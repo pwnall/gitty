@@ -105,7 +105,8 @@ class GitShellExecutorTest < ActiveSupport::TestCase
                         with('git-receive-pack', @repo_dir).and_return(true)
     app_req = "change_notice.json"
     flexmock(@executor).should_receive(:app_request).
-                        with({'repo_path' => @repo_path}, @server, app_req).
+                        with({'repo_path' => @repo_path,
+                              'ssh_key_id' => @key_id}, @server, app_req).
                         and_return('{"success": true}').once
     @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]
   end
@@ -120,7 +121,8 @@ class GitShellExecutorTest < ActiveSupport::TestCase
                         with('git-receive-pack', @repo_dir).and_return(true)
     app_req = "change_notice.json"
     flexmock(@executor).should_receive(:app_request).
-                        with({'repo_path' => @repo_path}, @server, app_req).
+                        with({'repo_path' => @repo_path,
+                              'ssh_key_id' => @key_id}, @server, app_req).
                         and_return('{"success": false}').times(3)
     assert_raise BackendExitError do
       @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]

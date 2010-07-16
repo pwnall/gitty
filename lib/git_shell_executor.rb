@@ -6,7 +6,7 @@ class GitShellExecutor
     check_access @repository, @ssh_key_id, @commit_access
     success = exec_git(@command, "repos/" + @repository)
     error 'Git operation failed.' unless success
-    notify_server @repository if @commit_access
+    notify_server @repository, @ssh_key_id if @commit_access
   end
   
   # Decodes and checks the command-line arguments received by the git-shell.
@@ -54,10 +54,10 @@ class GitShellExecutor
   end
   
   # Notifies the application server that a repository has changed.
-  def notify_server(repository)
+  def notify_server(repository, key_id)
     3.times do
-      body = app_request({'repo_path' => repository}, @backend_url,
-                         'change_notice.json')
+      body = app_request({'repo_path' => repository, 'ssh_key_id' => key_id},
+                         @backend_url, 'change_notice.json')
       response = JSON.parse(body) rescue {}
       return if response['success']
     end

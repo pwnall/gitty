@@ -17,11 +17,13 @@ class Branch < ActiveRecord::Base
   # Args:
   #   git_branch:: a Grit::Branch object
   #   repository:: the Repository that the branch belongs to
+  #   branch:: the Branch model for the Grit::Branch (optional; will be
+  #            retrieved from the database if not supplied)
   #
   # Returns an unsaved Branch model.
-  def self.from_git_branch(git_branch, repository)
+  def self.from_git_branch(git_branch, repository, branch = nil)
     commit = repository.commits.where(:gitid => git_branch.commit.id).first
-    branch = repository.branches.where(:name => git_branch.name).first
+    branch ||= repository.branches.where(:name => git_branch.name).first
     branch ||= self.new :repository => repository, :name => git_branch.name
     branch.commit = commit
     branch
