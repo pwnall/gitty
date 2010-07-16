@@ -7,6 +7,7 @@ class CommitParent < ActiveRecord::Base
   # The commit's parent.
   belongs_to :parent, :class_name => 'Commit'
   validates :parent, :presence => true
+  validates :parent_id, :uniqueness => { :scope => :commit_id }
 
   # Parent links for an on-disk commit.
   #

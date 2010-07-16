@@ -7,9 +7,11 @@ class TreeEntry < ActiveRecord::Base
   # The child tree (sub-directory) or blob (file).
   belongs_to :child, :polymorphic => true
   validates :child, :presence => true
+  validates :child_id, :uniqueness => { :scope => [:tree_id, :child_type] }  
 
   # The child's name.
-  validates :name, :length => 1..256, :presence => true
+  validates :name, :length => 1..256, :presence => true,
+                   :uniqueness => { :scope => :tree_id }
 
   # Tree entries for an on-disk tree (directory).
   #
@@ -20,7 +22,7 @@ class TreeEntry < ActiveRecord::Base
   #          up if not provided)
   #
   # Returns an array of unsaved TreeEntry models.
-  def self.from_git_tree(git_tree, repository, tree)
+  def self.from_git_tree(git_tree, repository, tree = nil)
     tree ||= repository.trees.where(:gitid => git_tree.id).first
     blobs, trees = repository.blobs, repository.trees
     git_tree.contents.map do |git_child|
