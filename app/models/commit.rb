@@ -9,7 +9,7 @@ class Commit < ActiveRecord::Base
   
   # The commit's SHA-1, used as a unique ID.
   validates :gitid, :length => 1..64, :presence => true,
-            :uniqueness => { :scope => :repository_id }
+                    :uniqueness => { :scope => :repository_id }
   
   # The author's name.
   validates :author_name, :length => 1..128, :presence => true
