@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Gitty::Application.config.secret_token = '92290223f0d15f7ea37a60f32f17bd77a4c9d2f70849831c0cd8a40e3546485cbf0674b7ddd85691aa5957bb27bc90e26f7cf1ed7b4fc39ed121404fe24ff10a'
+Gitty::Application.config.secret_token = '35bd8014f5b6aa9a262791338a1d3164d0af2599b5a762c359012d008758a5561e0505c7ca95676c9047bfee374080524a5ac1f99b3265e6fdbb283730cdf8f1'
