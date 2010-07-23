@@ -25,6 +25,7 @@ class GitPushTest < ActionDispatch::IntegrationTest
                                          :profile => profiles(:dexter)
 
     @keyfile = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'id_rsa'
+    File.chmod 0600, @keyfile  # NOTE: ssh 0.9.8o gets bitchy otherwise
     ssh_wrapper = File.join(@temp_dir, 'git-ssh.sh')
     File.open ssh_wrapper, 'w' do |f|
       options = '-o PasswordAuthentication=no -o PubkeyAuthentication=yes'
