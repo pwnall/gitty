@@ -92,13 +92,25 @@ class RepositoriesController < ApplicationController
     end
   end
   
-  # POST /change_notice.json?repo_path=awesome.git
+  # POST /change_notice.json?repo_path=awesome.git&ssh_key_id=1
   protect_from_forgery :except => :change_notice
   def change_notice
-    @repository_path = params[:repo_path]
+    @ssh_key = SshKey.find(params[:ssh_key_id])
+    @repository = Repository.from_ssh_path params[:repo_path]
+
+    if @repository
+      @repository.integrate_changes
+      success = true
+      message = 'OK'      
+    else
+      success = false
+      message = "No git repository at #{params[:repo_path]}"
+    end
     
     respond_to do |format|
-      format.json { render :json => { :success => true } }
+      format.json do
+        render :json => { :success => success, :message => message }
+      end
     end
   end
 end

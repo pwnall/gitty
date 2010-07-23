@@ -2,6 +2,8 @@ require 'test_helper'
 
 class GitPushTest < ActionDispatch::IntegrationTest
   fixtures :all
+  
+  self.use_transactional_fixtures = false
 
   def setup
     @temp_dir = Rails.root.join 'tmp', 'git_client'
@@ -81,6 +83,10 @@ END_SHELL
       Dir.chdir 'rwin' do
         add_commit_push
       end
+      
+      assert_equal 'Integration test commit',
+          @win_repository.branches.where(:name => 'master').first.commit.
+                          message, "Push not assimilated"
     end
   end
 

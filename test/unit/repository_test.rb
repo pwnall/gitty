@@ -37,6 +37,15 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal 'git-test@localhost:dexter/awesome.git', @repo.ssh_uri
   end
   
+  test 'from_ssh_path' do
+    assert_equal repositories(:dexter_ghost),
+                 Repository.from_ssh_path('dexter/ghost.git')
+    ['../something/else.git', 'dexter/ghost/more.git',
+     'nobody/ghost.git', 'dexter/nothing.git'].each do |path|
+      assert_equal nil, Repository.from_ssh_path(path), "Bad path #{path}"
+    end
+  end
+  
   test 'model-repository lifetime sync' do    
     @repo.save!
     assert File.exist?('tmp/test_git_root/dexter/awesome.git/objects'),
@@ -204,5 +213,27 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal [commit3_d1_d2, commit3_d1, commitm_d1, commit3_root,
                   commitm_root],
                  bits[:trees].map(&:id), 'Trees for merge commit'
+  end
+  
+  test 'integrate_changes' do
+    repo = repositories(:dexter_ghost)
+    mock_repository_path repo
+    delta = nil
+    assert_no_difference 'Branch.count' do
+      assert_difference 'Commit.count', 2 do
+        delta = repo.integrate_changes
+      end
+    end
+    
+    assert_equal ['Commit 3', "Merge branch 'branch1'"],
+                 delta[:commits].map(&:message).sort, 'New commits'
+    assert_equal ['deleted'], delta[:branches][:deleted].map(&:name),
+                 'Deleted branches'
+    assert delta[:branches][:deleted].all?(&:destroyed?),
+                 'Deleted branches were actually destroyed'
+    assert_equal ['branch2'], delta[:branches][:added].map(&:name),
+                 'Added branches'
+    assert_equal ['master'], delta[:branches][:changed].map(&:name),
+                 'Changed branches'
   end
 end
