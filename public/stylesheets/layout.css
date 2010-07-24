@@ -1,0 +1,36 @@
+body {
+  margin: 0;
+  padding: 0;
+  border: none;
+	font-size: 10px;
+}
+
+#page_wrapper {
+	margin: 0;
+	padding: 0;
+  min-width: 1000px;
+}
+
+#content_wrapper {
+  margin: 0 auto;
+  padding: 5px;
+  width: 1000px;
+  overflow: hidden;	
+}
+#content {
+  margin: 0;
+  padding: 0 125px 0 0;
+}
+
+#sidebar {
+	float: right;
+	width: 120px;
+	margin: 0;
+	padding: 0;
+}
+#sidebar .ad_wrapper {
+  margin: 0;
+  padding: 0;
+  width: 120px;
+  height: 600px;
+}
