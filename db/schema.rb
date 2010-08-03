@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100715071003) do
+ActiveRecord::Schema.define(:version => 20100725000002) do
 
   create_table "blobs", :force => true do |t|
     t.integer "repository_id",               :null => false
@@ -55,6 +55,14 @@ ActiveRecord::Schema.define(:version => 20100715071003) do
   end
 
   add_index "config_flags", ["name"], :name => "index_config_flags_on_name", :unique => true
+
+  create_table "facebook_tokens", :force => true do |t|
+    t.integer "user_id",                     :null => false
+    t.string  "external_uid", :limit => 32,  :null => false
+    t.string  "access_token", :limit => 128, :null => false
+  end
+
+  add_index "facebook_tokens", ["external_uid"], :name => "index_facebook_tokens_on_external_uid", :unique => true
 
   create_table "profiles", :force => true do |t|
     t.string   "name",         :limit => 32,  :null => false
@@ -102,5 +110,15 @@ ActiveRecord::Schema.define(:version => 20100715071003) do
   end
 
   add_index "trees", ["repository_id", "gitid"], :name => "index_trees_on_repository_id_and_gitid", :unique => true
+
+  create_table "users", :force => true do |t|
+    t.string   "email",         :limit => 64, :null => false
+    t.string   "password_salt", :limit => 16
+    t.string   "password_hash", :limit => 64
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
 
 end

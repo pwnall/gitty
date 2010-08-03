@@ -1,9 +1,9 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+jane:
+  email: jane@gmail.com
+  password_salt: 5678
+  password_hash: <%= User.hash_password('pa55w0rd', '5678').inspect %>
 
-one:
-  email: MyString
-  crypted_password: MyString
-
-two:
-  email: MyString
-  crypted_password: MyString
+john:
+  email: john@gmail.com
+  password_salt: 1234
+  password_hash: <%= User.hash_password('password', '1234').inspect %>

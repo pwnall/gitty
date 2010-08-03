@@ -1,9 +1,10 @@
 source 'http://rubygems.org'
 
-# gem 'rails', '3.0.0.beta4'
+# gem 'rails', '3.0.0.rc'
 
 # Bundle edge Rails instead:
-gem 'rails', :git => 'git://github.com/rails/rails.git'
+gem 'rails', :git => 'git://github.com/rails/rails.git',
+             :branch => '3-0-stable'
 
 gem 'mysql'
 
@@ -20,6 +21,7 @@ gem 'mysql'
 gem 'grit'
 gem 'json'
 gem 'net-ssh', :require => 'net/ssh'
+gem 'authpwn_rails'
 
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'

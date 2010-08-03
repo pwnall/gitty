@@ -1,0 +1,10 @@
+# Test account vic.tor@costan.us
+jane:
+  user: jane
+  external_uid: 100001181310542
+  access_token: 125502267478972|d2ecea6d763d2fb17cfa70fa-100001181310542|h849k0nQBq4FkAVEGVgeyoSd_RA.
+
+john:
+  user: john
+  external_uid: 702659
+  access_token: 702659|ffffffffffffffffffffffff-702659|ZZZZZZZZZZZZZZZZZZZZZZZZZZZZ
