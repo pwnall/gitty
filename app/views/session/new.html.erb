@@ -1,13 +1,13 @@
-<p>This is a sample login form. You should customize it for your users.</p>
+<h2>Log in</h2>
 
 <%= form_for User.new, :url => session_path do |f| %>
   <div class="field">
-    <%= f.label :email, 'Email Address' %><br />
+    <%= f.label :email, 'Email Address' %>
     <%= f.text_field :email %>
   </div>
   
   <div class="field">
-    <%= f.label :password %><br />
+    <%= f.label :password %>
     <%= f.password_field :password %>
   </div>
   

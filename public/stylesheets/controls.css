@@ -1,0 +1,93 @@
+/* Form labels aligned to the left of the controls . */
+form .field label {
+  display: inline-block;
+  width: 200px;
+}
+
+a, a:hover, a:visited {
+  color: #516952;
+  text-decoration: underline;
+  background: none;
+}
+
+/* Form buttons. */
+input[type=submit], input[type=button] {
+  margin: 0;
+  padding: 1px 6px; 
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  box-shadow: 0px 1px 3px #BECEA2;
+  -moz-box-shadow: 0px 1px 3px #BECEA2;
+  -webkit-box-shadow: 0px 1px 3px #BECEA2;
+  
+  background-color: #9BA884;
+  border: 1px solid #606852;
+  color: #FFFFFF;
+  font-size: 11pt;
+  font-weight: bold;
+}
+input[type=submit]:hover, input[type=button]:hover {
+  color: #E2F5C0;
+}
+input[type=submit]:active, input[type=button]:active {
+  background-color: #9BA884;
+  box-shadow: inset 0px 2px 2px #606852;
+  -moz-box-shadow: inset 0px 2px 2px #606852;
+  -webkit-box-shadow: inset 0px 2px 2px #606852;
+}
+
+/* Text fields. */
+input[type=text], input[type=password], textarea {
+  margin: 0;
+  padding: 3px 4px;
+  border: 1px solid #9BA884;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  box-shadow: inset 0px 2px 2px #E2F5C0;
+  -moz-box-shadow: inset 0px 2px 2px #E2F5C0;
+  -webkit-box-shadow: inset 0px 2px 2px #E2F5C0;
+  background-color: #FFFFFF;
+  color: #000000;
+}
+input[type=text]:hover, input[type=password]:hover, textarea:hover {
+  border: 1px solid #BECEA2;
+}
+input[type=text]:focus, input[type=password]:focus, textarea:focus {
+  color: #331400;
+}
+textarea {
+  height: 5.25em;
+}
+div.field_with_errors input[type=text],
+    div.field_with_errors input[type=password],
+    div.field_with_errors textarea {
+  border: 1px solid #FF0000;
+  box-shadow: inset 0px 1px 2px #FF8888;
+  -moz-box-shadow: inset 0px 1px 2px #FF8888;
+  -webkit-box-shadow: inset 0px 1px 2px #FF8888;
+  background-color: #FFEEEE;
+}
+
+input[type=radio], input[type=checkbox] {
+  border: 1px solid #652900;
+  box-shadow: inset 0px 1px 2px #F4DCCC;
+  -moz-box-shadow: inset 0px 1px 2px #F4DCCC;
+  -webkit-box-shadow: inset 0px 1px 2px #F4DCCC;
+  background-color: #FFFFFF;  
+}
+div.field_with_errors input[type=radio],
+    div.field_with_errors input[type=checkbox] {
+  border: 1px solid #FF0000;      
+  box-shadow: inset 0px 1px 2px #FF8888;
+  -moz-box-shadow: inset 0px 1px 2px #FF8888;
+  -webkit-box-shadow: inset 0px 1px 2px #FF8888;
+  background-color: #FFEEEE;
+}
+
+/* Prevent error fields from messing up the layout. */
+div.field_with_errors {
+  display: inline-block;
+  background-color: #FFEEEE;
+}
