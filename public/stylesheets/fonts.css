@@ -1,5 +1,7 @@
 @import url(http://fonts.googleapis.com/css?family=OFL+Sorts+Mill+Goudy+TT:italic);
 @import url(http://fonts.googleapis.com/css?family=Cantarell);
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
+@import url(http://fonts.googleapis.com/css?family=Molengo);
 
 body {
   font-family: Cantarell, Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -7,9 +9,8 @@ body {
 }
 
 h1 {
-  font-family: "OFL Sorts Mill Goudy TT", arial, serif;
-  font-size: 4.8em;
-  font-style: italic;	
+  font-family: "Molengo", monospace;
+  font-size: 2.4em;
 }
 
 #footer {  
@@ -17,7 +18,7 @@ h1 {
   font-size: 1.3em;
 }
 
-#content {
-  font-size: 10pt;
-  line-height: 18px;
+#content_wrapper {
+  font-size: 1.3em;
+  line-height: 1.12em;
 }

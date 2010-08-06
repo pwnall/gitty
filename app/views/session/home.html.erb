@@ -1,4 +1,5 @@
 <p>
   This view gets displayed when the user is logged in. Right now, 
-  <%= @current_user.email %> is logged in.
+  <%= current_user.email %> is logged in. You should allow the user to
+  <%= link_to 'Log out', session_path, :method => :destroy %>.
 </p>

@@ -1,0 +1,23 @@
+<div id="header">
+  <h1>Gitty</h1>
+  
+  <% if current_user %>
+  <ol class="user_bar">
+    <li>
+      <%= current_user.email %>
+    </li>
+    <li>
+      <%= link_to 'Log out', session_path, :method => :destroy %>
+    </li>
+  </ol>
+  <% else %>
+  <ul class="welcome_bar">
+    <li>
+      <%= link_to 'Sign up', new_user_path %>
+    </li>
+    <li>
+      <%= link_to 'Log in', new_session_path %>
+    </li>    
+  </ul>
+  <% end %>
+</div>

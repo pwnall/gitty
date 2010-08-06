@@ -1,37 +1,30 @@
 #header {
-  background-color: #D40D12;
-  border: 1px solid #D40D12;
-  border-bottom-left-radius: 4px;
-  border-bottom-right-radius: 4px;
-  -moz-border-radius-bottomleft: 4px;
-  -moz-border-radius-bottomright: 4px;
-  -webkit-border-bottom-left-radius: 4px;
-  -webkit-border-bottom-right-radius: 4px;
+  position: relative;
+  background-color: #E2F5C0;
+  border: 1px solid #D6E8B6;
   margin: 0;
   padding: 0;
 }
 #header h1 {
-  color: #FFFFFF;
+  color: #516952;
   margin: 0;
   padding: 0 5px 0 5px;
 }
 
-#navbar {
+#header .welcome_bar, #header .user_bar {
+  position: absolute;
+  right: 0;
+  bottom: 0;
   font-size: 1.6em;
-}
-#navbar ul {
   list-style: none;
   overflow: hidden;
-  margin: -12px 0 0 0;
-  padding: 0 0 5px 5px;
+  margin: 0;
+  padding: 0 5px 0 0;
 }
-#navbar li {
+#header li {
   float: left;
   margin: 0;
-  padding: 0 1em 0 0;
-}
-#header a {
-  color: #FFFFFF;
+  padding: 0 0 0 1em;
 }
 #header a:hover {
   background: none;
