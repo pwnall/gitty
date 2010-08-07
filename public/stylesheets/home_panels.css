@@ -1,0 +1,16 @@
+.home_panel {
+  position: relative;
+  float: left;
+}
+.home_panel.repositories {
+  width: 600px; 
+}
+.home_panel.keys {
+  width: 350px;
+  margin: 0 0 0 50px;
+}
+.home_panel .actions {
+  position: absolute;
+  top: 0;
+  right: 0;
+}

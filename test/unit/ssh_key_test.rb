@@ -4,7 +4,7 @@ class SshKeyTest < ActiveSupport::TestCase
   def setup
     key_path = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'new_key.pub'
     @key = SshKey.new :name => 'Some name', :key_line => File.read(key_path),
-                      :profile => profiles(:dexter)
+                      :user => users(:jane)
   end
   
   # Override the authorized_keys path so it's in a temp directory.
@@ -32,8 +32,8 @@ class SshKeyTest < ActiveSupport::TestCase
     assert @key.valid?
   end
 
-  test 'profile has to be set' do
-    @key.profile = nil
+  test 'user has to be set' do
+    @key.user = nil
     assert !@key.valid?
   end
 

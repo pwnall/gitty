@@ -26,6 +26,9 @@
   margin: 0;
   padding: 0 0 0 1em;
 }
+#header a {
+  text-decoration: none;
+}
 #header a:hover {
   background: none;
 }

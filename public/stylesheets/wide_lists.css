@@ -1,0 +1,33 @@
+.wide_list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.wide_list > li {
+  position: relative;
+  margin: 2px 0;
+  padding: 2px 1em;  
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  
+  background-color: #E2F5C0;
+  border: 1px solid #D6E8B6;
+}
+.wide_list > li:hover {
+  color: #E2F5C0;
+}
+.wide_list > li:active {
+  background-color: #9BA884;
+}
+.wide_list .actions {
+  position: absolute;
+  right: 0;
+  list-style: none;
+  margin: 0;
+  padding: 2px 1em 2px 0;  
+}
+.wide_list .actions li {
+  float: left;
+  padding: 0 2px;
+}

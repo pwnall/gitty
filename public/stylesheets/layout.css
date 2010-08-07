@@ -20,6 +20,7 @@ body {
 #content {
   margin: 0;
   padding: 0 125px 0 0;
+  overflow: hidden;
 }
 
 #sidebar {

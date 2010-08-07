@@ -44,8 +44,14 @@ class ProfilesController < ApplicationController
 
     respond_to do |format|
       if @profile.save
-        format.html { redirect_to(@profile, :notice => 'Profile was successfully created.') }
-        format.xml  { render :xml => @profile, :status => :created, :location => @profile }
+        if current_user.profile
+          # TODO(costan): add to the list of secondary profiles
+        else
+          current_user.update_attributes! :profile => @profile
+
+          format.html { redirect_to session_path }
+          format.xml  { render :xml => @profile, :status => :created, :location => @profile }          
+        end
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @profile.errors, :status => :unprocessable_entity }

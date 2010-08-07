@@ -1,5 +1,23 @@
-<p>
-  This view gets displayed when the user is logged in. Right now, 
-  <%= current_user.email %> is logged in. You should allow the user to
-  <%= link_to 'Log out', session_path, :method => :destroy %>.
-</p>
+<% if !@profile.new_record? %>
+  <p>Hi, <%= @profile.name %></p>
+
+  <div class="home_panel repositories">
+    <h2>Repositories</h2>
+    <p class="actions">
+      <%= link_to 'New Repository', new_repository_path, :class => 'button' %>      
+    </p>
+    <%= render 'repositories/list', :repositories => @profile.repositories %>
+  </div>
+
+  <div class="home_panel keys">
+    <h2>SSH Keys</h2>
+    <p class="actions">
+      <%= link_to 'New Key', new_ssh_key_path, :class => 'button' %>       
+    </p>
+    <%= render 'ssh_keys/list', :ssh_keys => current_user.ssh_keys %>
+  </div>
+<% else %>
+  <h2>Create a profile</h2>
+
+  <%= render 'profiles/form' %>  
+<% end %>

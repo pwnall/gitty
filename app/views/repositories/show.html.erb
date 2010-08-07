@@ -1,10 +1,18 @@
 <p id="notice"><%= notice %></p>
 
-<p>
-  <b>Name:</b>
-  <%= @repository.name %>
-</p>
+<h2><%= @repository.profile.name%> / <%= @repository.name %></h2>
 
-
-<%= link_to 'Edit', edit_repository_path(@repository) %> |
-<%= link_to 'Back', repositories_path %>
+<dl>
+  <dt>
+    Web URL:
+  </dt>
+  <dd>
+    <%= link_to repository_url(@repository) %>
+  </dd>
+  <dt>
+    SSH:
+  </dt>
+  <dd>
+    <%= @repository.ssh_uri %>
+  </dd>
+</dl>

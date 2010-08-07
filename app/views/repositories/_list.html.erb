@@ -1,0 +1,7 @@
+<ul class="wide_list repositories"> 
+<% repositories.each do |repository| %>
+  <li>
+    <%= link_to repository.name, repository %>
+  </li>
+<% end %>
+</ul>

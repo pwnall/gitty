@@ -2,8 +2,6 @@
 class Profile < ActiveRecord::Base
   # The repositories created by this profile.
   has_many :repositories, :dependent => :destroy
-  # The SSH keys used to authenticate this profile.
-  has_many :ssh_keys, :dependent => :destroy
   
   # The profile's short name, used in URLs.
   validates :name, :length => 1..32, :format => /\A\w+\Z/, :presence => true,

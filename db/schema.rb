@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100725000002) do
+ActiveRecord::Schema.define(:version => 20100807055728) do
 
   create_table "blobs", :force => true do |t|
     t.integer "repository_id",               :null => false
@@ -84,7 +84,7 @@ ActiveRecord::Schema.define(:version => 20100725000002) do
 
   create_table "ssh_keys", :force => true do |t|
     t.string   "fprint",     :limit => 128, :null => false
-    t.integer  "profile_id",                :null => false
+    t.integer  "user_id",                   :null => false
     t.string   "name",       :limit => 128, :null => false
     t.text     "key_line",                  :null => false
     t.datetime "created_at"
@@ -92,7 +92,7 @@ ActiveRecord::Schema.define(:version => 20100725000002) do
   end
 
   add_index "ssh_keys", ["fprint"], :name => "index_ssh_keys_on_fprint", :unique => true
-  add_index "ssh_keys", ["profile_id"], :name => "index_ssh_keys_on_profile_id"
+  add_index "ssh_keys", ["user_id"], :name => "index_ssh_keys_on_user_id"
 
   create_table "tree_entries", :force => true do |t|
     t.integer "tree_id",                   :null => false
@@ -117,8 +117,10 @@ ActiveRecord::Schema.define(:version => 20100725000002) do
     t.string   "password_hash", :limit => 64
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "profile_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["profile_id"], :name => "index_users_on_profile_id", :unique => true
 
 end

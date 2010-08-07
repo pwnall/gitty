@@ -21,7 +21,7 @@ gem 'mysql'
 gem 'grit'
 gem 'json'
 gem 'net-ssh', :require => 'net/ssh'
-gem 'authpwn_rails'
+gem 'authpwn_rails', :path => '../authpwn_rails'
 
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'

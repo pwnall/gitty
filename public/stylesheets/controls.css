@@ -11,7 +11,7 @@ a, a:hover, a:visited {
 }
 
 /* Form buttons. */
-input[type=submit], input[type=button] {
+input[type=submit], input[type=button], a.button {
   margin: 0;
   padding: 1px 6px; 
   border-radius: 4px;
@@ -24,17 +24,20 @@ input[type=submit], input[type=button] {
   background-color: #9BA884;
   border: 1px solid #606852;
   color: #FFFFFF;
-  font-size: 11pt;
+  font-size: 1.1em;
   font-weight: bold;
 }
-input[type=submit]:hover, input[type=button]:hover {
+input[type=submit]:hover, input[type=button]:hover, a.button:hover {
   color: #E2F5C0;
 }
-input[type=submit]:active, input[type=button]:active {
+input[type=submit]:active, input[type=button]:active, a.button:active {
   background-color: #9BA884;
   box-shadow: inset 0px 2px 2px #606852;
   -moz-box-shadow: inset 0px 2px 2px #606852;
   -webkit-box-shadow: inset 0px 2px 2px #606852;
+}
+a.button {
+  text-decoration: none;
 }
 
 /* Text fields. */

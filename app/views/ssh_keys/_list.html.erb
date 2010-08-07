@@ -1,0 +1,13 @@
+<ul class="wide_list ssh_keys">
+<% ssh_keys.each do |ssh_key| %>
+  <li>
+    <%= link_to ssh_key.name, edit_ssh_key_path(ssh_key) %>
+    
+    <ul class="actions">
+      <li>
+        <%= link_to 'Delete', ssh_key, :method => :delete %>
+      </li>
+    </ul>
+  </li>
+<% end %>
+</ul>

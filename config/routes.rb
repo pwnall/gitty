@@ -1,4 +1,6 @@
 Gitty::Application.routes.draw do
+  resource :session, :controller => 'session'
+
   resources :users
   
   resources :profiles
