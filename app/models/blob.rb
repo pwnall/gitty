@@ -1,5 +1,7 @@
 # Blob (file) in a git repository hosted on this server.
 class Blob < ActiveRecord::Base
+  include GitObjectModel
+  
   # The repository that this blob is a part of.
   belongs_to :repository
   validates :repository, :presence => true

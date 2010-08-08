@@ -1,0 +1,28 @@
+.repository {
+  margin: 0;
+  padding: 0;
+  border: 1px solid #BECFA2;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  background: #E7F5D0;
+  overflow: hidden;  
+}
+.repository .name {
+  margin: 0;
+  padding: 0 1em;
+  font-size: 1.6em;
+  line-height: 1.6em;
+  font-weight: bold;
+}
+.repository .metadata {
+  list-style-type: none;
+  margin: 0;
+  padding: 5px;
+  line-height: 1.15em;
+}
+.repository .metadata dt {
+  float: left;
+  color: #666666;
+  width: 6em;
+}

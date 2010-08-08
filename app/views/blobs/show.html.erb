@@ -1,5 +1,4 @@
-<p id="notice"><%= notice %></p>
+<%= render @blob.repository %>
 
-
-<%= link_to 'Edit', edit_blob_path(@blob) %> |
-<%= link_to 'Back', blobs_path %>
+<h2>File <%= @blob.gitid %></h2>
+<%= render @blob %>

@@ -1,5 +1,7 @@
 # Tree (directory) in a git repository hosted on this server.
 class Tree < ActiveRecord::Base
+  include GitObjectModel
+  
   # The repository that this tree is a part of.
   belongs_to :repository
   validates :repository, :presence => true

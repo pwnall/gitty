@@ -1,0 +1,20 @@
+.repository_tree {
+  border: 1px solid #BECFA2;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  background: #E7F5D0;
+  overflow: hidden;
+}
+ol.repository_tree {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+ol.repository_tree li {
+  padding: 5px 1em;
+  border-bottom: 1px solid #D6E8B6;
+}
+ol.repository_tree li:last-child {
+  border-bottom: none;
+}

@@ -1,5 +1,7 @@
 # Commit in a git repository stored on this server.
 class Commit < ActiveRecord::Base
+  include GitObjectModel
+  
   # The repository that the commit is a part of.
   belongs_to :repository
   validates :repository, :presence => true

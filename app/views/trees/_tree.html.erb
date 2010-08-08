@@ -1,7 +1,7 @@
 <ol class="repository_tree">
   <% tree.entries.select { |e| e.child.kind_of? Tree }.sort_by(&:name).each do |entry| %>
   <li>
-    <%= link_to entry.name, entry.child %>
+    <%= link_to entry.name, entry.child %>/
   </li>
   <% end %>
   <% tree.entries.select { |e| e.child.kind_of? Blob }.sort_by(&:name).each do |entry| %>

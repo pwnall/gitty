@@ -1,0 +1,10 @@
+.repository_blob {
+  border: 1px solid #BECFA2;
+  border-radius: 4px;
+  background: #E7F5D0;
+  overflow: hidden;
+}
+.repository_blob .contents {
+  margin: 0;
+  padding: 5px;
+}

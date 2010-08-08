@@ -1,0 +1,21 @@
+<div class="repository">
+  <p class="name">
+    <%= link_to repository.profile.name, repository.profile %>
+    /
+    <%= link_to repository.name, repository %>
+  </p>
+  <dl class="metadata">
+    <dt>
+      Web
+    </dt>
+    <dd>
+      <%= link_to repository_url(repository) %>
+    </dd>
+    <dt>
+      git+ssh
+    </dt>
+    <dd>
+      <%= repository.ssh_uri %>
+    </dd>
+  </dl>
+</div>

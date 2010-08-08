@@ -1,0 +1,46 @@
+.repository_commit {
+  border: 1px solid #BECFA2;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  background: #E7F5D0;
+  overflow: hidden;
+}
+.repository_commit .edges {
+  float: right;
+  width: 150px;
+  margin: 0;
+  border-left: 1px solid #D6E8B6;
+  padding: 5px;
+}
+.repository_commit .edges dt {
+  float: left;
+  width: 5em;
+  color: #000000;
+}
+.repository_commit .edges a {
+  font-family: "Droid Sans Mono";   
+}
+.repository_commit .message {
+  margin: 0;
+  padding: 5px;
+  font-family: "Droid Sans Mono"; 
+}
+.repository_commit .author, .repository_commit .committer {
+  margin: 0;
+  padding: 5px;
+}
+.repository_commit .author:after, .repository_commit .committer:after {
+  color: #666666;
+}
+.repository_commit .author:after {
+  content: "(author)";
+}
+.repository_commit .committer:after {
+  content: "(committer)";
+}
+.repository_commit .time {
+  margin: 0;
+  padding: 5px 5px 5px 1em;
+  color: #666666;
+}

@@ -4,20 +4,20 @@
       Commit
     </dt>
     <dd>
-      <%= link_to commit.gitid, commit %>
+      <%= link_to commit.short_gitid, commit %>
     </dd>
     <dt>
       Tree
     </dt>
     <dd>
-      <%= link_to commit.tree.gitid, commit.tree %>
+      <%= link_to commit.tree.short_gitid, commit.tree %>
     </dd>
     <% commit.parents.each do |parent| %>
     <dt>
       Parent
     </dt>
     <dd>
-      <%= link_to parent.gitid, parent %>    
+      <%= link_to parent.short_gitid, parent %>    
     </dd>
     <% end %>
   </dl>
@@ -27,11 +27,11 @@
       <%= commit.message %>
     </p>
     <p class="author">
-      <%= commit.author_name %> <%= commit.author_email %>
+      <%= commit.author_name %> &lt;<%= commit.author_email %>&gt;
     </p>
     <% if commit.author_name != commit.committer_name || commit.author_email != commit.committer_email %>
     <p class="committer">
-      <%= commit.committer_name%> <%= commit.committer_email %>
+      <%= commit.committer_name%> &lt;<%= commit.committer_email %>&gt;
     </p>
     <% end %>
     <p class="time">

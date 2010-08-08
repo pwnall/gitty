@@ -1,21 +1,4 @@
-<p id="notice"><%= notice %></p>
-
-<h2><%= @repository.profile.name%> / <%= @repository.name %></h2>
-
-<dl>
-  <dt>
-    Web URL:
-  </dt>
-  <dd>
-    <%= link_to repository_url(@repository) %>
-  </dd>
-  <dt>
-    SSH:
-  </dt>
-  <dd>
-    <%= @repository.ssh_uri %>
-  </dd>
-</dl>
+<%= render @repository %>
 
 <% if @repository.default_branch %>
 <%= render @repository.default_branch %>
