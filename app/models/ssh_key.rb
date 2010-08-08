@@ -64,4 +64,5 @@ class SshKey
     self.class.write_keyfile
   end
   after_save :write_keyfile
+  after_destroy :write_keyfile
 end

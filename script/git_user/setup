@@ -70,4 +70,4 @@ FileUtils.rm install_keys_src
 FileUtils.chown_R git_user, web_group, git_home
 
 # NOTE: if the file is chowned after chmodding, the setuid bit is lost
-FileUtils.chmod 04770, install_keys
+FileUtils.chmod 04750, install_keys

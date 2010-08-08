@@ -68,4 +68,16 @@ class SshKeyTest < ActiveSupport::TestCase
     
     File.unlink 'tmp/test_git_root/.ssh_keys'
   end
+  
+  test 'model-keyfile lifetime sync' do    
+    @key.save!
+    assert File.readlines('tmp/test_git_root/.ssh_keys').
+                map(&:strip).include?(@key.keyfile_line),
+           'keyfile does not contain a line for the new key'
+    
+    @key.destroy
+    assert File.readlines('tmp/test_git_root/.ssh_keys').
+                map(&:strip).include?(@key.keyfile_line),
+           'keyfile still has a line for the destroyed key'
+  end
 end
