@@ -261,3 +261,39 @@ class Repository
                      :deleted => branch_delta[:deleted] } }
   end
 end
+
+
+# :nodoc: access control
+class Repository
+  # True if the user can pull from the repository.
+  #
+  # Pulling implies full read rights from the Web as well.
+  def can_pull?(user)
+    true
+  end
+  
+  # True if the user can push to the repository.
+  #
+  # Pushing means the user can commit.
+  def can_push?(user)
+    
+  end
+  
+  # True if the user can admin the repository.
+  #
+  # Administrating implies changing the repository ACL, as well as renaming and
+  # deleting the repository. 
+  def can_admin?(user)
+    # NOTE: a user should always be able to admin a repository that is charged
+    #       against one of the user's profiles.
+    profile_id == user.profile_id
+  end
+end
+
+# :nodoc: almost-UI
+class Repository
+  # The repository branch shown if no other branch is specified.
+  def default_branch
+    branches.where(:name => 'master').first || branches.first
+  end
+end

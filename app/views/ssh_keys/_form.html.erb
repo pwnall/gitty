@@ -12,11 +12,11 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :name %><br />
+    <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
   <div class="field">
-    <%= f.label :key_line %><br />
+    <%= f.label :key_line, 'Public Key (should start with ssh-rsa or ssh-dss)' %>
     <%= f.text_area :key_line %>
   </div>
   <div class="actions">

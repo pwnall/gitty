@@ -60,9 +60,6 @@ input[type=text]:hover, input[type=password]:hover, textarea:hover {
 input[type=text]:focus, input[type=password]:focus, textarea:focus {
   color: #331400;
 }
-textarea {
-  height: 5.25em;
-}
 div.field_with_errors input[type=text],
     div.field_with_errors input[type=password],
     div.field_with_errors textarea {
@@ -93,4 +90,16 @@ div.field_with_errors input[type=radio],
 div.field_with_errors {
   display: inline-block;
   background-color: #FFEEEE;
+}
+
+/* Sizes for fields. */
+input {
+  width: 40ex;
+}
+input[type=button], input[type=checkbox], input[type=file], input[type=radio], input[type=submit] {
+  width: auto;
+}
+textarea {
+  width: 40ex;
+  height: 20em;
 }

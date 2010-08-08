@@ -1,5 +1,5 @@
 module ProfilesHelper
   def profile_select_options
-    Profile.all.map { |p| [p.name, p.id] }
+    [current_user.profile].map { |p| [p.name, p.id] }
   end
 end

@@ -1,0 +1,33 @@
+<div class="bootstrap_steps">
+
+<h3>Global setup</h3>
+
+<p>Download and install Git</p>
+
+<pre>
+git config --global user.name "<%= current_user.profile.display_name %>"
+git config --global user.email <%= current_user.email %>
+</pre>
+
+<h3>Next steps</h3>
+
+<pre>
+mkdir <%= @repository.name %>
+cd <%= @repository.name %>
+git init
+touch README
+git add README
+git commit -m 'first commit'
+git remote add origin <%= @repository.ssh_uri %>
+git push origin master  
+</pre>
+
+<h3>Existing Git Repository?</h3>
+
+<pre>
+cd existing_git_repo
+git remote add origin <%= @repository.ssh_uri %>
+git push origin master  
+</pre>
+
+</div>

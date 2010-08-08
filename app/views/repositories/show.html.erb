@@ -16,3 +16,8 @@
     <%= @repository.ssh_uri %>
   </dd>
 </dl>
+
+<% if @repository.default_branch %>
+<% else %>
+<%= render 'repositories/bootstrap_steps' %>
+<% end %>

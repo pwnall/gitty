@@ -2,22 +2,21 @@ class SshKeysController < ApplicationController
   # GET /ssh_keys
   # GET /ssh_keys.xml
   def index
-    @ssh_keys = SshKey.all
-
-    respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @ssh_keys }
-    end
+    redirect_to session_url
   end
 
   # GET /ssh_keys/1
   # GET /ssh_keys/1.xml
   def show
     @ssh_key = SshKey.find(params[:id])
+    unless @ssh_key.user_id == current_user.id
+      head :not_authorized 
+      return
+    end
 
     respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @ssh_key }
+      format.html { redirect_to session_url }
+      format.txt  { render :text => @ssh_key.key_line }
     end
   end
 

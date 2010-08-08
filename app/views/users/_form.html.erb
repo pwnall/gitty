@@ -11,11 +11,19 @@
     </div>
   <% end %>
 
+  <% if @user.new_record? %>
   <div class="field">
     <%= f.label :email, 'Email Address' %>
     <%= f.text_field :email %>
   </div>
+  <% end %>
   
+  <% unless @user.new_record? %>
+  <div class="field">
+    <%= label_tag :old_password, 'Old Password' %>
+    <%= password_field_tag :old_password %>
+  </div>  
+  <% end %>
   <div class="field">
     <%= f.label :password %>
     <%= f.password_field :password %>
@@ -26,6 +34,6 @@
   </div>
   
   <div class="actions">
-    <%= f.submit 'Create Account' %>
+    <%= f.submit @user.new_record? ? 'Create Account' : 'Update Account' %>
   </div>
 <% end %>

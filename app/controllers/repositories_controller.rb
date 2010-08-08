@@ -1,12 +1,11 @@
 class RepositoriesController < ApplicationController
+  # GET /repositories.json
   # GET /repositories
-  # GET /repositories.xml
   def index
-    @repositories = Repository.all
-
+    @repositories = current_user.repositories
     respond_to do |format|
-      format.html # index.html.erb
-      format.xml  { render :xml => @repositories }
+      format.html { redirect_to session_url }
+      format.json { render :json => @repositories }
     end
   end
 
