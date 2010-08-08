@@ -1,7 +1,22 @@
-@import url(http://fonts.googleapis.com/css?family=OFL+Sorts+Mill+Goudy+TT:italic);
-@import url(http://fonts.googleapis.com/css?family=Cantarell);
-@import url(http://fonts.googleapis.com/css?family=Droid+Sans+Mono);
-@import url(http://fonts.googleapis.com/css?family=Molengo);
+/* @import url(http://fonts.googleapis.com/css?family=OFL+Sorts+Mill+Goudy+TT:italic); */
+@font-face {
+  font-family: 'Cantarell';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Cantarell'), url('../fonts/cantarell.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Droid Sans Mono';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Droid Sans Mono'), url('../fonts/droid_sans_mono.ttf') format('truetype');
+}
+@font-face {
+  font-family: 'Molengo';
+  font-style: normal;
+  font-weight: normal;
+  src: local('Molengo'), url('../fonts/molengo.ttf') format('truetype');
+}
 
 body {
   font-family: Cantarell, Verdana, Geneva, Arial, Helvetica, sans-serif;
@@ -9,7 +24,7 @@ body {
 }
 
 h1 {
-  font-family: "Molengo", monospace;
+  font-family: Molengo, monospace;
   font-size: 2.4em;
 }
 
@@ -21,4 +36,8 @@ h1 {
 #content_wrapper {
   font-size: 1.3em;
   line-height: 1.12em;
+}
+
+pre {
+  font-family: "Droid Sans Mono";
 }

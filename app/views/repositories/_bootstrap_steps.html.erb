@@ -2,7 +2,9 @@
 
 <h3>Global setup</h3>
 
-<p>Download and install Git</p>
+<p>
+  <a href="http://git-scm.com/download">Download Git</a> and install it.
+</p>
 
 <pre>
 git config --global user.name "<%= current_user.profile.display_name %>"
@@ -29,5 +31,9 @@ cd existing_git_repo
 git remote add origin <%= @repository.ssh_uri %>
 git push origin master  
 </pre>
+
+<h3>When you're done</h3>
+
+<%= link_to 'Continue', @repository %>
 
 </div>
