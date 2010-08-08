@@ -1,0 +1,41 @@
+<div class="repository_commit">
+  <dl class="edges">
+    <dt>
+      Commit
+    </dt>
+    <dd>
+      <%= link_to commit.gitid, commit %>
+    </dd>
+    <dt>
+      Tree
+    </dt>
+    <dd>
+      <%= link_to commit.tree.gitid, commit.tree %>
+    </dd>
+    <% commit.parents.each do |parent| %>
+    <dt>
+      Parent
+    </dt>
+    <dd>
+      <%= link_to parent.gitid, parent %>    
+    </dd>
+    <% end %>
+  </dl>
+
+  <div class="metadata">
+    <p class="message">
+      <%= commit.message %>
+    </p>
+    <p class="author">
+      <%= commit.author_name %> <%= commit.author_email %>
+    </p>
+    <% if commit.author_name != commit.committer_name || commit.author_email != commit.committer_email %>
+    <p class="committer">
+      <%= commit.committer_name%> <%= commit.committer_email %>
+    </p>
+    <% end %>
+    <p class="time">
+      <%= distance_of_time_in_words_to_now commit.committed_at %> ago
+    </p>
+  </div>  
+</div>

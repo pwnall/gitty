@@ -221,7 +221,11 @@ class RepositoryTest < ActiveSupport::TestCase
     delta = nil
     assert_no_difference 'Branch.count' do
       assert_difference 'Commit.count', 2 do
-        delta = repo.integrate_changes
+        assert_difference 'CommitParent.count', 3 do
+          assert_difference 'TreeEntry.count', 9 do
+            delta = repo.integrate_changes
+          end
+        end
       end
     end
     

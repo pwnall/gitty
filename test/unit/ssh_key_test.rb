@@ -75,9 +75,9 @@ class SshKeyTest < ActiveSupport::TestCase
                 map(&:strip).include?(@key.keyfile_line),
            'keyfile does not contain a line for the new key'
     
-    @key.destroy
-    assert File.readlines('tmp/test_git_root/.ssh_keys').
-                map(&:strip).include?(@key.keyfile_line),
+    @key.destroy    
+    assert !File.readlines('tmp/test_git_root/.ssh_keys').
+                 map(&:strip).include?(@key.keyfile_line),
            'keyfile still has a line for the destroyed key'
   end
 end

@@ -14,6 +14,10 @@ Gitty::Application.routes.draw do
   resources :repositories
 
   resources :config_flags
+  
+  resources :trees
+  
+  resources :blobs
 
   # The priority is based upon order of creation:
   # first created -> highest priority.

@@ -234,13 +234,20 @@ class Repository
       Blob.from_git_blob(git_blob, self).save!
     end
     new_contents[:trees].each do |git_tree|
-      Tree.from_git_tree(git_tree, self).save!
+      tree = Tree.from_git_tree(git_tree, self)
+      tree.save!
+      
+      tree_entries = TreeEntry.from_git_tree git_tree, self, tree
+      tree_entries.each &:save!
     end
     new_commits = Set.new
     new_git_commits.each do |git_commit|
       commit = Commit.from_git_commit(git_commit, self)
       commit.save!
       new_commits << commit
+
+      commit_parents = CommitParent.from_git_commit git_commit, self, commit
+      commit_parents.each &:save!
     end
     new_branches = []
     branch_delta[:added].each do |git_branch|

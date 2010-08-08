@@ -1,5 +1,2 @@
-<p id="notice"><%= notice %></p>
-
-
-<%= link_to 'Edit', edit_commit_path(@commit) %> |
-<%= link_to 'Back', commits_path %>
+<h2>Commit <%= @commit.gitid %></h2>
+<%= render @commit %>
