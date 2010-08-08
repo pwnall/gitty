@@ -1,12 +1,21 @@
 <ol class="repository_tree">
+  <li class="header">
+    <span class="name">Name</span>
+    <span class="type">Type</span>
+    <span class="size">Size</span>
+  </li>
   <% tree.entries.select { |e| e.child.kind_of? Tree }.sort_by(&:name).each do |entry| %>
   <li>
-    <%= link_to entry.name, entry.child %>/
+    <span class="name"><%= link_to entry.name, entry.child %>/</span>
+    <span class="type">directory</span>
+    <span class="size"><%= entry.child.entries.count %> entries</span>
   </li>
   <% end %>
   <% tree.entries.select { |e| e.child.kind_of? Blob }.sort_by(&:name).each do |entry| %>
   <li>
-    <%= link_to entry.name, entry.child %>
+    <span class="name"><%= link_to entry.name, entry.child %></span>
+    <span class="type"><%= entry.child.mime_type %></span>
+    <span class="size"><%= number_to_human_size entry.child.size %></span>
   </li>
   <% end %>
 </ol>

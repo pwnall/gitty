@@ -1,7 +1,11 @@
 d1_d2_a:
   repository: dexter_ghost
   gitid: fb8247c7b27ae4cad9e7e3e66ba95126658ea7c2
+  mime_type: text/plain
+  size: 1
 
 d1_b:
   repository: dexter_ghost
   gitid: d7156e34dd1a091d5a38fc676c11fe91681c843f
+  mime_type: text/plain
+  size: 1

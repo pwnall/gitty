@@ -18,3 +18,19 @@ ol.repository_tree li {
 ol.repository_tree li:last-child {
   border-bottom: none;
 }
+ol.repository_tree li .name {
+  display: inline-block;
+  width: 600px;
+}
+ol.repository_tree li .type {
+  display: inline-block;
+  width: 160px;
+}
+ol.repository_tree li .size {
+  display: inline-block;
+  width: 200px;
+  text-align: right;
+}
+ol.repository_tree li.header {
+  font-weight: bold;
+}

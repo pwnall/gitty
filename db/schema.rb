@@ -15,6 +15,8 @@ ActiveRecord::Schema.define(:version => 20100807055728) do
   create_table "blobs", :force => true do |t|
     t.integer "repository_id",               :null => false
     t.string  "gitid",         :limit => 64, :null => false
+    t.string  "mime_type",     :limit => 64, :null => false
+    t.integer "size",                        :null => false
   end
 
   add_index "blobs", ["repository_id", "gitid"], :name => "index_blobs_on_repository_id_and_gitid", :unique => true
