@@ -3,3 +3,10 @@
 
 <h3>Last tree on <%= branch.name %></h3>
 <%= render branch.commit.tree %>
+
+<% if readme = branch.commit.tree.entries.where(:name => 'README').first %>
+<h3>README</h3>
+<%= render readme.child %>
+<% else %>
+<p>No README file found. You should add one.</p>
+<% end %>

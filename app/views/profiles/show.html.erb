@@ -1,10 +1,6 @@
-<p id="notice"><%= notice %></p>
+<h2><%= link_to @profile.name, @profile %></h2>
 
-<p>
-  <b>Name:</b>
-  <%= @profile.name %>
-</p>
-
-
-<%= link_to 'Edit', edit_profile_path(@profile) %> |
-<%= link_to 'Back', profiles_path %>
+<div class="home_panel repositories">
+  <h3>Repositories</h3>
+  <%= render 'repositories/list', :repositories => @profile.repositories %>
+</div>

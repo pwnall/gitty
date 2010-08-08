@@ -1,4 +1,12 @@
 <div class="repository_blob">
+<p class="metadata">
+  <span class="type">
+    <%= blob.mime_type %>
+  </span>
+  <span class="size">
+    <%= number_to_human_size blob.size %>
+  </span>
+</p>
 
 <pre class="contents">
 <%= blob.repository.grit_repo.blob(blob.gitid).data %>
