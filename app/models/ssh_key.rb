@@ -30,19 +30,19 @@ end
 class SshKey
   # The location of the file containing SSH keys for the git user.
   def self.keyfile_path
-    File.join '/home', ConfigFlag['git_user'], 'repos', '.ssh_keys'
+    File.join '/home', ConfigVar['git_user'], 'repos', '.ssh_keys'
   end
   
   # The location of the shell file that installs the SSH keys for the git user.
   def self.keyfile_installer_path
-    File.join '/home', ConfigFlag['git_user'], 'install_keys'
+    File.join '/home', ConfigVar['git_user'], 'install_keys'
   end    
   
   # The authorized_keys line for this key.
   def keyfile_line
     command = [
       '\"' + Rails.root.join('script', 'git_shell.rb') + '\"',
-      id, ConfigFlag['app_uri'], '$SSH_ORIGINAL_COMMAND'
+      id, ConfigVar['app_uri'], '$SSH_ORIGINAL_COMMAND'
     ].join(' ')
     
     

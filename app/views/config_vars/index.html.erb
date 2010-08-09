@@ -1,0 +1,52 @@
+<h1>Set Configuration Variables</h1>
+
+<table class="configuration_variables">
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Value</th>
+    <th>Default Value</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @config_vars.each do |config_var| %>
+  <tr>
+    <td><%= config_var.name %></td>
+    <td>
+      <%= config_var.descriptor ? config_var.descriptor.value_type :
+              'undefined' %>
+    </td>
+    <td><%= config_var.value %></td>
+    <td>
+      <%= config_var.descriptor ? config_var.descriptor.default_value :
+              'undefined' %>
+    </td>
+    <td><%= link_to 'Edit', edit_config_var_path(config_var) %></td>
+    <td><%= link_to 'Reset to default', config_var, :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<h1>Available Configuration Variables</h1>
+
+<table class="configuration_variables">
+  <tr>
+    <th>Name</th>
+    <th>Type</th>
+    <th>Default Value</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @default_vars.each do |name, descriptor| %>
+  <tr>
+    <td><%= name %></td>
+    <td><%= descriptor.value_type %></td>
+    <td><%= descriptor.default_value %></td>
+    <td><%= link_to 'Edit', new_config_var_path(:name => name) %></td>
+  </tr>
+<% end %>
+</table>

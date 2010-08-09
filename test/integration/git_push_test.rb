@@ -12,13 +12,13 @@ class GitPushTest < ActionDispatch::IntegrationTest
     # NOTE: starting Rails first, so it has time to boot.
     @webapp_pid_file = @temp_dir.join 'webapp.pid'
     Kernel.system 'thin', 'start', '--daemonize', '--environment', 'test',
-                  '--port', ConfigFlag['app_uri'].split(':').last[0...-1],
+                  '--port', ConfigVar['app_uri'].split(':').last[0...-1],
                   '--pid', @webapp_pid_file.to_s,
                   '--log', @temp_dir.join('thin.log')
 
     @user_scripts_path = Rails.root.join 'script', 'git_user'
     setup_script = @user_scripts_path.join 'setup'
-    Kernel.system 'sudo', setup_script, ConfigFlag['git_user'], Etc.getlogin
+    Kernel.system 'sudo', setup_script, ConfigVar['git_user'], Etc.getlogin
     SshKey.write_keyfile
   
     @win_repository = Repository.create! :name => 'rwin',
@@ -43,7 +43,7 @@ END_SHELL
     # Wait until the Rails server has booted.
     loop do
       begin
-        Net::HTTP.get URI.parse(ConfigFlag['app_uri'])
+        Net::HTTP.get URI.parse(ConfigVar['app_uri'])
         break
       rescue
         sleep 0.1
@@ -59,7 +59,7 @@ END_SHELL
     FileUtils.rm_r @temp_dir if @temp_dir    
     
     teardown_script = @user_scripts_path.join 'teardown'
-    Kernel.system teardown_script, ConfigFlag['git_user'], Etc.getlogin
+    Kernel.system teardown_script, ConfigVar['git_user'], Etc.getlogin
   end
 
   test "initial repository push" do    

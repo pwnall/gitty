@@ -33,7 +33,7 @@ class Repository < ActiveRecord::Base
   
   # The repository's URL for SSH access.
   def ssh_uri
-    ssh_root = "#{ConfigFlag['git_user']}@#{ConfigFlag['ssh_host']}" 
+    ssh_root = "#{ConfigVar['git_user']}@#{ConfigVar['ssh_host']}" 
     "#{ssh_root}:#{profile.name}/#{name}.git"
   end
     

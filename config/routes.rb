@@ -1,4 +1,6 @@
 Gitty::Application.routes.draw do
+  resources :config_vars
+
   resource :session, :controller => 'session'
 
   resources :users
@@ -12,8 +14,6 @@ Gitty::Application.routes.draw do
   resources :ssh_keys
 
   resources :repositories
-
-  resources :config_flags
   
   resources :trees
   

@@ -20,7 +20,7 @@ class Profile < ActiveRecord::Base
   # Args:
   #   name:: the repository's name
   def self.local_path(name)
-    File.join '/home', ConfigFlag['git_user'], 'repos', name
+    File.join '/home', ConfigVar['git_user'], 'repos', name
   end
 end
 
