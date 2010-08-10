@@ -41,7 +41,12 @@ class Repository < ActiveRecord::Base
   def grit_repo
     @grit_repo ||= !(new_record? || destroyed?) && Grit::Repo.new(local_path)
   end
-
+  
+  # Use the repository name instead of ID in all routes.
+  def to_param
+    name
+  end
+  
   # The repository matching a SSH path, or nil if no such repository exists.
   #
   # This method returns nil for invalid SSH paths. Valid paths are contained in
@@ -50,7 +55,7 @@ class Repository < ActiveRecord::Base
     return nil unless match = /\A(\w+)\/(\w+)\.git\Z/.match(ssh_path)
     return nil unless repo_profile = Profile.where(:name => match[1]).first
     repo_profile.repositories.where(:name => match[2]).first
-  end
+  end  
 end
 
 
@@ -80,14 +85,13 @@ class Repository
   
   # Saves the repository's old name, so it can be relocated.
   def save_old_repository_name
-    @_old_repository_name = name_change.first
+    @_old_repository_name = name_change.first if name_change
   end
   
   # Relocates the on-disk repository after the model's name is changed.
   def relocate_local_repository
-    old_name = @_old_repository_name
+    return unless old_name = @_old_repository_name
     
-    return if name == old_name
     self.class.relocate_local_repository profile, old_name, name
     @grit_repo = nil
   end    

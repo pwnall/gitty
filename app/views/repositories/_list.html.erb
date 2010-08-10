@@ -1,11 +1,12 @@
 <ul class="wide_list repositories"> 
 <% repositories.each do |repository| %>
   <li>
-    <%= link_to repository.name, repository %>
+    <%= link_to repository.name, [repository.profile, repository] %>
 
     <ul class="actions">
       <li>
-        <%= link_to 'Delete', repository, :method => :delete,
+        <%= link_to 'Delete', [repository.profile, repository],
+                :method => :delete,
                 :confirm => "This will permanently delete all the information in the #{repository.name} repository." %>
       </li>
     </ul>

@@ -15,7 +15,7 @@ class Profile < ActiveRecord::Base
     self.class.local_path name
   end
     
-  # Use the profile name instead of ID.
+  # Use the profile name instead of ID in all routes.
   def to_param
     name
   end

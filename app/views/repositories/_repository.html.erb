@@ -2,14 +2,14 @@
   <p class="name">
     <%= link_to repository.profile.name, repository.profile %>
     /
-    <%= link_to repository.name, repository %>
+    <%= link_to repository.name, [repository.profile, repository] %>
   </p>
   <dl class="metadata">
     <dt>
       Web
     </dt>
     <dd>
-      <%= link_to repository_url(repository) %>
+      <%= link_to profile_repository_url(repository.profile, repository) %>
     </dd>
     <dt>
       git+ssh

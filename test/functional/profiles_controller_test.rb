@@ -58,27 +58,27 @@ class ProfilesControllerTest < ActionController::TestCase
                    {:controller => 'profiles', :action => 'new'})
     assert_routing({:path => '/gitty/profiles', :method => :post},
                    {:controller => 'profiles', :action => 'create'})
-    assert_routing({:path => '/gitty/profiles/pwnall/edit', :method => :get},
+    assert_routing({:path => '/gitty/profiles/costan/edit', :method => :get},
                    {:controller => 'profiles', :action => 'edit',
-                    :profile_name => 'pwnall'})
+                    :profile_name => 'costan'})
 
-    assert_routing({:path => '/pwnall', :method => :get},
+    assert_routing({:path => '/costan', :method => :get},
                    {:controller => 'profiles', :action => 'show',
-                    :profile_name => 'pwnall'})
+                    :profile_name => 'costan'})
     assert_recognizes({:controller => 'profiles', :action => 'show',
-                       :profile_name => 'pwnall'},
-                      {:path => '/gitty/profiles/pwnall', :method => :get})
-    assert_routing({:path => '/pwnall', :method => :put},
+                       :profile_name => 'costan'},
+                      {:path => '/gitty/profiles/costan', :method => :get})
+    assert_routing({:path => '/costan', :method => :put},
                    {:controller => 'profiles', :action => 'update',
-                    :profile_name => 'pwnall'})
+                    :profile_name => 'costan'})
     assert_recognizes({:controller => 'profiles', :action => 'update',
-                       :profile_name => 'pwnall'},
-                      {:path => '/gitty/profiles/pwnall', :method => :put})
-    assert_routing({:path => '/pwnall', :method => :delete},
+                       :profile_name => 'costan'},
+                      {:path => '/gitty/profiles/costan', :method => :put})
+    assert_routing({:path => '/costan', :method => :delete},
                    {:controller => 'profiles', :action => 'destroy',
-                    :profile_name => 'pwnall'})
+                    :profile_name => 'costan'})
     assert_recognizes({:controller => 'profiles', :action => 'destroy',
-                       :profile_name => 'pwnall'},
-                      {:path => '/gitty/profiles/pwnall', :method => :delete})
+                       :profile_name => 'costan'},
+                      {:path => '/gitty/profiles/costan', :method => :delete})
   end
 end

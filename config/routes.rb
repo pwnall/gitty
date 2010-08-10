@@ -11,9 +11,7 @@ Gitty::Application.routes.draw do
     resources :branches
   
     resources :ssh_keys
-  
-    resources :repositories
-    
+      
     resources :trees, :only => :show
     
     resources :blobs, :only => :show
@@ -33,7 +31,7 @@ Gitty::Application.routes.draw do
         :as => :repository_check_access
   match '/gitty/change_notice.:format' => 'repositories#change_notice',
         :as => :repository_change_notice
-  
+    
   # Profiles.
   scope 'gitty' do
     resources :profiles, :only => [:index, :new, :create]
@@ -46,6 +44,23 @@ Gitty::Application.routes.draw do
   put '/gitty/profiles/:profile_name(.:format)' => 'profiles#update'
   delete '/:profile_name(.:format)' => 'profiles#destroy'
   delete '/gitty/profiles/:profile_name(.:format)' => 'profiles#destroy'
+
+  # Repositories.
+  scope 'gitty' do
+    resources :repositories, :only => [:index, :new, :create]
+  end
+  get '/:profile_name/:repo_name(.:format)' => 'repositories#show',
+      :as => :profile_repository
+  get '/gitty/repositories/:profile_name/:repo_name(.:format)' =>
+      'repositories#show'
+  get '/gitty/repositories/:profile_name/:repo_name/edit(.:format)' =>
+      'repositories#edit', :as => :edit_profile_repository
+  put '/:profile_name/:repo_name(.:format)' => 'repositories#update'
+  put '/gitty/repositories/:profile_name/:repo_name(.:format)' =>
+      'repositories#update'
+  delete '/:profile_name/:repo_name(.:format)' => 'repositories#destroy'
+  delete '/gitty/repositories/:profile_name/:repo_name(.:format)' =>
+      'repositories#destroy'
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products

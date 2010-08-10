@@ -1,4 +1,5 @@
-<%= form_for(@repository) do |f| %>
+<%= form_for(@repository.new_record? ? @repository :
+             [@profile, @repository]) do |f| %>
   <% if @repository.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@repository.errors.count, "error") %> prohibited this repository from being saved:</h2>

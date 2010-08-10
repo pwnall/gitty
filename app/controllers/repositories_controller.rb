@@ -1,6 +1,6 @@
 class RepositoriesController < ApplicationController
-  # GET /repositories.json
-  # GET /repositories
+  # GET /gitty/repositories
+  # GET /gitty/repositories.json
   def index
     @repositories = current_user.repositories
     respond_to do |format|
@@ -9,10 +9,11 @@ class RepositoriesController < ApplicationController
     end
   end
 
-  # GET /repositories/1
-  # GET /repositories/1.xml
+  # GET /costan/rails
+  # GET /costan/rails.xml
   def show
-    @repository = Repository.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
 
     respond_to do |format|
       format.html # show.html.erb
@@ -20,10 +21,11 @@ class RepositoriesController < ApplicationController
     end
   end
 
-  # GET /repositories/new
-  # GET /repositories/new.xml
+  # GET /gitty/repositories/new
+  # GET /gitty/repositories/new.xml
   def new
     @repository = Repository.new
+    @profile = current_user.profile
 
     respond_to do |format|
       format.html # new.html.erb
@@ -31,20 +33,28 @@ class RepositoriesController < ApplicationController
     end
   end
 
-  # GET /repositories/1/edit
+  # GET /gitty/repositories/costan/rails/edit
   def edit
-    @repository = Repository.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
   end
 
-  # POST /repositories
-  # POST /repositories.xml
+  # POST /gitty/repositories
+  # POST /gitty/repositories
   def create
     @repository = Repository.new(params[:repository])
+    @profile = @repository.profile
 
     respond_to do |format|
       if @repository.save
-        format.html { redirect_to(@repository, :notice => 'Repository was successfully created.') }
-        format.xml  { render :xml => @repository, :status => :created, :location => @repository }
+        format.html do
+          redirect_to profile_repository_url(@profile, @repository),
+                      :notice => 'Repository was successfully created.'
+        end
+        format.xml do
+          render :xml => @repository, :status => :created,
+                 :location => [@profile, @repository]
+        end
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @repository.errors, :status => :unprocessable_entity }
@@ -52,14 +62,15 @@ class RepositoriesController < ApplicationController
     end
   end
 
-  # PUT /repositories/1
-  # PUT /repositories/1.xml
+  # PUT /costan/rails
+  # PUT /costan/rails.xml
   def update
-    @repository = Repository.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
 
     respond_to do |format|
       if @repository.update_attributes(params[:repository])
-        format.html { redirect_to(@repository, :notice => 'Repository was successfully updated.') }
+        format.html { redirect_to(profile_repository_url(@profile, @repository), :notice => 'Repository was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -68,10 +79,11 @@ class RepositoriesController < ApplicationController
     end
   end
 
-  # DELETE /repositories/1
-  # DELETE /repositories/1.xml
+  # DELETE /costan/rails
+  # DELETE /costan/rails.xml
   def destroy
-    @repository = Repository.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
     @repository.destroy
 
     respond_to do |format|
@@ -80,7 +92,7 @@ class RepositoriesController < ApplicationController
     end
   end
   
-  # GET /check_access.json?repo_path=awesome.git&ssh_key_id=1&commit_access=true
+  # GET /gitty/check_access.json?repo_path=costan/rails.git&ssh_key_id=1&commit_access=true
   def check_access
     @repository_path = params[:repo_path]
     @ssh_key = SshKey.find(params[:ssh_key_id])
@@ -91,7 +103,7 @@ class RepositoriesController < ApplicationController
     end
   end
   
-  # POST /change_notice.json?repo_path=awesome.git&ssh_key_id=1
+  # POST /gitty/change_notice.json?repo_path=costan/rails.git&ssh_key_id=1
   protect_from_forgery :except => :change_notice
   def change_notice
     @ssh_key = SshKey.find(params[:ssh_key_id])
