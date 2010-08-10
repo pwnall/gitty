@@ -52,13 +52,13 @@ class ProfilesControllerTest < ActionController::TestCase
   end
   
   test "profile routes" do
-    assert_routing({:path => '/gitty/profiles', :method => :get},
+    assert_routing({:path => '/_/profiles', :method => :get},
                    {:controller => 'profiles', :action => 'index'})
-    assert_routing({:path => '/gitty/profiles/new', :method => :get},
+    assert_routing({:path => '/_/profiles/new', :method => :get},
                    {:controller => 'profiles', :action => 'new'})
-    assert_routing({:path => '/gitty/profiles', :method => :post},
+    assert_routing({:path => '/_/profiles', :method => :post},
                    {:controller => 'profiles', :action => 'create'})
-    assert_routing({:path => '/gitty/profiles/costan/edit', :method => :get},
+    assert_routing({:path => '/_/profiles/costan/edit', :method => :get},
                    {:controller => 'profiles', :action => 'edit',
                     :profile_name => 'costan'})
 
@@ -67,18 +67,18 @@ class ProfilesControllerTest < ActionController::TestCase
                     :profile_name => 'costan'})
     assert_recognizes({:controller => 'profiles', :action => 'show',
                        :profile_name => 'costan'},
-                      {:path => '/gitty/profiles/costan', :method => :get})
+                      {:path => '/_/profiles/costan', :method => :get})
     assert_routing({:path => '/costan', :method => :put},
                    {:controller => 'profiles', :action => 'update',
                     :profile_name => 'costan'})
     assert_recognizes({:controller => 'profiles', :action => 'update',
                        :profile_name => 'costan'},
-                      {:path => '/gitty/profiles/costan', :method => :put})
+                      {:path => '/_/profiles/costan', :method => :put})
     assert_routing({:path => '/costan', :method => :delete},
                    {:controller => 'profiles', :action => 'destroy',
                     :profile_name => 'costan'})
     assert_recognizes({:controller => 'profiles', :action => 'destroy',
                        :profile_name => 'costan'},
-                      {:path => '/gitty/profiles/costan', :method => :delete})
+                      {:path => '/_/profiles/costan', :method => :delete})
   end
 end

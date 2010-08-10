@@ -1,13 +1,11 @@
 Gitty::Application.routes.draw do
-  scope '/gitty' do
+  scope '_' do
     resources :config_vars
   
     resource :session, :controller => 'session'
   
     resources :users
     
-    resources :commits
-  
     resources :branches
   
     resources :ssh_keys
@@ -27,41 +25,57 @@ Gitty::Application.routes.draw do
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
-  match '/gitty/check_access.:format' => 'repositories#check_access',
-        :as => :repository_check_access
-  match '/gitty/change_notice.:format' => 'repositories#change_notice',
-        :as => :repository_change_notice
-    
-  # Profiles.
-  scope 'gitty' do
-    resources :profiles, :only => [:index, :new, :create]
+  scope '_' do
+    match 'check_access.:format' => 'repositories#check_access',
+          :as => :repository_check_access
+    match 'change_notice.:format' => 'repositories#change_notice',
+          :as => :repository_change_notice
   end
-  get '/:profile_name(.:format)' => 'profiles#show', :as => :profile
-  get '/gitty/profiles/:profile_name(.:format)' => 'profiles#show'
-  get '/gitty/profiles/:profile_name/edit(.:format)' => 'profiles#edit',
-      :as => :edit_profile
-  put '/:profile_name(.:format)' => 'profiles#update'
-  put '/gitty/profiles/:profile_name(.:format)' => 'profiles#update'
-  delete '/:profile_name(.:format)' => 'profiles#destroy'
-  delete '/gitty/profiles/:profile_name(.:format)' => 'profiles#destroy'
-
+  
+  # Commits.
+  scope ':profile_name/:repo_name',
+        :constraints => { :profile_name => /[^_].*/ } do
+    get 'commits' => 'commits#index', :as => :profile_repository_commits
+    get 'commits/:commit_gid(.:format)' => 'commits#show',
+        :as => :profile_repository_commit
+  end
+  
   # Repositories.
-  scope 'gitty' do
+  scope ':profile_name', :constraints => { :profile_name => /[^_].*/ } do
+    get ':repo_name(.:format)' => 'repositories#show',
+        :as => :profile_repository
+    put ':repo_name(.:format)' => 'repositories#update'
+    delete ':repo_name(.:format)' => 'repositories#destroy'
+  end  
+  scope '_' do
     resources :repositories, :only => [:index, :new, :create]
+    scope 'repositories/:profile_name' do
+      get ':repo_name(.:format)' => 'repositories#show'
+      get ':repo_name/edit(.:format)' => 'repositories#edit',
+          :as => :edit_profile_repository
+      put ':repo_name(.:format)' => 'repositories#update'
+      delete ':repo_name(.:format)' => 'repositories#destroy'
+    end
   end
-  get '/:profile_name/:repo_name(.:format)' => 'repositories#show',
-      :as => :profile_repository
-  get '/gitty/repositories/:profile_name/:repo_name(.:format)' =>
-      'repositories#show'
-  get '/gitty/repositories/:profile_name/:repo_name/edit(.:format)' =>
-      'repositories#edit', :as => :edit_profile_repository
-  put '/:profile_name/:repo_name(.:format)' => 'repositories#update'
-  put '/gitty/repositories/:profile_name/:repo_name(.:format)' =>
-      'repositories#update'
-  delete '/:profile_name/:repo_name(.:format)' => 'repositories#destroy'
-  delete '/gitty/repositories/:profile_name/:repo_name(.:format)' =>
-      'repositories#destroy'
-
+          
+  # Profiles.
+  get '/:profile_name(.:format)' => 'profiles#show', :as => :profile,
+      :constraints => { :profile_name => /[^_].*/ }
+  put '/:profile_name(.:format)' => 'profiles#update',
+      :constraints => { :profile_name => /[^_].*/ }
+  delete '/:profile_name(.:format)' => 'profiles#destroy',
+         :constraints => { :profile_name => /[^_].*/ }
+  scope '_' do
+    resources :profiles, :only => [:index, :new, :create]
+    scope 'profiles' do
+      get ':profile_name(.:format)' => 'profiles#show'
+      get ':profile_name/edit(.:format)' => 'profiles#edit',
+          :as => :edit_profile
+      put ':profile_name(.:format)' => 'profiles#update'
+      delete ':profile_name(.:format)' => 'profiles#destroy'
+    end
+  end    
+      
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 

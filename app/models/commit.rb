@@ -46,4 +46,9 @@ class Commit < ActiveRecord::Base
         :committed_at => git_commit.committed_date,
         :message => git_commit.message
   end
+  
+  # Use git SHAs instead of IDs.
+  def to_param
+    gitid
+  end
 end

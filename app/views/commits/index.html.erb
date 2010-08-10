@@ -1,21 +1,5 @@
 <h1>Listing commits</h1>
 
-<table>
-  <tr>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
 <% @commits.each do |commit| %>
-  <tr>
-    <td><%= link_to 'Show', commit %></td>
-    <td><%= link_to 'Edit', edit_commit_path(commit) %></td>
-    <td><%= link_to 'Destroy', commit, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
+<%= render commit %>
 <% end %>
-</table>
-
-<br />
-
-<%= link_to 'New Commit', new_commit_path %>

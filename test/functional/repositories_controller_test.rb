@@ -59,13 +59,13 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
   
   test "repository routes" do
-    assert_routing({:path => '/gitty/repositories', :method => :get},
+    assert_routing({:path => '/_/repositories', :method => :get},
                    {:controller => 'repositories', :action => 'index'})
-    assert_routing({:path => '/gitty/repositories/new', :method => :get},
+    assert_routing({:path => '/_/repositories/new', :method => :get},
                    {:controller => 'repositories', :action => 'new'})
-    assert_routing({:path => '/gitty/repositories', :method => :post},
+    assert_routing({:path => '/_/repositories', :method => :post},
                    {:controller => 'repositories', :action => 'create'})
-    assert_routing({:path => '/gitty/repositories/costan/rails/edit',
+    assert_routing({:path => '/_/repositories/costan/rails/edit',
                     :method => :get},
                    {:controller => 'repositories', :action => 'edit',
                     :profile_name => 'costan', :repo_name => 'rails'})
@@ -75,21 +75,21 @@ class RepositoriesControllerTest < ActionController::TestCase
                     :profile_name => 'costan', :repo_name => 'rails'})
     assert_recognizes({:controller => 'repositories', :action => 'show',
                        :profile_name => 'costan', :repo_name => 'rails'},
-                      {:path => '/gitty/repositories/costan/rails',
+                      {:path => '/_/repositories/costan/rails',
                        :method => :get})
     assert_routing({:path => '/costan/rails', :method => :put},
                    {:controller => 'repositories', :action => 'update',
                     :profile_name => 'costan', :repo_name => 'rails'})
     assert_recognizes({:controller => 'repositories', :action => 'update',
                        :profile_name => 'costan', :repo_name => 'rails'},
-                      {:path => '/gitty/repositories/costan/rails',
+                      {:path => '/_/repositories/costan/rails',
                        :method => :put})
     assert_routing({:path => '/costan/rails', :method => :delete},
                    {:controller => 'repositories', :action => 'destroy',
                     :profile_name => 'costan', :repo_name => 'rails'})
     assert_recognizes({:controller => 'repositories', :action => 'destroy',
                        :profile_name => 'costan', :repo_name => 'rails'},
-                      {:path => '/gitty/repositories/costan/rails',
+                      {:path => '/_/repositories/costan/rails',
                        :method => :delete})
-  end  
+  end
 end

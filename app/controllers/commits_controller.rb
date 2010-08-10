@@ -1,8 +1,10 @@
 class CommitsController < ApplicationController
-  # GET /commits
-  # GET /commits.xml
+  # GET /costan/rails/commits
+  # GET /costan/rails/commits.xml
   def index
-    @commits = Commit.all
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @commits = @repository.commits
 
     respond_to do |format|
       format.html # index.html.erb
@@ -10,10 +12,12 @@ class CommitsController < ApplicationController
     end
   end
 
-  # GET /commits/1
-  # GET /commits/1.xml
+  # GET /costan/rails/commits/12345
+  # GET /costan/rails/commits/12345.xml
   def show
-    @commit = Commit.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @commit = @repository.commits.where(:gitid => params[:commit_gid]).first
 
     respond_to do |format|
       format.html # show.html.erb

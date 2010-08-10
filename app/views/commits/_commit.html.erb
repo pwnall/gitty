@@ -4,7 +4,7 @@
       Commit
     </dt>
     <dd>
-      <%= link_to commit.short_gitid, commit %>
+      <%= link_to commit.short_gitid, [commit.repository.profile, commit.repository, commit] %>
     </dd>
     <dt>
       Tree
@@ -17,7 +17,7 @@
       Parent
     </dt>
     <dd>
-      <%= link_to parent.short_gitid, parent %>    
+      <%= link_to parent.short_gitid, [commit.repository.profile, commit.repository, parent] %>    
     </dd>
     <% end %>
   </dl>
