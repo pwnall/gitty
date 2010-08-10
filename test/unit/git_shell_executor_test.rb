@@ -27,7 +27,7 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     
     @key_id = ssh_keys(:rsa).to_param
     @server = 'http://test:1234/'
-    @backend = 'http://test:1234/gitty'
+    @backend = 'http://test:1234/_'
     @repo = repositories(:dexter_ghost)
     @repo_path = @repo.profile.name + '/' + @repo.name + '.git'
     @repo_dir = 'repos/' + @repo_path
@@ -133,7 +133,7 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   test 'app request get' do
     @server = 'http://test:1234'
     flexmock(Net::HTTP).should_receive(:get).once.
-                        with(URI.parse("http://test:1234/gitty/g.json?p=true")).
+                        with(URI.parse("http://test:1234/_/g.json?p=true")).
                         and_return('HTTP response')
     assert_equal 'HTTP response',
                   @executor.app_request(false, @backend, 'g.json?p=true')
@@ -142,10 +142,10 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   test 'app request broken get' do
     @server = 'http://test:1234'
     flexmock(Net::HTTP).should_receive(:get).once.
-                        with(URI.parse("http://test:1234/get.json?p=true")).
+                        with(URI.parse("http://test:1234/_/get.json?p=true")).
                         and_raise(RuntimeError)
     assert_raise BackendExitError do
-      @executor.app_request(nil, @server, 'get.json?p=true')
+      @executor.app_request(nil, @backend, 'get.json?p=true')
     end
   end
 
@@ -153,7 +153,7 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     response = Object.new
     flexmock(response).should_receive(:body).and_return('HTTP response').once
     flexmock(Net::HTTP).should_receive(:post_form).once.
-        with(URI.parse("http://test:1234/gitty/check_access.json"), {}).
+        with(URI.parse("http://test:1234/_/check_access.json"), {}).
         and_return(response)
     assert_equal 'HTTP response',
                   @executor.app_request({}, @backend, 'check_access.json')
