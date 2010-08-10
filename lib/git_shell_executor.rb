@@ -15,7 +15,7 @@ class GitShellExecutor
   # GitShellExecutor#error.
   def read_args(args)
     @ssh_key_id = args[0]
-    @backend_url = args[1]
+    @backend_url = File.join args[1], 'gitty'
     @command = args[2]
     @repository = args[3]
     

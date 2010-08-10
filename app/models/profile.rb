@@ -14,6 +14,11 @@ class Profile < ActiveRecord::Base
   def local_path
     self.class.local_path name
   end
+    
+  # Use the profile name instead of ID.
+  def to_param
+    name
+  end
   
   # The location of a profile's repositories on disk.
   #
@@ -21,7 +26,7 @@ class Profile < ActiveRecord::Base
   #   name:: the repository's name
   def self.local_path(name)
     File.join '/home', ConfigVar['git_user'], 'repos', name
-  end
+  end  
 end
 
 # :nodoc: keep on-disk user directories synchronized
@@ -49,12 +54,12 @@ class Profile
   
   # Saves the profile's old name, so it can be relocated.
   def save_old_profile_name
-    @_old_profile_name = name_change.first
+    @_old_profile_name = name_change.first if name_change
   end
   
   # Relocates the profile's disk directory, after the model's name is changed.
   def relocate_profile_directory
-    old_name = @_old_profile_name
+    return unless old_name = @_old_profile_name
     
     return if name == old_name
     self.class.relocate_profile_directory old_name, name
@@ -63,6 +68,6 @@ class Profile
   # Deletes the on-disk repository. 
   def delete_profile_directory
     # TODO: background job.    
-    FileUtils.rm_r local_path
+    FileUtils.rm_r local_path if File.exist? local_path
   end
 end

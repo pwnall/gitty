@@ -95,7 +95,7 @@ class Repository
   # Deletes the on-disk repository. 
   def delete_local_repository
     # TODO: background job.    
-    FileUtils.rm_r local_path
+    FileUtils.rm_r local_path if File.exist? local_path
     @grit_repo = nil
   end
 end

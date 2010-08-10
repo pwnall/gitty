@@ -10,10 +10,10 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /profiles/1
-  # GET /profiles/1.xml
+  # GET /profiles/costan
+  # GET /profiles/costan.xml
   def show
-    @profile = Profile.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
 
     respond_to do |format|
       format.html # show.html.erb
@@ -32,9 +32,9 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /profiles/1/edit
+  # GET /profiles/costan/edit
   def edit
-    @profile = Profile.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
   end
 
   # POST /profiles
@@ -48,10 +48,10 @@ class ProfilesController < ApplicationController
           # TODO(costan): add to the list of secondary profiles
         else
           current_user.update_attributes! :profile => @profile
-
-          format.html { redirect_to session_path }
-          format.xml  { render :xml => @profile, :status => :created, :location => @profile }          
         end
+
+        format.html { redirect_to session_path }
+        format.xml  { render :xml => @profile, :status => :created, :location => @profile }          
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @profile.errors, :status => :unprocessable_entity }
@@ -59,13 +59,13 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # PUT /profiles/1
-  # PUT /profiles/1.xml
+  # PUT /profiles/costan
+  # PUT /profiles/costan.xml
   def update
-    @profile = Profile.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
 
     respond_to do |format|
-      if @profile.update_attributes(params[:profile])
+      if @profile.update_attributes!(params[:profile])
         format.html { redirect_to(@profile, :notice => 'Profile was successfully updated.') }
         format.xml  { head :ok }
       else
@@ -75,10 +75,10 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # DELETE /profiles/1
-  # DELETE /profiles/1.xml
+  # DELETE /profiles/costan
+  # DELETE /profiles/costan.xml
   def destroy
-    @profile = Profile.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
     @profile.destroy
 
     respond_to do |format|

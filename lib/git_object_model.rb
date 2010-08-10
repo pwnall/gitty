@@ -2,6 +2,6 @@
 module GitObjectModel
   # An ID that git will still consider unique, but shorter than the full gitid.
   def short_gitid
-    gitid[0, 8]
+    gitid[0, 20]
   end
 end

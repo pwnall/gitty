@@ -1,23 +1,23 @@
 Gitty::Application.routes.draw do
-  resources :config_vars
-
-  resource :session, :controller => 'session'
-
-  resources :users
+  scope '/gitty' do
+    resources :config_vars
   
-  resources :profiles
-
-  resources :commits
-
-  resources :branches
-
-  resources :ssh_keys
-
-  resources :repositories
+    resource :session, :controller => 'session'
   
-  resources :trees
+    resources :users
+    
+    resources :commits
   
-  resources :blobs
+    resources :branches
+  
+    resources :ssh_keys
+  
+    resources :repositories
+    
+    resources :trees, :only => :show
+    
+    resources :blobs, :only => :show
+  end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
@@ -29,10 +29,23 @@ Gitty::Application.routes.draw do
   # Sample of named route:
   #   match 'products/:id/purchase' => 'catalog#purchase', :as => :purchase
   # This route can be invoked with purchase_url(:id => product.id)
-  match '/check_access.:format' => 'repositories#check_access',
+  match '/gitty/check_access.:format' => 'repositories#check_access',
         :as => :repository_check_access
-  match '/change_notice.:format' => 'repositories#change_notice',
+  match '/gitty/change_notice.:format' => 'repositories#change_notice',
         :as => :repository_change_notice
+  
+  # Profiles.
+  scope 'gitty' do
+    resources :profiles, :only => [:index, :new, :create]
+  end
+  get '/:profile_name(.:format)' => 'profiles#show', :as => :profile
+  get '/gitty/profiles/:profile_name(.:format)' => 'profiles#show'
+  get '/gitty/profiles/:profile_name/edit(.:format)' => 'profiles#edit',
+      :as => :edit_profile
+  put '/:profile_name(.:format)' => 'profiles#update'
+  put '/gitty/profiles/:profile_name(.:format)' => 'profiles#update'
+  delete '/:profile_name(.:format)' => 'profiles#destroy'
+  delete '/gitty/profiles/:profile_name(.:format)' => 'profiles#destroy'
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
