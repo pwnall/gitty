@@ -36,6 +36,6 @@ gem 'net-ssh', :require => 'net/ssh'
 #   gem 'webrat'
 # end
 group :test do
-  gem 'flexmock', :require => 'flexmock/test_unit'
+  gem 'mocha'
   gem 'thin'
 end

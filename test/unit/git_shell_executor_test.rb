@@ -48,9 +48,8 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   test 'access denied pull' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=false"
-    flexmock(@executor).should_receive(:app_request).
-        with(nil, @backend, app_req).
-        and_return('{"access": false, "message": "no such repository"}').once
+    @executor.expects(:app_request).with(nil, @backend, app_req).
+        returns('{"access": false, "message": "no such repository"}').once
         
     assert_raise AccessExitError do
       @executor.run [@key_id, @server, 'git-upload-pack', @repo_path]
@@ -60,9 +59,8 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   test 'access denied push' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=true"
-    flexmock(@executor).should_receive(:app_request).
-        with(nil, @backend, app_req).
-        and_return('{"access": false, "message": "no such repository"}').once
+    @executor.expects(:app_request).with(nil, @backend, app_req).
+        returns('{"access": false, "message": "no such repository"}').once
         
     assert_raise AccessExitError do
       @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]
@@ -72,12 +70,10 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   test 'successful pull' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=false"
-    flexmock(@executor).should_receive(:app_request).
-                        with(nil, @backend, app_req).
-                        and_return('{"access": true}').once
-    flexmock(@executor).should_receive(:exec_git).
-                        with('git-upload-archive', @repo_dir).and_return(true).
-                        once
+    @executor.expects(:app_request).with(nil, @backend, app_req).
+              returns('{"access": true}').once
+    @executor.expects(:exec_git).with('git-upload-archive', @repo_dir).
+              returns(true).once
         
     @executor.run [@key_id, @server, 'git-upload-archive', @repo_path]
   end
@@ -85,11 +81,10 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   test 'failed pull' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=false"
-    flexmock(@executor).should_receive(:app_request).
-                        with(nil, @backend, app_req).
-                        and_return('{"access": true}').once
-    flexmock(@executor).should_receive(:exec_git).once.
-                        with('git-upload-archive', @repo_dir).and_return(false)
+    @executor.expects(:app_request).with(nil, @backend, app_req).
+              returns('{"access": true}').once
+    @executor.expects(:exec_git).with('git-upload-archive', @repo_dir).
+              returns(false).once
 
     assert_raise GitExitError do        
       @executor.run [@key_id, @server, 'git-upload-archive', @repo_path]
@@ -99,32 +94,28 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   test 'successful push' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=true"
-    flexmock(@executor).should_receive(:app_request).
-                        with(nil, @backend, app_req).
-                        and_return('{"access": true}').once
-    flexmock(@executor).should_receive(:exec_git).once.
-                        with('git-receive-pack', @repo_dir).and_return(true)
+    @executor.expects(:app_request).with(nil, @backend, app_req).
+              returns('{"access": true}').once
+    @executor.expects(:exec_git).once.with('git-receive-pack', @repo_dir).
+              returns(true)
     app_req = "change_notice.json"
-    flexmock(@executor).should_receive(:app_request).
-                        with({'repo_path' => @repo_path,
-                              'ssh_key_id' => @key_id}, @backend, app_req).
-                        and_return('{"success": true}').once
+    @executor.expects(:app_request).
+        with({'repo_path' => @repo_path, 'ssh_key_id' => @key_id}, @backend,
+             app_req).returns('{"success": true}').once
     @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]
   end
 
   test 'un-acknowledged push' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=true"
-    flexmock(@executor).should_receive(:app_request).
-                        with(nil, @backend, app_req).
-                        and_return('{"access": true}').once
-    flexmock(@executor).should_receive(:exec_git).once.
-                        with('git-receive-pack', @repo_dir).and_return(true)
+    @executor.expects(:app_request).with(nil, @backend, app_req).
+              returns('{"access": true}').once
+    @executor.expects(:exec_git).once.with('git-receive-pack', @repo_dir).
+              returns(true)
     app_req = "change_notice.json"
-    flexmock(@executor).should_receive(:app_request).
-                        with({'repo_path' => @repo_path,
-                              'ssh_key_id' => @key_id}, @backend, app_req).
-                        and_return('{"success": false}').times(3)
+    @executor.expects(:app_request).
+        with({'repo_path' => @repo_path, 'ssh_key_id' => @key_id},
+             @backend, app_req).returns('{"success": false}').times(3)
     assert_raise BackendExitError do
       @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]
     end    
@@ -132,18 +123,17 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   
   test 'app request get' do
     @server = 'http://test:1234'
-    flexmock(Net::HTTP).should_receive(:get).once.
-                        with(URI.parse("http://test:1234/_/g.json?p=true")).
-                        and_return('HTTP response')
+    Net::HTTP.expects(:get).with(URI.parse("http://test:1234/_/g.json?p=true")).
+              returns('HTTP response').once
     assert_equal 'HTTP response',
                   @executor.app_request(false, @backend, 'g.json?p=true')
   end
 
   test 'app request broken get' do
     @server = 'http://test:1234'
-    flexmock(Net::HTTP).should_receive(:get).once.
-                        with(URI.parse("http://test:1234/_/get.json?p=true")).
-                        and_raise(RuntimeError)
+    Net::HTTP.expects(:get).
+              with(URI.parse("http://test:1234/_/get.json?p=true")).
+              raises(RuntimeError).once
     assert_raise BackendExitError do
       @executor.app_request(nil, @backend, 'get.json?p=true')
     end
@@ -151,10 +141,10 @@ class GitShellExecutorTest < ActiveSupport::TestCase
 
   test 'app request post' do
     response = Object.new
-    flexmock(response).should_receive(:body).and_return('HTTP response').once
-    flexmock(Net::HTTP).should_receive(:post_form).once.
-        with(URI.parse("http://test:1234/_/check_access.json"), {}).
-        and_return(response)
+    response.expects(:body).returns('HTTP response').once
+    Net::HTTP.expects(:post_form).once.
+              with(URI.parse("http://test:1234/_/check_access.json"), {}).
+              returns(response)
     assert_equal 'HTTP response',
                   @executor.app_request({}, @backend, 'check_access.json')
   end  

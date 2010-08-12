@@ -73,7 +73,6 @@ GEM
       fbgraph (>= 0.0.5)
       json (>= 1.4.2)
       oauth2 (>= 0.0.8)
-    flexmock (0.8.7)
     grit (2.0.0)
       diff-lcs (>= 1.1.2)
       mime-types (>= 1.15)
@@ -85,6 +84,8 @@ GEM
       mime-types
       treetop (>= 1.4.5)
     mime-types (1.16)
+    mocha (0.9.8)
+      rake
     multi_json (0.0.4)
     mysql2 (0.1.9)
     net-ssh (2.0.23)
@@ -113,9 +114,9 @@ PLATFORMS
 DEPENDENCIES
   authpwn_rails
   configvars_rails
-  flexmock
   grit
   json
+  mocha
   mysql2
   net-ssh
   rails!

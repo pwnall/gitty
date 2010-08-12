@@ -29,4 +29,14 @@ class Blob < ActiveRecord::Base
     self.new :repository => repository, :gitid => git_blob.id,
              :mime_type => git_blob.mime_type, :size => git_blob.size
   end
+  
+  # Use git SHAs instead of IDs.
+  def to_param
+    gitid
+  end
+  
+  # The contents of the file stored in the blob.
+  def data
+    repository.grit_repo.blob(gitid).data
+  end
 end

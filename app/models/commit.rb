@@ -51,4 +51,9 @@ class Commit < ActiveRecord::Base
   def to_param
     gitid
   end
+  
+  # The tree or blob obtained by walking through a path in the commit's tree.
+  def walk_path(path)
+    tree.walk_path(path)
+  end
 end

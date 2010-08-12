@@ -10,7 +10,7 @@
       Tree
     </dt>
     <dd>
-      <%= link_to commit.tree.short_gitid, commit.tree %>
+      <%= link_to commit.tree.short_gitid, tree_path(commit) %>
     </dd>
     <% commit.parents.each do |parent| %>
     <dt>

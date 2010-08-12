@@ -9,10 +9,6 @@ Gitty::Application.routes.draw do
     resources :branches
   
     resources :ssh_keys
-      
-    resources :trees, :only => :show
-    
-    resources :blobs, :only => :show
   end
 
   # The priority is based upon order of creation:
@@ -32,39 +28,13 @@ Gitty::Application.routes.draw do
           :as => :repository_change_notice
   end
   
-  # Commits.
-  scope ':profile_name/:repo_name',
-        :constraints => { :profile_name => /[^_].*/ } do
-    get 'commits' => 'commits#index', :as => :profile_repository_commits
-    get 'commits/:commit_gid(.:format)' => 'commits#show',
-        :as => :profile_repository_commit
-  end
-  
-  # Repositories.
-  scope ':profile_name', :constraints => { :profile_name => /[^_].*/ } do
-    get ':repo_name(.:format)' => 'repositories#show',
-        :as => :profile_repository
-    put ':repo_name(.:format)' => 'repositories#update'
-    delete ':repo_name(.:format)' => 'repositories#destroy'
-  end  
-  scope '_' do
-    resources :repositories, :only => [:index, :new, :create]
-    scope 'repositories/:profile_name' do
-      get ':repo_name(.:format)' => 'repositories#show'
-      get ':repo_name/edit(.:format)' => 'repositories#edit',
-          :as => :edit_profile_repository
-      put ':repo_name(.:format)' => 'repositories#update'
-      delete ':repo_name(.:format)' => 'repositories#destroy'
-    end
-  end
-          
   # Profiles.
   get '/:profile_name(.:format)' => 'profiles#show', :as => :profile,
-      :constraints => { :profile_name => /[^_].*/ }
+      :constraints => { :profile_name => /[^_][^\/]*/ }
   put '/:profile_name(.:format)' => 'profiles#update',
-      :constraints => { :profile_name => /[^_].*/ }
+      :constraints => { :profile_name => /[^_][^\/]*/ }
   delete '/:profile_name(.:format)' => 'profiles#destroy',
-         :constraints => { :profile_name => /[^_].*/ }
+         :constraints => { :profile_name => /[^_][^\/]*/ }
   scope '_' do
     resources :profiles, :only => [:index, :new, :create]
     scope 'profiles' do
@@ -76,6 +46,49 @@ Gitty::Application.routes.draw do
     end
   end    
       
+  # Repositories.
+  scope ':profile_name', :constraints => { :profile_name => /[^_][^\/]*/ } do
+    get ':repo_name(.:format)' => 'repositories#show',
+        :constraints => { :repo_name => /[^\/]+/ },
+        :as => :profile_repository
+    put ':repo_name(.:format)' => 'repositories#update',
+        :constraints => { :repo_name => /[^\/]+/ }
+    delete ':repo_name(.:format)' => 'repositories#destroy',
+           :constraints => { :repo_name => /[^\/]+/ }
+  end  
+  scope '_' do
+    resources :repositories, :only => [:index, :new, :create]
+    scope 'repositories/:profile_name' do
+      get ':repo_name(.:format)' => 'repositories#show'
+      get ':repo_name/edit(.:format)' => 'repositories#edit',
+          :as => :edit_profile_repository
+      put ':repo_name(.:format)' => 'repositories#update'
+      delete ':repo_name(.:format)' => 'repositories#destroy'
+    end
+  end
+  
+  scope ':profile_name/:repo_name',
+      :constraints => { :profile_name => /[^_\/].*/, :repo_name => /[^\/]+/ } do
+    # Commits.
+    get 'commits' => 'commits#index', :as => :profile_repository_commits
+    get 'commits/:commit_gid(.:format)' => 'commits#show',
+        :as => :profile_repository_commit
+  
+    # Trees.
+    scope 'tree/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
+      get '*path' => 'trees#show', :as => :profile_repository_tree
+      get '' => 'trees#show', :as => :profile_repository_commit_tree
+    end
+
+    # Blobs.
+    scope 'blob/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
+      get '*path' => 'blobs#show', :as => :profile_repository_blob
+    end
+    scope 'raw/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
+      get '*path' => 'blobs#raw', :as => :raw_profile_repository_blob
+    end
+  end
+
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
 

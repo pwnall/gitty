@@ -1,4 +1,5 @@
 <%= render @tree.repository %>
 
 <h2>Tree <%= @tree.gitid %></h2>
-<%= render @tree %>
+<%= render @tree, :tree_reference => @tree_reference,
+                  :tree_path => @tree_path %>

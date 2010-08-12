@@ -10,7 +10,7 @@ commit1_d1_d2:
 
 d1_d2_a:
   tree: d1_d2
-  child: commit1_d1_d2 (Blob)
+  child: d1_d2_a (Blob)
   name: a
 
 commit2_d1:

@@ -29,4 +29,12 @@ class TreeTest < ActiveSupport::TestCase
     tree.save!
     assert !@tree.valid?, "Tree incorrectly created from git"
   end
+  
+  test 'walk_path' do
+    tree = trees(:commit1_root)
+    assert_equal trees(:commit1_d1), tree.walk_path('/d1')
+    assert_equal trees(:d1_d2), tree.walk_path('/d1/d2')
+    assert_equal blobs(:d1_d2_a), tree.walk_path('/d1/d2/a')
+    assert_equal nil, tree.walk_path('/d1/d2/b')
+  end
 end

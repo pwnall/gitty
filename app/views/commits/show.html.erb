@@ -4,4 +4,4 @@
 <%= render @commit %>
 
 <h3>Commit tree</h3>
-<%= render @commit.tree %>
+<%= render @commit.tree, :tree_reference => @commit, :tree_path => '/' %>

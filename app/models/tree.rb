@@ -24,4 +24,21 @@ class Tree < ActiveRecord::Base
   def self.from_git_tree(git_tree, repository)
     self.new :repository => repository, :gitid => git_tree.id
   end
+  
+  # Use git SHAs instead of IDs.
+  def to_param
+    gitid
+  end
+  
+  # The tree or blob obtained by walking through a path in the commit's tree.
+  def walk_path(path)
+    object = self
+    path.split('/').each do |segment|
+      next if segment.empty?
+      entry = object.entries.where(:name => segment).first
+      return nil unless entry
+      object = entry.child
+    end
+    object
+  end
 end

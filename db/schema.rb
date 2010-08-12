@@ -51,6 +51,13 @@ ActiveRecord::Schema.define(:version => 20100808000001) do
 
   add_index "commits", ["repository_id", "gitid"], :name => "index_commits_on_repository_id_and_gitid", :unique => true
 
+  create_table "config_flags", :force => true do |t|
+    t.string "name",  :null => false
+    t.binary "value", :null => false
+  end
+
+  add_index "config_flags", ["name"], :name => "index_config_flags_on_name", :unique => true
+
   create_table "config_vars", :force => true do |t|
     t.string "name",  :null => false
     t.binary "value", :null => false

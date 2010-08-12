@@ -28,4 +28,9 @@ class Branch < ActiveRecord::Base
     branch.commit = commit
     branch
   end
+  
+  # Use names instead of IDs.
+  def to_param
+    name
+  end  
 end

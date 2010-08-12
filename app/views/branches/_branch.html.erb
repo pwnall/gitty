@@ -2,7 +2,8 @@
 <%= render branch.commit %>
 
 <h3>Last tree on <%= branch.name %></h3>
-<%= render branch.commit.tree %>
+<%= render branch.commit.tree, :tree_reference => branch,
+                               :tree_path => '' %>
 
 <% if readme = branch.commit.tree.entries.where(:name => 'README').first %>
 <h3>README</h3>

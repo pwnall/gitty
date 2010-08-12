@@ -46,4 +46,8 @@ class CommitTest < ActiveSupport::TestCase
     commit.save!
     assert !@commit.valid?, "Commit incorrectly created from git"
   end
+  
+  test 'walk_path' do
+    assert_equal trees(:d1_d2), commits(:commit1).walk_path('/d1/d2')
+  end  
 end

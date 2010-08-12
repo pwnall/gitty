@@ -47,4 +47,9 @@ class BlobTest < ActiveSupport::TestCase
     blob.save!
     assert !@blob.valid?, "Blob incorrectly created from git"
   end
+  
+  test 'data' do
+    mock_repository_path @repo
+    assert_equal "Version 1.2\n", @blob.data
+  end
 end
