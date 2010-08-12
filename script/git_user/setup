@@ -23,20 +23,50 @@ END_USAGE
   exit
 end
 git_user = ARGV[0]
-web_group = Etc.getgrgid(Etc.getpwnam(ARGV[1]).gid).name
+web_group_id = Etc.getpwnam(ARGV[1]).gid
+web_group = Etc.getgrgid(web_group_id).name
 
 # Create git user.
 
-new_user_command = ['useradd', '--gid', web_group, '--no-create-home',
-    '--no-user-group', '--comment', "User for Gitty's Git repos", git_user]
-unless Kernel.system(*new_user_command)
-  puts "Failed to create user #{git_user}"
-  exit
+if RUBY_PLATFORM =~ /darwin/
+  # OSX.
+  
+  # Find an available UID.
+  git_user_id = `dscl . -list /Users`.split.
+      map { |user| `dscl . -read /Users/#{user} UniqueID`.split.last.to_i }.
+      sort.last + 1
+
+  # Simulate adduser.
+  command_prefix = ['dscl', '.', '-create', "/Users/#{git_user}"]
+  [
+    [],
+    ['UserShell', '/bin/bash'],
+    ['RealName', "User for Gitty's Git repos"],
+    ['UniqueID', git_user_id.to_s],
+    ['PrimaryGroupID', web_group_id.to_s],
+    ['NFSHomeDirectory', "/Users/#{git_user}"],
+  ].each do |command_suffix|
+    command = command_prefix + command_suffix
+    unless Kernel.system(*command)
+      puts "Failed to create user #{git_user}\n Failed on: #{command.inspect}"
+      exit
+    end
+  end
+  
+  git_home = File.join '/Users', git_user
+else
+  # Linux.
+  new_user_command = ['useradd', '--gid', web_group, '--no-create-home',
+      '--no-user-group', '--comment', "User for Gitty's Git repos", git_user]
+  unless Kernel.system(*new_user_command)
+    puts "Failed to create user #{git_user}"
+    exit
+  end
+
+  git_home = File.join '/home', git_user
 end
 
 # Set up git user's homedir.
-
-git_home = File.join '/home', git_user
 FileUtils.mkdir_p git_home
 FileUtils.chmod_R 0750, git_home
 
@@ -57,7 +87,10 @@ install_keys_src = File.join git_home, 'install_keys.c'
 File.open install_keys_src, 'w' do |f|
   f.write <<END_SOURCE
 #include <unistd.h>
-void main() { execl("/bin/cp", "cp", "#{git_repo_keys}", "#{git_keys}", NULL); }
+int main() {
+  execl("/bin/cp", "cp", "#{git_repo_keys}", "#{git_keys}", NULL);
+  return 0;
+}
 END_SOURCE
 end
 install_keys = File.join git_home, 'install_keys'

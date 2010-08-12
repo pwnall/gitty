@@ -92,6 +92,10 @@ class GitShellExecutor
   def exec_git(command, repository)
     unless child_pid = Process.fork
       # In child.
+      
+      # NOTE: on OSX, /usr/local/bin isn't on the path by default,
+      #       and people install git there.
+      ENV['PATH'] = ENV['PATH'] + ':/usr/local:/usr/local/bin'
       Kernel.exec command, repository
     else
       # In parent.

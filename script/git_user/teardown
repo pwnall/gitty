@@ -25,14 +25,21 @@ end
 git_user = ARGV[0]
 web_group = Etc.getgrgid(Etc.getpwnam(ARGV[1]).gid).name
 
-# Blow up the git user's homedir.
-
-git_home = "/home/#{git_user}"
-FileUtils.rm_r git_home
+if RUBY_PLATFORM =~ /darwin/
+  # OSX.
+  delete_user_command = ['dscl', '.', '-delete', "/Users/#{git_user}"]
+  git_home = "/Users/#{git_user}"
+else
+  # Linux.
+  delete_user_command = ['userdel', git_user]
+  git_home = "/home/#{git_user}"
+end
 
 # Erase the git user.
-delete_user_command = "userdel #{git_user}"
-unless Kernel.system(delete_user_command)
+unless Kernel.system(*delete_user_command)
   puts "Failed to destroy user #{git_user}"
   exit 1
-end
+end  
+
+# Blow up the git user's homedir.
+FileUtils.rm_r git_home

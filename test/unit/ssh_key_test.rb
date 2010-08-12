@@ -43,7 +43,11 @@ class SshKeyTest < ActiveSupport::TestCase
   end
 
   test 'original keyfile_path' do
-    assert_equal '/home/git-test/repos/.ssh_keys', SshKey.real_keyfile_path
+    if RUBY_PLATFORM =~ /darwin/
+      assert_equal '/Users/git-test/repos/.ssh_keys', SshKey.real_keyfile_path
+    else      
+      assert_equal '/home/git-test/repos/.ssh_keys', SshKey.real_keyfile_path
+    end
   end
   
   test 'keyfile_line' do

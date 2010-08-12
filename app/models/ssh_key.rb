@@ -30,12 +30,12 @@ end
 class SshKey
   # The location of the file containing SSH keys for the git user.
   def self.keyfile_path
-    File.join '/home', ConfigVar['git_user'], 'repos', '.ssh_keys'
+    File.join UserHomeDir.for(ConfigVar['git_user']), 'repos', '.ssh_keys'
   end
   
   # The location of the shell file that installs the SSH keys for the git user.
   def self.keyfile_installer_path
-    File.join '/home', ConfigVar['git_user'], 'install_keys'
+    File.join UserHomeDir.for(ConfigVar['git_user']), 'install_keys'
   end    
   
   # The authorized_keys line for this key.

@@ -30,7 +30,11 @@ class RepositoryTest < ActiveSupport::TestCase
   
   test 'local_path' do
     mock_profile_paths_undo
-    assert_equal '/home/git-test/repos/dexter/awesome.git', @repo.local_path
+    if RUBY_PLATFORM =~ /darwin/
+      assert_equal '/Users/git-test/repos/dexter/awesome.git', @repo.local_path
+    else
+      assert_equal '/home/git-test/repos/dexter/awesome.git', @repo.local_path
+    end
   end  
   
   test 'ssh_uri' do

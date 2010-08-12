@@ -11,7 +11,11 @@ class ProfileTest < ActiveSupport::TestCase
   test 'local_path' do
     mock_profile_paths_undo
     
-    assert_equal '/home/git-test/repos/awesome', @profile.local_path
+    if RUBY_PLATFORM =~ /darwin/
+      assert_equal '/Users/git-test/repos/awesome', @profile.local_path
+    else
+      assert_equal '/home/git-test/repos/awesome', @profile.local_path
+    end
   end
   
   test 'setup' do

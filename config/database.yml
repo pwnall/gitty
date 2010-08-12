@@ -5,7 +5,7 @@ dev_pgsql: &dev_pgsql
   password: ""
 
 dev_mysql: &dev_mysql
-  adapter: mysql
+  adapter: mysql2
   database: gitty_dev
   username: root
   password: 
@@ -17,7 +17,7 @@ test_pgsql: &test_pgsql
   password: ""
 
 test_mysql: &test_mysql
-  adapter: mysql
+  adapter: mysql2
   database: gitty_test
   username: root
   password:
