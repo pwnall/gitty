@@ -1,4 +1,32 @@
+= gitty
+
 Web front-end for hosting Git repositories.
 
 This is a reduced-functionality clone of Github. On the bright side, you can
 install it on your intranet, and get free private repositories.
+
+== Installation
+
+Gitty needs a dedicated user for git+ssh. To create the user, run the following
+command, replacing web_user with the name of the user that the Rails server runs
+under.  
+    script/git_user/setup git web_user
+
+Conventionally, the dedicated user's name is "git". It can be changed by
+replacing the first argument in the command above, then changing the
+configuration variable git_user by going to
+    http://gitty_server/_/config_vars
+
+== Note on Patches/Pull Requests
+ 
+* Fork the project.
+* Make your feature addition or bug fix.
+* Add tests for it. This is important so I don't break it in a
+  future version unintentionally.
+* Commit, do not mess with rakefile, version, or history.
+  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Send me a pull request. Bonus points for topic branches.
+
+== Copyright
+
+Copyright (c) 2010 Victor Costan, released under the MIT license
