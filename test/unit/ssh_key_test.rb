@@ -1,33 +1,14 @@
 require 'test_helper'
 
 class SshKeyTest < ActiveSupport::TestCase
+  setup :mock_ssh_keys_path
+
   def setup
     key_path = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'new_key.pub'
     @key = SshKey.new :name => 'Some name', :key_line => File.read(key_path),
                       :user => users(:jane)
   end
-  
-  # Override the authorized_keys path so it's in a temp directory.
-  def mock_authorized_keys
-    return if SshKey.respond_to?(:real_keyfile_path)
     
-    ssh_path = Rails.root.join 'tmp', 'test_git_root'
-    FileUtils.mkdir_p ssh_path
-    
-    SshKey.class_eval do
-      (class <<self; self; end).class_eval do
-        alias_method :real_keyfile_path, :keyfile_path
-        define_method :keyfile_path do
-          ssh_path.join('.ssh_keys').to_s
-        end
-      end
-    end
-    
-    repo_root = Rails.root.join 'tmp', 'test_git_root'
-    FileUtils.mkdir_p repo_root    
-  end
-  setup :mock_authorized_keys  
-  
   test 'setup' do
     assert @key.valid?
   end
@@ -43,10 +24,11 @@ class SshKeyTest < ActiveSupport::TestCase
   end
 
   test 'original keyfile_path' do
+    mock_ssh_keys_path_undo
     if RUBY_PLATFORM =~ /darwin/
-      assert_equal '/Users/git-test/repos/.ssh_keys', SshKey.real_keyfile_path
+      assert_equal '/Users/git-test/repos/.ssh_keys', SshKey.keyfile_path
     else      
-      assert_equal '/home/git-test/repos/.ssh_keys', SshKey.real_keyfile_path
+      assert_equal '/home/git-test/repos/.ssh_keys', SshKey.keyfile_path
     end
   end
   

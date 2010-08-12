@@ -10,7 +10,7 @@ class SshKeysController < ApplicationController
   def show
     @ssh_key = SshKey.find(params[:id])
     unless @ssh_key.user_id == current_user.id
-      head :not_authorized 
+      head :forbidden 
       return
     end
 

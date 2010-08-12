@@ -1,11 +1,12 @@
 require 'test_helper'
 
 class BlobsControllerTest < ActionController::TestCase
+  setup :mock_any_repository_path
+
   setup do
     @branch = branches(:master)
     @commit = @branch.commit
     @blob = blobs(:d1_d2_a)
-    mock_any_repository_path
   end
   
   test "should show blob with commit sha" do

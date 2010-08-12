@@ -14,3 +14,4 @@ end
 
 require File.expand_path('../helpers/mock_profile_paths.rb', __FILE__)
 require File.expand_path('../helpers/mock_repository_path.rb', __FILE__)
+require File.expand_path('../helpers/mock_ssh_keys_path.rb', __FILE__)
