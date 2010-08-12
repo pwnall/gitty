@@ -13,7 +13,7 @@
   <% end %>
   <% tree.entries.select { |e| e.child.kind_of? Blob }.sort_by(&:name).each do |entry| %>
   <li>
-    <span class="name"><%= link_to entry.name, profile_repository_blob_path(tree.repository.profile, tree.repository, tree_reference, File.join(tree_path, entry.name)) %></span>
+    <span class="name"><%= link_to entry.name, blob_path(tree_reference, File.join(tree_path, entry.name)) %></span>
     <span class="type"><%= entry.child.mime_type %></span>
     <span class="size"><%= number_to_human_size entry.child.size %></span>
   </li>

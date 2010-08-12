@@ -23,7 +23,7 @@ class CommitsControllerTest < ActionController::TestCase
     assert_routing({:path => '/costan/rails/commits', :method => :get},
                    {:controller => 'commits', :action => 'index',
                     :profile_name => 'costan', :repo_name => 'rails'})
-    assert_routing({:path => '/costan/rails/commits/1234567890abcdef',
+    assert_routing({:path => '/costan/rails/commit/1234567890abcdef',
                     :method => :get},
                    {:controller => 'commits', :action => 'show',
                     :profile_name => 'costan', :repo_name => 'rails',

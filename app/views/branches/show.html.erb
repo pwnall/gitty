@@ -1,5 +1,5 @@
-<p id="notice"><%= notice %></p>
+<%= render @repository %>
+<%= render @branch %>
+<%= render @branch.commit.tree, :tree_reference => @branch,
+                                :tree_path => '' %>
 
-
-<%= link_to 'Edit', edit_branch_path(@branch) %> |
-<%= link_to 'Back', branches_path %>

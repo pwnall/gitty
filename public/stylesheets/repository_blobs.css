@@ -1,4 +1,6 @@
 .repository_blob {
+  margin: 5px 0;
+  padding: 0;  
   border: 1px solid #BECFA2;
   border-radius: 4px;
   background: #E7F5D0;

@@ -5,8 +5,6 @@ Gitty::Application.routes.draw do
     resource :session, :controller => 'session'
   
     resources :users
-    
-    resources :branches
   
     resources :ssh_keys
   end
@@ -71,9 +69,14 @@ Gitty::Application.routes.draw do
       :constraints => { :profile_name => /[^_\/].*/, :repo_name => /[^\/]+/ } do
     # Commits.
     get 'commits' => 'commits#index', :as => :profile_repository_commits
-    get 'commits/:commit_gid(.:format)' => 'commits#show',
+    get 'commit/:commit_gid(.:format)' => 'commits#show',
         :as => :profile_repository_commit
   
+    # Branches.
+    get 'branches' => 'branches#index', :as => :profile_repository_branches
+    get 'branch/:branch_name(.:format)' => 'branches#show',
+        :as => :profile_repository_branch
+
     # Trees.
     scope 'tree/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
       get '*path' => 'trees#show', :as => :profile_repository_tree

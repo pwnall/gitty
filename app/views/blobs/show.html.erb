@@ -1,4 +1,6 @@
 <%= render @blob.repository %>
+<%= render @blob_reference %>
 
 <h2>File <%= @blob.gitid %></h2>
-<%= render @blob %>
+<%= render @blob, :blob_reference => @blob_reference,
+                  :blob_path => @blob_path %>

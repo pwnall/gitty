@@ -1,4 +1,6 @@
-<h1>Listing commits</h1>
+<%= render @repository %>
+
+<h2>Listing commits</h2>
 
 <% @commits.each do |commit| %>
 <%= render commit %>

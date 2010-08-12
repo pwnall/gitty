@@ -1,8 +1,10 @@
 class BranchesController < ApplicationController
-  # GET /branches
-  # GET /branches.xml
+  # GET /costan/rails/branches
+  # GET /costan/rails/branches.xml
   def index
-    @branches = Branch.all
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @branches = @repository.branches
 
     respond_to do |format|
       format.html # index.html.erb
@@ -10,10 +12,12 @@ class BranchesController < ApplicationController
     end
   end
 
-  # GET /branches/1
-  # GET /branches/1.xml
+  # GET /costan/rails/branch/master
+  # GET /costan/rails/branch/master.xml
   def show
-    @branch = Branch.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @branch = @repository.branches.where(:name => params[:branch_name]).first
 
     respond_to do |format|
       format.html # show.html.erb
@@ -21,56 +25,8 @@ class BranchesController < ApplicationController
     end
   end
 
-  # GET /branches/new
-  # GET /branches/new.xml
-  def new
-    @branch = Branch.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @branch }
-    end
-  end
-
-  # GET /branches/1/edit
-  def edit
-    @branch = Branch.find(params[:id])
-  end
-
-  # POST /branches
-  # POST /branches.xml
-  def create
-    @branch = Branch.new(params[:branch])
-
-    respond_to do |format|
-      if @branch.save
-        format.html { redirect_to(@branch, :notice => 'Branch was successfully created.') }
-        format.xml  { render :xml => @branch, :status => :created, :location => @branch }
-      else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @branch.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  # PUT /branches/1
-  # PUT /branches/1.xml
-  def update
-    @branch = Branch.find(params[:id])
-
-    respond_to do |format|
-      if @branch.update_attributes(params[:branch])
-        format.html { redirect_to(@branch, :notice => 'Branch was successfully updated.') }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @branch.errors, :status => :unprocessable_entity }
-      end
-    end
-  end
-
-  # DELETE /branches/1
-  # DELETE /branches/1.xml
+  # DELETE /costan/rails/branch/master
+  # DELETE /costan/rails/branch/master.xml
   def destroy
     @branch = Branch.find(params[:id])
     @branch.destroy
