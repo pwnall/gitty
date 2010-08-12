@@ -1,6 +1,6 @@
 Gitty::Application.routes.draw do
   scope '_' do
-    resources :config_vars
+    config_vars    
   
     resource :session, :controller => 'session'
   
