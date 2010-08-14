@@ -77,6 +77,11 @@ Gitty::Application.routes.draw do
     get 'branch/:branch_name(.:format)' => 'branches#show',
         :as => :profile_repository_branch
 
+    # Tags.
+    get 'tags' => 'tags#index', :as => :profile_repository_tags
+    get 'tag/:tag_name' => 'tags#show', :as => :profile_repository_tag,
+        :constraints => {:tag_name => /[^\/]+/}
+
     # Trees.
     scope 'tree/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
       get '*path' => 'trees#show', :as => :profile_repository_tree

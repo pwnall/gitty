@@ -10,6 +10,7 @@ class CommitTest < ActiveSupport::TestCase
                          :committer_email => 'costan@gmail.com',
                          :authored_at => Time.now - 2,
                          :committed_at => Time.now - 1,
+                         :message => 'Commit 3',
                          :repository => @repo
   end
   
@@ -27,6 +28,28 @@ class CommitTest < ActiveSupport::TestCase
     assert !@commit.valid?
   end
   
+  test 'committer_name must be set' do
+    @commit.committer_name = nil
+    assert !@commit.valid?
+  end
+  test 'committer_email must be set' do
+    @commit.committer_email = nil
+    assert !@commit.valid?
+  end
+  test 'author_name must be set' do
+    @commit.author_name = nil
+    assert !@commit.valid?
+  end
+  test 'author_email must be set' do
+    @commit.author_email = nil
+    assert !@commit.valid?
+  end
+  
+  test 'message must be set' do
+    @commit.message = nil
+    assert !@commit.valid?
+  end
+
   test 'from_git_commit' do
     mock_repository_path @repo
     git_commit = @repo.grit_repo.commit @commit.gitid

@@ -1,0 +1,4 @@
+<%= render @repository %>
+<%= render @tag %>
+<%= render @tag.commit.tree, :tree_reference => @tag,
+                             :tree_path => '' %>

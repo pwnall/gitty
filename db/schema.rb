@@ -1,8 +1,8 @@
-# This file is auto-generated from the current state of the database. Instead 
+# This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
 #
-# Note that this schema.rb definition is the authoritative source for your 
+# Note that this schema.rb definition is the authoritative source for your
 # database schema. If you need to create the application database on another
 # system, you should be using db:schema:load, not running all the migrations
 # from scratch. The latter is a flawed and unsustainable approach (the more migrations
@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100808000001) do
+ActiveRecord::Schema.define(:version => 20100814090540) do
 
   create_table "blobs", :force => true do |t|
     t.integer "repository_id",               :null => false
@@ -50,13 +50,6 @@ ActiveRecord::Schema.define(:version => 20100808000001) do
   end
 
   add_index "commits", ["repository_id", "gitid"], :name => "index_commits_on_repository_id_and_gitid", :unique => true
-
-  create_table "config_flags", :force => true do |t|
-    t.string "name",  :null => false
-    t.binary "value", :null => false
-  end
-
-  add_index "config_flags", ["name"], :name => "index_config_flags_on_name", :unique => true
 
   create_table "config_vars", :force => true do |t|
     t.string "name",  :null => false
@@ -102,6 +95,18 @@ ActiveRecord::Schema.define(:version => 20100808000001) do
 
   add_index "ssh_keys", ["fprint"], :name => "index_ssh_keys_on_fprint", :unique => true
   add_index "ssh_keys", ["user_id"], :name => "index_ssh_keys_on_user_id"
+
+  create_table "tags", :force => true do |t|
+    t.string   "name",            :limit => 128, :null => false
+    t.integer  "repository_id",                  :null => false
+    t.integer  "commit_id",                      :null => false
+    t.string   "committer_name",  :limit => 128, :null => false
+    t.string   "committer_email", :limit => 128, :null => false
+    t.datetime "committed_at",                   :null => false
+    t.text     "message",                        :null => false
+  end
+
+  add_index "tags", ["repository_id", "name"], :name => "index_tags_on_repository_id_and_name", :unique => true
 
   create_table "tree_entries", :force => true do |t|
     t.integer "tree_id",                   :null => false

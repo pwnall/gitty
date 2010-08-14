@@ -1,0 +1,17 @@
+v1:
+  repository: dexter_ghost
+  name: v1.0
+  commit: commit1
+  message: Released version 1.
+  committer_name: Victor Costan
+  committer_email: costan@gmail.com
+  committed_at: 2010-08-14 05:09:32 -04:00
+
+unicorns:
+  repository: dexter_ghost
+  name: unicorns
+  commit: commit1
+  message: Unicorns private build.
+  committer_name: Victor Costan
+  committer_email: costan@gmail.com
+  committed_at: 2010-08-14 05:10:09 -04:00

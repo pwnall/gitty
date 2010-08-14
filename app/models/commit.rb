@@ -23,6 +23,9 @@ class Commit < ActiveRecord::Base
   # The committer's email.  
   validates :committer_email, :length => 1..128, :presence => true
   
+  # The commit message.
+  validates :message, :length => 1..1.kilobyte, :presence => true
+  
   # The commit's parents.
   has_many :commit_parents, :dependent => :destroy
   has_many :parents, :through => :commit_parents

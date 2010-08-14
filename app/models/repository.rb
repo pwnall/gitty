@@ -5,7 +5,9 @@ class Repository < ActiveRecord::Base
   validates :profile, :presence => true
   
   # Branch information cached from the on-disk repository.
-  has_many :branches, :dependent => :destroy  
+  has_many :branches, :dependent => :destroy
+  # Tag information cached from the on-disk repository.
+  has_many :tags, :dependent => :destroy
   # Commit information cached from the on-disk repository.
   has_many :commits, :dependent => :destroy  
   # Tree information cached from the on-disk repository.
