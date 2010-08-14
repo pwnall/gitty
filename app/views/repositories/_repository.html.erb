@@ -18,4 +18,22 @@
       <%= repository.ssh_uri %>
     </dd>
   </dl>
+  
+  <% if repository.default_branch %>
+  <ul class="actions">
+    <li>
+      <%= branch_switcher repository, @branch %>
+    </li>
+    <li>
+      <%= tag_switcher repository, @tag %>
+    </li>    
+    <li>
+      <%= link_to 'Source',
+              contextual_tree_path(repository, @branch, @tag, @commit)  %>
+    </li>
+    <li>      
+      <%= link_to 'Commits'  %>
+    </li>
+  </ul>
+  <% end %>
 </div>

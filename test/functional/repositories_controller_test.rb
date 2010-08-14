@@ -5,7 +5,7 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   setup do
     set_session_current_user users(:john)    
-    @repository = repositories(:costan_ghost)
+    @repository = repositories(:dexter_ghost)
   end
 
   test "should get index" do
@@ -31,6 +31,13 @@ class RepositoriesControllerTest < ActionController::TestCase
   test "should show repository" do
     get :show, :repo_name => @repository.to_param,
                :profile_name => @repository.profile.to_param
+    assert_response :success
+  end
+  
+  test "should show empty repository" do
+    repository = repositories(:dexter_ghost)
+    get :show, :repo_name => repository.to_param,,
+               :profile_name => repository.profile.to_param
     assert_response :success
   end
 

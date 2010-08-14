@@ -8,9 +8,15 @@ class TreesController < ApplicationController
     if commit
       @tree_reference = commit
     else
-      branch = @repository.branches.where(:name => params[:commit_gid]).first
-      @tree_reference = branch
-      commit = branch.commit
+      @branch = @repository.branches.where(:name => params[:commit_gid]).first
+      if @branch
+        @tree_reference = @branch
+        commit = @branch.commit
+      else
+        @tag = @repository.tags.where(:name => params[:commit_gid]).first
+        @tree_reference = @tag
+        commit = @tag.commit
+      end
     end
     @tree_path = params[:path] || '/'
     @tree = commit.walk_path @tree_path

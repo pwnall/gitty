@@ -3,7 +3,7 @@ require 'test_helper'
 class RepositoryTest < ActiveSupport::TestCase
   setup :mock_profile_paths
 
-  def setup
+  setup do
     @repo = Repository.new :name => 'awesome', :profile => profiles(:dexter)
   end
     
@@ -291,5 +291,10 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Added tags'
     assert_equal ['unicorns'], delta[:tags][:changed].map(&:name),
                  'Changed tags'
+  end
+  
+  test 'default_branch' do
+    assert_equal nil, @repo.default_branch
+    assert_equal branches(:master), repositories(:dexter_ghost).default_branch    
   end
 end

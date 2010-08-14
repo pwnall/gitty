@@ -86,10 +86,10 @@ END_SHELL
       
       assert_equal 'Integration test commit',
           @win_repository.branches.where(:name => 'master').first.commit.
-                          message, "Branch push not assimilated"
+                          message, 'Pushed branches not assimilated'
       assert_equal 'Integration test tag',
           @win_repository.tags.where(:name => 'integration').first.message
-          "Branch push not assimilated"
+          'Pushed tags not assimilated'
     end
   end
 
@@ -100,9 +100,7 @@ END_SHELL
     assert Kernel.system('git tag -m "Integration test tag" integration'),
            'Failed to make test tag'
     ENV['GIT_SSH'] = './git-ssh.sh'
-    assert Kernel.system('git push origin master'),
-           'Git branch push failed'
-    assert Kernel.system('git push origin refs/tags/*'),
-           'Git tag push failed'
+    assert Kernel.system('git push --tags origin master'),
+           'Git push failed'
   end
 end

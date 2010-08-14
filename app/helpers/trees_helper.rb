@@ -10,4 +10,12 @@ module TreesHelper
                                    tree_ref.repository, tree_ref, path)      
     end
   end
+  
+  # Points to a tree listing based on some context.
+  def contextual_tree_path(repository, current_branch, current_tag,
+                           current_commit)
+    reference = current_branch || current_tag || current_commit ||
+                repository.default_branch                           
+    tree_path reference
+  end
 end
