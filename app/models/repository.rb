@@ -131,26 +131,52 @@ class Repository
     delta
   end
   
+  # Differences between the on-disk tags and the database models.
+  #
+  # Returns a hash with the following keys:
+  #   :added:: array of Grit::Tag objects for new tags
+  #   :deleted:: array of Tag models that have been removed
+  #   :changed:: hash of Tag models to Grit::Tag objects for tags whose
+  #              commit pointers have changed
+  def tag_changes
+    delta = {:added => [], :deleted => [], :changed => {}}    
+    db_tags = self.tags.all.index_by(&:name)
+    grit_repo.tags.each do |git_tag|
+      if tag = db_tags.delete(git_tag.name)
+        if tag.commit.gitid != git_tag.commit.id ||
+            tag.message != git_tag.message ||
+            tag.committed_at != git_tag.tag_date 
+          delta[:changed][tag] = git_tag
+        end
+      else
+        delta[:added] << git_tag
+      end
+    end
+    delta[:deleted] = db_tags.values
+    delta
+  end
+    
+  
   # Commits that don't have associated database models.
   #
   # Args:
-  #   git_branches:: array of Grit::Head objects representing on-disk branches
-  #                  used as starting points for searching for commits
+  #   git_refs:: array of Grit::Ref objects representing on-disk branches or
+  #              tags used as starting points for searching for commits
   #
   # Returns an array of Grit::Commit objects, topologically sorted. This means
   # that, if the commits are created in order, a commit's parents will always
   # exist before it is created.
-  def commits_added(git_branches)
+  def commits_added(git_refs)
     new_commits = []
 
     # Topological-sorting DFS for discovering new commits.    
     visited = Set.new  # Git ids for visited commits.
     stack = []  # DFS stack state. Each node is a [commit, parent_number].
-    git_branches.each do |git_branch|
-      next if visited.include? git_branch.commit.id
-      visited << git_branch.commit.id
-      next if self.commits.where(:gitid => git_branch.commit.id).first
-      stack << [git_branch.commit, -1] 
+    git_refs.each do |git_ref|
+      next if visited.include? git_ref.commit.id
+      visited << git_ref.commit.id
+      next if self.commits.where(:gitid => git_ref.commit.id).first
+      stack << [git_ref.commit, -1] 
       
       until stack.empty?
         stack.last[1] += 1        
@@ -232,8 +258,10 @@ class Repository
     changes = {}
     
     branch_delta = self.branch_changes
-    changed_git_branches = branch_delta[:added] + branch_delta[:changed].values
-    new_git_commits = self.commits_added changed_git_branches
+    tag_delta = self.tag_changes
+    changed_git_refs = branch_delta[:added] + branch_delta[:changed].values +
+                       tag_delta[:added] + tag_delta[:changed].values
+    new_git_commits = self.commits_added changed_git_refs
     new_contents = self.contents_added new_git_commits
     
     new_contents[:blobs].each do |git_blob|
@@ -268,13 +296,27 @@ class Repository
       changed_branches << branch
     end    
     branch_delta[:deleted].each { |branch| branch.destroy }
+    new_tags = []
+    tag_delta[:added].each do |git_tag|
+      tag = Tag.from_git_tag(git_tag, self)
+      tag.save!
+      new_tags << tag
+    end
+    changed_tags = []
+    tag_delta[:changed].each do |tag, git_tag|
+      tag = Tag.from_git_tag(git_tag, self, tag)
+      tag.save!
+      changed_tags << tag
+    end    
+    tag_delta[:deleted].each { |tag| tag.destroy }
     
     { :commits => new_commits,
       :branches => { :added => new_branches, :changed => changed_branches,
-                     :deleted => branch_delta[:deleted] } }
+                     :deleted => branch_delta[:deleted] },
+      :tags => { :added => new_tags, :changed => changed_tags,
+                 :deleted => tag_delta[:deleted] } }
   end
 end
-
 
 # :nodoc: access control
 class Repository

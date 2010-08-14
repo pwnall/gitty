@@ -86,16 +86,23 @@ END_SHELL
       
       assert_equal 'Integration test commit',
           @win_repository.branches.where(:name => 'master').first.commit.
-                          message, "Push not assimilated"
+                          message, "Branch push not assimilated"
+      assert_equal 'Integration test tag',
+          @win_repository.tags.where(:name => 'integration').first.message
+          "Branch push not assimilated"
     end
   end
 
   def add_commit_push
     assert Kernel.system('git add .'), 'Failed to add initial content'
     assert Kernel.system('git commit -a -m "Integration test commit"'),
-           'Failed to make initial commit'
+           'Failed to make test commit'
+    assert Kernel.system('git tag -m "Integration test tag" integration'),
+           'Failed to make test tag'
     ENV['GIT_SSH'] = './git-ssh.sh'
     assert Kernel.system('git push origin master'),
-           'Git push failed'
+           'Git branch push failed'
+    assert Kernel.system('git push origin refs/tags/*'),
+           'Git tag push failed'
   end
 end

@@ -97,6 +97,31 @@ class RepositoryTest < ActiveSupport::TestCase
                  changes[:added].map(&:name).sort, 'Added branches'
   end
   
+  test 'tag_changes with an empty db' do
+    @repo.save!
+    mock_repository_path @repo
+    
+    changes = @repo.tag_changes
+    assert changes[:deleted].empty?, 'No tags were deleted'
+    assert changes[:changed].empty?, 'No tags were changed'
+    assert_equal ['demo', 'unicorns', 'v1.0', 'v2.0'],
+                 changes[:added].map(&:name).sort, 'Added branches'
+  end
+  
+  test 'tag_changes with fixtures' do
+    repo = repositories(:dexter_ghost)
+    mock_repository_path repo
+    
+    changes = repo.tag_changes
+    assert_equal [tags(:ci_request)], changes[:deleted], 'Deleted tags'
+    assert_equal [tags(:unicorns)], changes[:changed].keys,
+                 'Changed tags keys'
+    assert_equal ['unicorns'], changes[:changed].values.map(&:name),
+                 'Changed tags values'
+    assert_equal ['demo', 'v2.0'],
+                 changes[:added].map(&:name).sort, 'Added tags'
+  end
+
   test 'commits_added with an empty db' do
     @repo.save!
     mock_repository_path @repo
@@ -106,7 +131,20 @@ class RepositoryTest < ActiveSupport::TestCase
     commit_c = '7ab1d7b5c5ddf87c73636109a9b256c23c3e0bed'
     
     branches = @repo.grit_repo.branches.index_by(&:name)
+    tags = @repo.grit_repo.tags.index_by(&:name)
+    
     commit_ids = @repo.commits_added([branches['master']]).map(&:id)
+    assert_equal [commit_a, commit_b1, commit_b2, commit_c].sort,
+                 commit_ids.sort, 'Added commits on master'
+    [
+      [commit_a, commit_b1], [commit_b1, commit_c], [commit_b2, commit_c]     
+    ].each do |parent, child|
+      assert_operator commit_ids.index(parent), :<, commit_ids.index(child),
+                      'Topological sort failed'
+    end
+
+    # NOTE: branch test repeated for tag. to make sure tags are accepted as well
+    commit_ids = @repo.commits_added([tags['v2.0']]).map(&:id)
     assert_equal [commit_a, commit_b1, commit_b2, commit_c].sort,
                  commit_ids.sort, 'Added commits on master'
     [
@@ -224,10 +262,12 @@ class RepositoryTest < ActiveSupport::TestCase
     mock_repository_path repo
     delta = nil
     assert_no_difference 'Branch.count' do
-      assert_difference 'Commit.count', 2 do
-        assert_difference 'CommitParent.count', 3 do
-          assert_difference 'TreeEntry.count', 9 do
-            delta = repo.integrate_changes
+      assert_difference 'Tag.count', 1 do
+        assert_difference 'Commit.count', 2 do
+          assert_difference 'CommitParent.count', 3 do
+            assert_difference 'TreeEntry.count', 9 do
+              delta = repo.integrate_changes
+            end
           end
         end
       end
@@ -238,10 +278,18 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal ['deleted'], delta[:branches][:deleted].map(&:name),
                  'Deleted branches'
     assert delta[:branches][:deleted].all?(&:destroyed?),
-                 'Deleted branches were actually destroyed'
+                 "Deleted branches weren't destroyed"
     assert_equal ['branch2'], delta[:branches][:added].map(&:name),
                  'Added branches'
     assert_equal ['master'], delta[:branches][:changed].map(&:name),
                  'Changed branches'
+    assert_equal ['ci_request'], delta[:tags][:deleted].map(&:name),
+                 'Deleted tags'
+    assert delta[:branches][:deleted].all?(&:destroyed?),
+                 "Deleted tags weren't destroyed"
+    assert_equal ['demo', 'v2.0'], delta[:tags][:added].map(&:name).sort,
+                 'Added tags'
+    assert_equal ['unicorns'], delta[:tags][:changed].map(&:name),
+                 'Changed tags'
   end
 end
