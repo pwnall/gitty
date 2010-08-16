@@ -26,3 +26,43 @@
   color: #666666;
   width: 6em;
 }
+.repository .actions {
+  list-style: none;
+  margin: 0;
+  padding: 5px;
+  vertical-align: top;
+}
+.repository .actions > li {
+  display: inline-block;
+  margin: 0;
+  padding: 0 1em 0 0;
+}
+.repository .actions > li > .dropdown::after {
+  content: "▼";
+  position: relative;
+  left: -0.75em;
+}
+.repository .actions > li > .dropdown p {
+  display: inline-block;
+  margin: 0;
+  padding: 0 1em 0 0;
+}
+.repository .actions > li > .dropdown > ul {
+  display: none;  
+  list-style: none;
+  margin: 2px 0 0 0;
+  padding: 0;
+  background: #E7F5D0;
+}
+.repository .actions > li:hover > .dropdown > ul {
+  display: block;
+  position: absolute;
+  border: 1px solid #BECFA2;
+}
+.repository .actions > li > .dropdown > ul > li {
+  padding: 3px 2em 3px 1em;
+  border-bottom: 1px solid #D6E8B6;
+}
+.repository .actions > li > .dropdown > ul > li:last-child {
+  border-bottom: none;
+end

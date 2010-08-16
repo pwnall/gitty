@@ -9,23 +9,27 @@ class BranchesHelperTest < ActionView::TestCase
   test 'branch_switcher with no current branch' do
     render :text => branch_switcher(@repository, nil)
     
-    assert_select 'form[action="http://test.host/dexter/ghost/branch/name"][method="get"]' do
-      assert_select 'select[name="name"]' do
-        assert_select 'option[value="master"]', 'master'
-        assert_select 'option[value="branch1"]', 'branch1'
-        assert_select 'option[value="deleted"]', 'deleted'
+    assert_select 'div[class="dropdown"]' do
+      assert_select 'ul' do
+        assert_select 'li' do
+          assert_select 'a[href="/dexter/ghost/branch/master"]', 'master'
+          assert_select 'a[href="/dexter/ghost/branch/branch1"]', 'branch1'
+          assert_select 'a[href="/dexter/ghost/branch/deleted"]', 'deleted'
+        end
       end
     end
   end
   
   test 'branch_switcher with branch and preset label' do
     render :text => branch_switcher(@repository, @branch, 'Other text')
-    assert_select 'form[action="http://test.host/dexter/ghost/branch/name"][method="get"]' do
-      assert_select 'label', 'Other text'
-      assert_select 'select[name="name"]' do
-        assert_select 'option[value="master"]', 'master'
-        assert_select 'option[value="branch1"][selected="selected"]', 'branch1'
-        assert_select 'option[value="deleted"]', 'deleted'
+    assert_select 'div[class="dropdown"]' do
+      assert_select 'p', 'Other text'
+      assert_select 'ul' do
+        assert_select 'li' do
+          assert_select 'a[href="/dexter/ghost/branch/master"]', 'master'
+          assert_select 'a[href="/dexter/ghost/branch/branch1"]', 'branch1'
+          assert_select 'a[href="/dexter/ghost/branch/deleted"]', 'deleted'
+        end
       end
     end
   end

@@ -1,12 +1,16 @@
 module BranchesHelper
   # A control that lets the user jump to a branch in a repository.
   def branch_switcher(repository, current_branch, label_text = 'Switch branch')
-    form_tag profile_repository_branch_url(repository.profile,
-                                           repository, 'name'),
-             :method => :get do
-      label_tag(:name, label_text) + ' ' +
-      select_tag(:name, options_for_select(repository.branches.map(&:name),
-          current_branch && current_branch.name))
-    end 
+    content_tag 'div', :class => 'dropdown' do
+      content_tag('p', label_text) + content_tag('ul') {
+        repository.branches.map { |branch|
+          content_tag 'li' do
+            link_to branch.name,
+                profile_repository_branch_path(repository.profile, repository,
+                                               branch)
+          end
+        }.join
+      }
+    end
   end
 end
