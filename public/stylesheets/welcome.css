@@ -1,0 +1,25 @@
+.welcome {
+  font-size: 1.5em;
+  line-height: 1.12em;
+}
+.welcome .statistics {
+  float: right;
+  width: 200px;
+  margin: 0 0 1em 1em;
+  padding: 5px;
+  border: 1px solid #BECFA2;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  background: #E7F5D0;  
+  font-size: 0.9em;
+}
+.welcome .statistics p {
+  margin: 0;
+  padding: 0;
+}
+.welcome .statistics ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
