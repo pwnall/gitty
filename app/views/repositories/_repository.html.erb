@@ -35,6 +35,12 @@
       <%= link_to 'Commits',
               contextual_commits_path(repository, @branch, @tag, @commit) %>
     </li>
+    <% if repository.can_edit? current_user %>
+    <li>
+      <%= link_to 'Admin', edit_profile_repository_path(repository.profile,
+                                                        repository) %>
+    </li>
+    <% end %>
   </ul>
   <% end %>
 </div>

@@ -22,8 +22,8 @@ Gitty::Application.routes.draw do
   scope '_' do
     match 'check_access.:format' => 'repositories#check_access',
           :as => :repository_check_access
-    match 'change_notice.:format' => 'repositories#change_notice',
-          :as => :repository_change_notice
+    post 'change_notice.:format' => 'repositories#change_notice',
+         :as => :repository_change_notice
   end
   
   # Profiles.
@@ -52,14 +52,16 @@ Gitty::Application.routes.draw do
     put ':repo_name(.:format)' => 'repositories#update',
         :constraints => { :repo_name => /[^\/]+/ }
     delete ':repo_name(.:format)' => 'repositories#destroy',
-           :constraints => { :repo_name => /[^\/]+/ }
-  end  
+           :constraints => { :repo_name => /[^\/]+/ }    
+    get ':repo_name/edit(.:format)' => 'repositories#edit',
+        :constraints => { :repo_name => /[^\/]+/ },
+        :as => :edit_profile_repository
+  end
   scope '_' do
     resources :repositories, :only => [:index, :new, :create]
     scope 'repositories/:profile_name' do
       get ':repo_name(.:format)' => 'repositories#show'
-      get ':repo_name/edit(.:format)' => 'repositories#edit',
-          :as => :edit_profile_repository
+      get ':repo_name/edit(.:format)' => 'repositories#edit'
       put ':repo_name(.:format)' => 'repositories#update'
       delete ':repo_name(.:format)' => 'repositories#destroy'
     end
@@ -97,6 +99,9 @@ Gitty::Application.routes.draw do
     scope 'raw/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
       get '*path' => 'blobs#raw', :as => :raw_profile_repository_blob
     end
+    
+    # Admin.
+    get 'edit' => 'repositories#edit', :as => :edit_profile_repository
   end
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):

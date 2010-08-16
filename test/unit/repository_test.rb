@@ -10,12 +10,12 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'setup' do
     assert @repo.valid?
   end
-    
+  
   test 'profile has to be set' do
     @repo.profile = nil
     assert !@repo.valid?
   end
-    
+  
   test 'name has to be unique' do
     @repo.name = repositories(:dexter_ghost).name
     assert !@repo.valid?
@@ -41,12 +41,16 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal 'git-test@localhost:dexter/awesome.git', @repo.ssh_uri
   end
   
-  test 'from_ssh_path' do
+  test 'ssh_path' do
+    assert_equal 'dexter/awesome.git', @repo.ssh_path
+  end
+
+  test 'find_by_ssh_path' do
     assert_equal repositories(:dexter_ghost),
-                 Repository.from_ssh_path('dexter/ghost.git')
+                 Repository.find_by_ssh_path('dexter/ghost.git')
     ['../something/else.git', 'dexter/ghost/more.git',
      'nobody/ghost.git', 'dexter/nothing.git'].each do |path|
-      assert_equal nil, Repository.from_ssh_path(path), "Bad path #{path}"
+      assert_equal nil, Repository.find_by_ssh_path(path), "Bad path #{path}"
     end
   end
   
@@ -291,6 +295,24 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Added tags'
     assert_equal ['unicorns'], delta[:tags][:changed].map(&:name),
                  'Changed tags'
+  end
+    
+  test 'can_read?' do
+    assert @repo.can_read?(nil), 'no user'
+    assert @repo.can_read?(users(:jane)), 'author'
+    assert @repo.can_read?(users(:john)), 'unrelated user'
+  end
+  
+  test 'can_commit?' do
+    assert !@repo.can_commit?(nil), 'no user'
+    assert @repo.can_commit?(users(:jane)), 'author'
+    assert !@repo.can_commit?(users(:john)), 'unrelated user'
+  end
+  
+  test 'can_edit?' do
+    assert !@repo.can_edit?(nil), 'no user'
+    assert @repo.can_edit?(users(:jane)), 'author'
+    assert !@repo.can_edit?(users(:john)), 'unrelated user'
   end
   
   test 'default_branch' do

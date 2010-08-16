@@ -4,8 +4,13 @@ class RepositoriesControllerTest < ActionController::TestCase
   setup :mock_profile_paths
 
   setup do
-    set_session_current_user users(:john)    
     @repository = repositories(:dexter_ghost)
+    @author = users(:jane)
+    @author_key = @author.ssh_keys.first
+    @reader = users(:john)
+    @reader_key = @reader.ssh_keys.first
+
+    set_session_current_user @author
   end
 
   test "should get index" do
@@ -65,6 +70,71 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_redirected_to repositories_url
   end
   
+  test "check_access allows author to push" do
+    # NOTE: the test should use GET, except GET doesn't encode extra parameters
+    post :check_access, :format => 'json',
+         :repo_path => @repository.ssh_path,
+         :ssh_key_id => @author_key.to_param,
+         :commit_access => true.to_param
+    assert_equal @repository, assigns(:repository)
+    assert_equal @author, assigns(:user)
+    assert_equal true, assigns(:commit_access)
+    assert_equal true, JSON.parse(response.body)['access']
+  end
+
+  test "check_access allows author to pull" do
+    # NOTE: the test should use GET, except GET doesn't encode extra parameters
+    post :check_access, :format => 'json',
+         :repo_path => @repository.ssh_path,
+         :ssh_key_id => @author_key.to_param,
+         :commit_access => false.to_param
+    assert_equal false, assigns(:commit_access)
+    assert_equal true, JSON.parse(response.body)['access']
+  end
+
+  test "check_access does not allow another user to push" do
+    # NOTE: the test should use GET, except GET doesn't encode extra parameters
+    post :check_access, :format => 'json',
+         :repo_path => @repository.ssh_path,
+         :ssh_key_id => @reader_key.to_param,
+         :commit_access => true.to_param
+
+    assert_equal @repository, assigns(:repository)
+    assert_equal @reader, assigns(:user)
+    assert_equal true, assigns(:commit_access)
+    assert_equal false, JSON.parse(response.body)['access']
+    assert_not_nil JSON.parse(response.body)['message']
+  end
+
+  test "check_access allows another user to pull" do
+    # NOTE: the test should use GET, except GET doesn't encode extra parameters
+    post :check_access, :format => 'json',
+         :repo_path => @repository.ssh_path,
+         :ssh_key_id => @reader_key.to_param,
+         :commit_access => false.to_param
+    assert_equal false, assigns(:commit_access)
+    assert_equal true, JSON.parse(response.body)['access']
+  end
+  
+  test "check_access rejects bad ssh key" do
+    # NOTE: the test should use GET, except GET doesn't encode extra parameters
+    post :check_access, :format => 'json',
+         :repo_path => @repository.ssh_path,
+         :ssh_key_id => 0,
+         :commit_access => true.to_param
+    assert_equal false, JSON.parse(response.body)['access']
+  end
+  
+  test "check_access rejects bad repo path" do
+    # NOTE: the test should use GET, except GET doesn't encode extra parameters
+    post :check_access, :format => 'json',
+         :repo_path => 'no/repository/here.git',
+         :ssh_key_id => @author_key.to_param,
+         :commit_access => true.to_param
+    assert_equal false, JSON.parse(response.body)['access']
+  end
+  
+
   test "repository routes" do
     assert_routing({:path => '/_/repositories', :method => :get},
                    {:controller => 'repositories', :action => 'index'})
@@ -72,10 +142,6 @@ class RepositoriesControllerTest < ActionController::TestCase
                    {:controller => 'repositories', :action => 'new'})
     assert_routing({:path => '/_/repositories', :method => :post},
                    {:controller => 'repositories', :action => 'create'})
-    assert_routing({:path => '/_/repositories/costan/rails/edit',
-                    :method => :get},
-                   {:controller => 'repositories', :action => 'edit',
-                    :profile_name => 'costan', :repo_name => 'rails'})
 
     assert_routing({:path => '/costan/rails', :method => :get},
                    {:controller => 'repositories', :action => 'show',
@@ -83,6 +149,14 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_recognizes({:controller => 'repositories', :action => 'show',
                        :profile_name => 'costan', :repo_name => 'rails'},
                       {:path => '/_/repositories/costan/rails',
+                       :method => :get})
+    assert_routing({:path => '/costan/rails/edit',
+                    :method => :get},
+                   {:controller => 'repositories', :action => 'edit',
+                    :profile_name => 'costan', :repo_name => 'rails'})
+    assert_recognizes({:controller => 'repositories', :action => 'edit',
+                       :profile_name => 'costan', :repo_name => 'rails'},
+                      {:path => '/_/repositories/costan/rails/edit',
                        :method => :get})
     assert_routing({:path => '/costan/rails', :method => :put},
                    {:controller => 'repositories', :action => 'update',
@@ -98,5 +172,12 @@ class RepositoriesControllerTest < ActionController::TestCase
                        :profile_name => 'costan', :repo_name => 'rails'},
                       {:path => '/_/repositories/costan/rails',
                        :method => :delete})
+  
+    assert_routing({:path => '/_/check_access.json', :method => :get},
+                   {:controller => 'repositories', :action => 'check_access',
+                    :format => 'json'})
+    assert_routing({:path => '/_/change_notice.json', :method => :post},
+                   {:controller => 'repositories', :action => 'change_notice',
+                    :format => 'json'})
   end
 end

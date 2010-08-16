@@ -94,12 +94,34 @@ class RepositoriesController < ApplicationController
   
   # GET /gitty/check_access.json?repo_path=costan/rails.git&ssh_key_id=1&commit_access=true
   def check_access
-    @repository_path = params[:repo_path]
-    @ssh_key = SshKey.find(params[:ssh_key_id])
-    @commit_access = params[:commit_access] == 'true'
+    @repository = Repository.find_by_ssh_path params[:repo_path]
+    ssh_key = SshKey.where(:id => params[:ssh_key_id]).first
+    @user = ssh_key && ssh_key.user
+    @commit_access = params[:commit_access] && params[:commit_access] != 'false'
+
+    message = nil
+    if @repository
+      if @user
+        if @commit_access
+          access = @repository.can_commit? @user
+        else
+          access = @repository.can_read? @user
+        end
+        unless access
+          message = "You cannot #{@commit_access ? 'commit to' : 'read from'}" +
+              " #{params[:repo_path]}. Ask the owner for access."
+        end
+      else
+        message = "The SSH key is not registered with any user."
+      end
+    else
+      message = "Repository #{params[:repo_path]} not found."
+    end
     
+    response = message ? { :access => false, :message => message } :
+        { :access => true }
     respond_to do |format|
-      format.json { render :json => { :access => true } }
+      format.json { render :json => response }
     end
   end
   
@@ -107,12 +129,12 @@ class RepositoriesController < ApplicationController
   protect_from_forgery :except => :change_notice
   def change_notice
     @ssh_key = SshKey.find(params[:ssh_key_id])
-    @repository = Repository.from_ssh_path params[:repo_path]
+    @repository = Repository.find_by_ssh_path params[:repo_path]
 
     if @repository
       @repository.integrate_changes
       success = true
-      message = 'OK'      
+      message = 'OK'
     else
       success = false
       message = "No git repository at #{params[:repo_path]}"
