@@ -1,5 +1,9 @@
 <h2>Log in</h2>
 
+<% if flash[:notice] %>
+<p class="notice"><%= flash[:notice] %></p>
+<% end %>
+
 <%= form_for User.new, :url => session_path do |f| %>
   <div class="field">
     <%= f.label :email, 'Email Address' %>
