@@ -29,10 +29,11 @@
     </li>    
     <li>
       <%= link_to 'Source',
-              contextual_tree_path(repository, @branch, @tag, @commit)  %>
+              contextual_tree_path(repository, @branch, @tag, @commit) %>
     </li>
     <li>      
-      <%= link_to 'Commits'  %>
+      <%= link_to 'Commits',
+              contextual_commits_path(repository, @branch, @tag, @commit) %>
     </li>
   </ul>
   <% end %>

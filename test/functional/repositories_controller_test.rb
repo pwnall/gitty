@@ -36,7 +36,7 @@ class RepositoriesControllerTest < ActionController::TestCase
   
   test "should show empty repository" do
     repository = repositories(:dexter_ghost)
-    get :show, :repo_name => repository.to_param,,
+    get :show, :repo_name => repository.to_param,
                :profile_name => repository.profile.to_param
     assert_response :success
   end
@@ -49,7 +49,7 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   test "should update repository" do
     put :update, :repository => @repository.attributes,
-        :repo_name => @repository.to_param,         
+        :repo_name => @repository.to_param,
         :profile_name => @repository.profile.to_param
         
     assert_redirected_to profile_repository_path(assigns(:repository).profile,

@@ -4,7 +4,18 @@ class CommitsController < ApplicationController
   def index
     @profile = Profile.where(:name => params[:profile_name]).first
     @repository = @profile.repositories.where(:name => params[:repo_name]).first
-    @commits = @repository.commits
+    if params[:ref_name]
+      if ref = @repository.branches.where(:name => params[:ref_name]).first
+        @branch = ref
+      elsif ref = @repository.tags.where(:name => params[:ref_name]).first
+        @tag = ref
+      end        
+    else
+      @branch = ref = @repository.default_branch
+    end
+    
+    # TODO(costan): List commits backwards.
+    @commits = [ref.commit]
 
     respond_to do |format|
       format.html # index.html.erb
