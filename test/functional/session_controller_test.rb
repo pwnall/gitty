@@ -16,7 +16,10 @@ class SessionControllerTest < ActionController::TestCase
   test "application welcome page" do
     get :show
     
-    assert_equal User.count, assigns(:user_count)
+    assert_equal User.count, assigns(:stats)[:users], 'users'
+    assert_equal Repository.count, assigns(:stats)[:repositories], 'repos'
+    assert_equal Commit.count, assigns(:stats)[:commits], 'commits'
+    assert_equal Blob.count, assigns(:stats)[:files], 'files'
     assert_select 'a', 'Log in'
   end
 end

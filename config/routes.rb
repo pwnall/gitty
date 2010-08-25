@@ -89,7 +89,7 @@ Gitty::Application.routes.draw do
     # Trees.
     scope 'tree/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
       get '*path' => 'trees#show', :as => :profile_repository_tree
-      get '' => 'trees#show', :as => :profile_repository_commit_tree
+      get '/' => 'trees#show', :as => :profile_repository_commit_tree
     end
 
     # Blobs.
