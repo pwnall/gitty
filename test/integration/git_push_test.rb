@@ -14,10 +14,10 @@ class GitPushTest < ActionDispatch::IntegrationTest
     Kernel.system 'thin', 'start', '--daemonize', '--environment', 'test',
                   '--port', ConfigVar['app_uri'].split(':').last[0...-1],
                   '--pid', @webapp_pid_file.to_s,
-                  '--log', @temp_dir.join('thin.log')
+                  '--log', @temp_dir.join('thin.log').to_s
 
     @user_scripts_path = Rails.root.join 'script', 'git_user'
-    setup_script = @user_scripts_path.join 'setup'
+    setup_script = @user_scripts_path.join('setup').to_s
     Kernel.system 'sudo', setup_script, ConfigVar['git_user'], Etc.getlogin
     SshKey.write_keyfile
   
@@ -28,7 +28,7 @@ class GitPushTest < ActionDispatch::IntegrationTest
 
     @keyfile = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'id_rsa'
     File.chmod 0600, @keyfile  # NOTE: ssh 0.9.8o gets bitchy otherwise
-    ssh_wrapper = File.join(@temp_dir, 'git-ssh.sh')
+    ssh_wrapper = @temp_dir.join('git-ssh.sh').to_s
     File.open ssh_wrapper, 'w' do |f|
       options = '-o PasswordAuthentication=no -o PubkeyAuthentication=yes'
       f.write <<END_SHELL
@@ -36,7 +36,9 @@ class GitPushTest < ActionDispatch::IntegrationTest
 exec ssh -i "#{@keyfile}" #{options} "$@"
 END_SHELL
     end
-    File.chmod 0700, ssh_wrapper
+    File.chmod 0755, ssh_wrapper
+    @old_env_git_ssh = ENV['GIT_SSH']
+    ENV['GIT_SSH'] = ssh_wrapper 
     
     @fixture_repo_path = Rails.root.join 'test', 'fixtures', 'repo.git'
 
@@ -56,9 +58,10 @@ END_SHELL
       Kernel.system 'thin', 'stop', '--pid', @webapp_pid_file.to_s
     end
     
-    FileUtils.rm_r @temp_dir if @temp_dir    
+    FileUtils.rm_r @temp_dir.to_s
+    ENV['GIT_SSH'] = @old_env_git_ssh
     
-    teardown_script = @user_scripts_path.join 'teardown'
+    teardown_script = @user_scripts_path.join('teardown').to_s
     Kernel.system teardown_script, ConfigVar['git_user'], Etc.getlogin
   end
 
@@ -70,11 +73,12 @@ END_SHELL
       add_commit_push
     end
   end
-    
+  
   test "repository clone and push" do
     FileUtils.rm_r @win_repository.local_path
     FileUtils.cp_r @fixture_repo_path, @win_repository.local_path
     FileUtils.chmod_R 0770, @win_repository.local_path    
+    
     
     Dir.chdir @temp_dir do
       assert Kernel.system("git clone #{@win_repository.ssh_uri}"),
@@ -99,7 +103,6 @@ END_SHELL
            'Failed to make test commit'
     assert Kernel.system('git tag -m "Integration test tag" integration'),
            'Failed to make test tag'
-    ENV['GIT_SSH'] = './git-ssh.sh'
     assert Kernel.system('git push --tags origin master'),
            'Git push failed'
   end

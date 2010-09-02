@@ -41,7 +41,7 @@ class SshKey
   # The authorized_keys line for this key.
   def keyfile_line
     command = [
-      '\"' + Rails.root.join('script', 'git_shell.rb') + '\"',
+      '\"' + Rails.root.join('script', 'git_shell.rb').to_s + '\"',
       id, ConfigVar['app_uri'], '$SSH_ORIGINAL_COMMAND'
     ].join(' ')
     
