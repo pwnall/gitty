@@ -1,4 +1,7 @@
 class RepositoriesController < ApplicationController
+  before_filter :current_user_can_read_repo, :only => [:show]
+  before_filter :current_user_can_edit_repo, :only => [:edit, :update, :destroy]
+
   # GET /gitty/repositories
   # GET /gitty/repositories.json
   def index
@@ -12,9 +15,6 @@ class RepositoriesController < ApplicationController
   # GET /costan/rails
   # GET /costan/rails.xml
   def show
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @repository }

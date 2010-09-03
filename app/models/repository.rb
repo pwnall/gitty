@@ -329,7 +329,7 @@ class Repository
   #
   # Reading implies git pull rights.
   def can_read?(user)
-    true
+    user ? true : false
   end
   
   # True if the user can commit to the repository.

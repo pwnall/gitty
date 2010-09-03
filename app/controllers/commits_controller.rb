@@ -1,4 +1,6 @@
 class CommitsController < ApplicationController
+  before_filter :current_user_can_read_repo, :except => :destroy
+
   # GET /costan/rails/commits
   # GET /costan/rails/commits.xml
   def index

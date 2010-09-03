@@ -1,4 +1,6 @@
 class BlobsController < ApplicationController
+  before_filter :current_user_can_read_repo 
+  
   # GET /costan/rails/blob/master/doc/README
   def show
     process_params

@@ -9,7 +9,8 @@
       Web
     </dt>
     <dd>
-      <%= link_to profile_repository_url(repository.profile, repository) %>
+      <%= link_to profile_repository_url(repository.profile, repository),
+                  profile_repository_url(repository.profile, repository) %>
     </dd>
     <dt>
       git+ssh

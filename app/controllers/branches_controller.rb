@@ -1,4 +1,7 @@
 class BranchesController < ApplicationController
+  before_filter :current_user_can_read_repo, :except => :destroy
+  before_filter :current_user_can_commit_to_repo, :only => :destroy
+
   # GET /costan/rails/branches
   # GET /costan/rails/branches.xml
   def index

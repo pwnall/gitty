@@ -7,6 +7,8 @@ class BlobsControllerTest < ActionController::TestCase
     @branch = branches(:master)
     @commit = @branch.commit
     @blob = blobs(:d1_d2_a)
+    @session_user = @branch.repository.profile.user
+    set_session_current_user @session_user
   end
   
   test "should show blob with commit sha" do
@@ -30,6 +32,40 @@ class BlobsControllerTest < ActionController::TestCase
     assert_equal 'd1/d2/a', assigns(:blob_path)
     assert_equal blobs(:d1_d2_a), assigns(:blob)
   end
+  
+  test "should grant read access to non-owner" do
+    non_owner = User.all.find { |u| u != @session_user }
+    assert non_owner, 'non-owner finding failed'
+    set_session_current_user non_owner
+
+    get :show, :commit_gid => @commit.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param,
+               :path => 'd1/d2/a'
+    assert_response :success
+    
+    get :show, :commit_gid => @branch.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param,
+               :path => 'd1/d2/a'
+    assert_response :success    
+  end
+
+  test "should deny access to guests" do
+    set_session_current_user nil
+
+    get :show, :commit_gid => @commit.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param,
+               :path => 'd1/d2/a'
+    assert_response :forbidden
+    
+    get :show, :commit_gid => @branch.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param,
+               :path => 'd1/d2/a'
+    assert_response :forbidden
+  end  
   
   test "blob routes" do
     assert_routing({:path => '/costan/rails/blob/master/docs/README',

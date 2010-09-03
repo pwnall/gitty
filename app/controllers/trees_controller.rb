@@ -1,4 +1,6 @@
 class TreesController < ApplicationController
+  before_filter :current_user_can_read_repo
+
   # GET /costan/rails/tree/master/test/unit/helpers
   def show
     @profile = Profile.where(:name => params[:profile_name]).first

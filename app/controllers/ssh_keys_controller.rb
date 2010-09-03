@@ -1,4 +1,14 @@
 class SshKeysController < ApplicationController
+  # before_filter that rejects users trying to access other people's keys
+  def user_owns_ssh_key
+    @ssh_key = SshKey.find(params[:id])
+    unless current_user && current_user.id == @ssh_key.user_id
+      head :forbidden
+    end
+  end
+  private :user_owns_ssh_key
+  before_filter :user_owns_ssh_key, :except => [:index, :new, :create]
+  
   # GET /ssh_keys
   # GET /ssh_keys.xml
   def index

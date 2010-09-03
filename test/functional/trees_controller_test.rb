@@ -5,6 +5,8 @@ class TreesControllerTest < ActionController::TestCase
     @branch = branches(:master)
     @tag = tags(:v1)
     @commit = @branch.commit
+    @session_user = @branch.repository.profile.user
+    set_session_current_user @session_user    
   end
   
   test "should show tree with commit sha" do
@@ -73,6 +75,50 @@ class TreesControllerTest < ActionController::TestCase
     assert_equal @tag, assigns(:tag)
     assert_equal '/', assigns(:tree_path)
     assert_equal @tag.commit.tree, assigns(:tree)
+  end
+  
+  test "should grant read access to non-owner" do
+    non_owner = User.all.find { |u| u != @session_user }
+    assert non_owner, 'non-owner finding failed'
+    set_session_current_user non_owner
+
+    get :show, :commit_gid => @commit.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param,
+               :path => 'd1/d2'
+    assert_response :success
+    
+    get :show, :commit_gid => @branch.to_param,
+               :repo_name => @branch.repository.to_param,
+               :profile_name => @branch.repository.profile.to_param,
+               :path => 'd1/d2'
+    assert_response :success
+    
+    get :show, :commit_gid => @branch.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param
+    assert_response :success
+  end
+
+  test "should deny access to guests" do
+    set_session_current_user nil
+    
+    get :show, :commit_gid => @commit.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param,
+               :path => 'd1/d2'
+    assert_response :forbidden
+    
+    get :show, :commit_gid => @branch.to_param,
+               :repo_name => @branch.repository.to_param,
+               :profile_name => @branch.repository.profile.to_param,
+               :path => 'd1/d2'
+    assert_response :forbidden
+    
+    get :show, :commit_gid => @branch.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param
+    assert_response :forbidden
   end
   
   test "tree routes" do

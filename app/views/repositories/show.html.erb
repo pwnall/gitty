@@ -12,5 +12,9 @@
 <% end %>
 
 <% else %>
+<% if @repository.can_commit? current_user %>
 <%= render 'repositories/bootstrap_steps' %>
+<% else %>
+<%= render 'repositories/empty' %>
+<% end %>
 <% end %>

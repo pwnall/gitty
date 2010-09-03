@@ -298,7 +298,7 @@ class RepositoryTest < ActiveSupport::TestCase
   end
     
   test 'can_read?' do
-    assert @repo.can_read?(nil), 'no user'
+    assert !@repo.can_read?(nil), 'no user'
     assert @repo.can_read?(users(:jane)), 'author'
     assert @repo.can_read?(users(:john)), 'unrelated user'
   end

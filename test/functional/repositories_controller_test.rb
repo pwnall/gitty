@@ -39,11 +39,23 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "should show empty repository" do
-    repository = repositories(:dexter_ghost)
+  test "should show git directions to author for empty repository" do
+    repository = repositories(:costan_ghost)
+    set_session_current_user users(:john)
     get :show, :repo_name => repository.to_param,
                :profile_name => repository.profile.to_param
     assert_response :success
+    assert_select '.bootstrap_steps'
+  end
+  
+  test "should show oops page to non-committer for empty repository" do
+    repository = repositories(:costan_ghost)
+    set_session_current_user users(:jane)
+
+    get :show, :repo_name => repository.to_param,
+               :profile_name => repository.profile.to_param
+    assert_response :success
+    assert_select '.empty_repository'
   end
 
   test "should get edit" do
@@ -62,13 +74,61 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
 
   test "should destroy repository" do
-    assert_difference('Repository.count', -1) do
+    assert_difference 'Repository.count', -1 do
       delete :destroy, :repo_name => @repository.to_param,
                        :profile_name => @repository.profile.to_param
     end
 
     assert_redirected_to repositories_url
   end
+  
+  test "should grant read access to non-owner" do
+    non_owner = User.all.find { |u| u != @author }
+    assert non_owner, 'non-owner finding failed'
+    set_session_current_user non_owner
+    
+    get :show, :repo_name => @repository.to_param,
+               :profile_name => @repository.profile.to_param
+    assert_response :success
+    
+    get :edit, :repo_name => @repository.to_param,
+               :profile_name => @repository.profile.to_param
+    assert_response :forbidden
+    
+    put :update, :repository => @repository.attributes,
+        :repo_name => @repository.to_param,
+        :profile_name => @repository.profile.to_param
+    assert_response :forbidden
+    
+    assert_no_difference 'Repository.count' do
+      delete :destroy, :repo_name => @repository.to_param,
+                       :profile_name => @repository.profile.to_param
+    end
+    assert_response :forbidden
+  end
+
+  test "should deny access to guests" do
+    set_session_current_user nil
+    
+    get :show, :repo_name => @repository.to_param,
+               :profile_name => @repository.profile.to_param
+    assert_response :forbidden
+    
+    get :edit, :repo_name => @repository.to_param,
+               :profile_name => @repository.profile.to_param
+    assert_response :forbidden
+    
+    put :update, :repository => @repository.attributes,
+        :repo_name => @repository.to_param,
+        :profile_name => @repository.profile.to_param
+    assert_response :forbidden
+    
+    assert_no_difference 'Repository.count' do
+      delete :destroy, :repo_name => @repository.to_param,
+                       :profile_name => @repository.profile.to_param
+    end
+    assert_response :forbidden
+  end  
   
   test "check_access allows author to push" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters

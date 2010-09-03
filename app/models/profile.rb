@@ -9,6 +9,9 @@ class Profile < ActiveRecord::Base
   
   # The profile's long name.
   validates :display_name, :length => 1..256, :presence => true
+  
+  # For profiles that represent users (not groups).
+  has_one :user
 
   # The location of the profile's repositories on disk.
   def local_path

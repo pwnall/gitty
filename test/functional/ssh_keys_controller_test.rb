@@ -4,8 +4,8 @@ class SshKeysControllerTest < ActionController::TestCase
   setup :mock_ssh_keys_path
   
   setup do
-    set_session_current_user users(:john)
     @ssh_key = ssh_keys(:rsa)
+    set_session_current_user @ssh_key.user
     
     key_path = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'new_key.pub'    
     @new_ssh_key_line = File.read key_path
@@ -41,11 +41,6 @@ class SshKeysControllerTest < ActionController::TestCase
     assert_redirected_to session_url
   end
   
-  test "should not show other user's ssh key" do
-    get :show, :id => ssh_keys(:dsa).to_param
-    assert_response :forbidden
-  end
-
   test "should get edit" do
     get :edit, :id => @ssh_key.to_param
     assert_response :success
@@ -57,10 +52,48 @@ class SshKeysControllerTest < ActionController::TestCase
   end
 
   test "should destroy ssh_key" do
-    assert_difference('SshKey.count', -1) do
+    assert_difference 'SshKey.count', -1 do
       delete :destroy, :id => @ssh_key.to_param
     end
 
     assert_redirected_to ssh_keys_path
   end
+  
+  test "should deny access to non-owner" do
+    non_owner = User.all.find { |u| u != @ssh_key.user }
+    assert non_owner, 'non-owner finding failed'
+    set_session_current_user non_owner
+
+    get :show, :id => @ssh_key.to_param
+    assert_response :forbidden, 'show'
+
+    get :edit, :id => @ssh_key.to_param
+    assert_response :forbidden, 'edit'
+
+    put :update, :id => @ssh_key.to_param, :ssh_key => @ssh_key.attributes
+    assert_response :forbidden, 'update'
+
+    assert_no_difference('SshKey.count') do
+      delete :destroy, :id => @ssh_key.to_param
+      assert_response :forbidden, 'destroy'
+    end   
+  end  
+
+  test "should deny access to guests" do
+    set_session_current_user nil
+
+    get :show, :id => @ssh_key.to_param
+    assert_response :forbidden, 'show'
+
+    get :edit, :id => @ssh_key.to_param
+    assert_response :forbidden, 'edit'
+
+    put :update, :id => @ssh_key.to_param, :ssh_key => @ssh_key.attributes
+    assert_response :forbidden, 'update'
+
+    assert_no_difference('SshKey.count') do
+      delete :destroy, :id => @ssh_key.to_param
+      assert_response :forbidden, 'destroy'
+    end   
+  end  
 end

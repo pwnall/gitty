@@ -5,6 +5,8 @@ class CommitsControllerTest < ActionController::TestCase
     @commit = commits(:commit2)
     @branch = branches(:branch1)
     @tag = tags(:v1)
+    @session_user = @branch.repository.profile.user
+    set_session_current_user @session_user    
   end
 
   test "should show commits with no ref" do
@@ -38,6 +40,54 @@ class CommitsControllerTest < ActionController::TestCase
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param
     assert_response :success
+  end
+  
+  test "should grant read access to non-owner" do
+    non_owner = User.all.find { |u| u != @session_user }
+    assert non_owner, 'non-owner finding failed'
+    set_session_current_user non_owner
+
+    get :index, :repo_name => @commit.repository.to_param,
+                :profile_name => @commit.repository.profile.to_param
+    assert_response :success
+    
+    get :index, :repo_name => @commit.repository.to_param,
+                :profile_name => @commit.repository.profile.to_param,
+                :ref_name => @branch.to_param
+    assert_response :success
+    
+    get :index, :repo_name => @commit.repository.to_param,
+                :profile_name => @commit.repository.profile.to_param,
+                :ref_name => @tag.to_param
+    assert_response :success
+    
+    get :show, :commit_gid => @commit.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param
+    assert_response :success    
+  end
+
+  test "should deny access to guests" do
+    set_session_current_user nil
+    
+    get :index, :repo_name => @commit.repository.to_param,
+                :profile_name => @commit.repository.profile.to_param
+    assert_response :forbidden
+    
+    get :index, :repo_name => @commit.repository.to_param,
+                :profile_name => @commit.repository.profile.to_param,
+                :ref_name => @branch.to_param
+    assert_response :forbidden
+    
+    get :index, :repo_name => @commit.repository.to_param,
+                :profile_name => @commit.repository.profile.to_param,
+                :ref_name => @tag.to_param
+    assert_response :forbidden
+    
+    get :show, :commit_gid => @commit.to_param,
+               :repo_name => @commit.repository.to_param,
+               :profile_name => @commit.repository.profile.to_param
+    assert_response :forbidden
   end
   
   test "commit routes" do

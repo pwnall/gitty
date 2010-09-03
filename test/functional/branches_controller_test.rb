@@ -3,6 +3,8 @@ require 'test_helper'
 class BranchesControllerTest < ActionController::TestCase
   setup do
     @branch = branches(:master)
+    @session_user = @branch.repository.profile.user
+    set_session_current_user @session_user
   end
 
   test "should get index" do
@@ -17,6 +19,34 @@ class BranchesControllerTest < ActionController::TestCase
                :repo_name => @branch.repository.to_param,
                :profile_name => @branch.repository.profile.to_param
     assert_response :success
+  end
+  
+  test "should grant read access to non-owner" do
+    non_owner = User.all.find { |u| u != @session_user }
+    assert non_owner, 'non-owner finding failed'
+    set_session_current_user non_owner
+
+    get :index, :repo_name => @branch.repository.to_param,
+                :profile_name => @branch.repository.profile.to_param
+    assert_response :success
+    
+    get :show, :branch_name => @branch.to_param,
+               :repo_name => @branch.repository.to_param,
+               :profile_name => @branch.repository.profile.to_param
+    assert_response :success
+  end
+
+  test "should deny access to guests" do
+    set_session_current_user nil
+    
+    get :index, :repo_name => @branch.repository.to_param,
+                :profile_name => @branch.repository.profile.to_param
+    assert_response :forbidden
+    
+    get :show, :branch_name => @branch.to_param,
+               :repo_name => @branch.repository.to_param,
+               :profile_name => @branch.repository.profile.to_param
+    assert_response :forbidden
   end
   
   test "branch routes" do
