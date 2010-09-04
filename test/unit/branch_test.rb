@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class BranchTest < ActiveSupport::TestCase
-  def setup
+  setup do
     @repo = repositories(:dexter_ghost)
     @branch = Branch.new :name => 'branch2', :commit => commits(:commit1),
                          :repository => @repo

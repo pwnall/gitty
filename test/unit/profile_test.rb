@@ -3,7 +3,7 @@ require 'test_helper'
 class ProfileTest < ActiveSupport::TestCase
   setup :mock_profile_paths
   
-  def setup
+  setup do
     @profile = Profile.new :name => 'awesome',
                            :display_name => 'Awesome Profile'
   end  
@@ -53,5 +53,19 @@ class ProfileTest < ActiveSupport::TestCase
     @profile.destroy
     assert !File.exist?('tmp/test_git_root/pwnage'),
            'Old directory not deleted on rename'
+  end
+  
+  test 'can_charge?' do
+    profile = profiles(:dexter)
+    assert !profile.can_charge?(nil), 'no user'
+    assert profile.can_charge?(users(:jane)), 'owning user'
+    assert !profile.can_charge?(users(:john)), 'unrelated user'
+  end
+  
+  test 'can_edit?' do
+    profile = profiles(:dexter)
+    assert !profile.can_edit?(nil), 'no user'
+    assert profile.can_edit?(users(:jane)), 'owning user'
+    assert !profile.can_edit?(users(:john)), 'unrelated user'
   end
 end

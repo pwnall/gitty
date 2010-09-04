@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class BlobTest < ActiveSupport::TestCase
-  def setup
+  setup do
     @repo = repositories(:dexter_ghost)
     @blob = Blob.new :gitid => '5146ab699d565600dc54251c226d6e528b448b93',
                      :repository => @repo, :mime_type => 'text/plain',

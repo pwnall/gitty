@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TreeEntryTest < ActiveSupport::TestCase
-  def setup
+  setup do
     @repo = repositories(:dexter_ghost)
     @entry = TreeEntry.new :tree => trees(:commit1_root),
                            :child => blobs(:d1_b), :name => 'b'

@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TagTest < ActiveSupport::TestCase
-  def setup
+  setup do
     @repo = repositories(:dexter_ghost)
     @tag = Tag.new :name => 'tag', :commit => commits(:commit1),
                    :committer_name => 'Victor Costan',

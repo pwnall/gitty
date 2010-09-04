@@ -4,6 +4,11 @@ class Repository < ActiveRecord::Base
   belongs_to :profile
   validates :profile, :presence => true
   
+  # Virtual field because we don't want to expose the profile ID.
+  def profile_name
+    profile.name
+  end
+  
   # Branch information cached from the on-disk repository.
   has_many :branches, :dependent => :destroy
   # Tag information cached from the on-disk repository.
@@ -336,6 +341,8 @@ class Repository
   #
   # Committing means the user can push branches and tags.
   def can_commit?(user)
+    # TODO(costan): proper ACLs
+
     user && profile_id == user.profile_id
   end
   
@@ -344,9 +351,11 @@ class Repository
   # Administrating implies changing the repository ACL, as well as renaming and
   # deleting the repository. 
   def can_edit?(user)
-    # NOTE: a user should always be able to admin a repository that is charged
-    #       against one of the user's profiles.
-    user && profile_id == user.profile_id
+    # TODO(costan): proper ACLs
+    
+    # NOTE: users who can charge the profile can always edit the repo by
+    #       deleting it and creating a similar repo with the same name 
+    profile.can_charge? user
   end
 end
 

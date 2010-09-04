@@ -24,7 +24,8 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
 
   test "should create repository" do
-    attributes = @repository.attributes.merge :name => 'rails'
+    attributes = @repository.attributes.merge :name => 'rails',
+        :profile_name => @repository.profile.name
     assert_difference('Repository.count') do
       post :create, :repository => attributes
     end
@@ -65,7 +66,10 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
 
   test "should update repository" do
-    put :update, :repository => @repository.attributes,
+    attributes =
+        @repository.attributes.merge :profile_name => @repository.profile.name
+
+    put :update, :repository => attributes,
         :repo_name => @repository.to_param,
         :profile_name => @repository.profile.to_param
         
@@ -105,6 +109,23 @@ class RepositoriesControllerTest < ActionController::TestCase
                        :profile_name => @repository.profile.to_param
     end
     assert_response :forbidden
+  end
+  
+  test "should reject unauthorized charging via create" do
+    attributes = @repository.attributes.merge :name => 'rails',
+        :profile_name => 'costan'
+    assert_no_difference 'Repository.count' do
+      post :create, :repository => attributes
+    end
+    assert_response :forbidden
+  end
+  
+  test "should reject unauthorized charging via update" do
+    attributes = @repository.attributes.merge :profile_name => 'costan'
+    put :update, :repository => attributes, :repo_name => @repository.to_param,
+        :profile_name => @repository.profile.to_param
+    assert_response :forbidden
+    assert_equal profiles(:dexter), @repository.reload.profile
   end
 
   test "should deny access to guests" do

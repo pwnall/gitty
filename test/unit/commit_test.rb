@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class CommitTest < ActiveSupport::TestCase
-  def setup
+  setup do
     @repo = repositories(:dexter_ghost)
     @commit = Commit.new :gitid => 'becaeef98b57cfcc17472c001ebb5a4af5e4347b',
                          :author_name => 'Victor Costan',

@@ -13,8 +13,8 @@
   <% end %>
 
   <div class="field">
-    <%= f.label :profile_id, 'Profile' %>
-    <%= f.select :profile_id, profile_select_options %>
+    <%= f.label :profile_name, 'Profile' %>
+    <%= f.select :profile_name, current_user.chargeable_profiles.map(&:name) %>
   </div>
   <div class="field">
     <%= f.label :name %>

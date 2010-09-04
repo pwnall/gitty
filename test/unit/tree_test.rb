@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class TreeTest < ActiveSupport::TestCase
-  def setup
+  setup do
     @repo = repositories(:dexter_ghost)
     @tree = Tree.new :gitid => 'c5411c50d6c35cb4c1d0c75e16db82bd3a12113d',
                      :repository => @repo

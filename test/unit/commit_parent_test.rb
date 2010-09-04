@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class CommitParentTest < ActiveSupport::TestCase
-  def setup
+  setup do
     @repo = repositories(:dexter_ghost)
     @parent = CommitParent.new :commit => commits(:commit1),
                                :parent => commits(:commit2)

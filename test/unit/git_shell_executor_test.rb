@@ -7,7 +7,7 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   class AccessExitError < RuntimeError; end
   class BackendExitError < RuntimeError; end
   
-  def setup
+  setup do
     @executor = GitShellExecutor.new
     # Mock the error method.
     class <<@executor

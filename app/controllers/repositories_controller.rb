@@ -1,9 +1,23 @@
 class RepositoriesController < ApplicationController
   before_filter :current_user_can_read_repo, :only => [:show]
   before_filter :current_user_can_edit_repo, :only => [:edit, :update, :destroy]
+  
+  # before_filter that validates the repository's profile and converts the name
+  # to the ActiveRecord id
+  def current_user_can_charge_repo_profile
+    profile_name = params[:repository].delete :profile_name
+    profile = Profile.where(:name => profile_name).first    
+    if profile && profile.can_charge?(current_user)
+      params[:repository][:profile_id] = profile.id
+    else
+      head :forbidden
+    end
+  end
+  before_filter :current_user_can_charge_repo_profile,
+      :only => [:create, :update]
 
-  # GET /gitty/repositories
-  # GET /gitty/repositories.json
+  # GET /_/repositories
+  # GET /_/repositories.json
   def index
     @repositories = current_user.repositories
     respond_to do |format|
@@ -21,8 +35,8 @@ class RepositoriesController < ApplicationController
     end
   end
 
-  # GET /gitty/repositories/new
-  # GET /gitty/repositories/new.xml
+  # GET /_/repositories/new
+  # GET /_/repositories/new.xml
   def new
     @repository = Repository.new
     @profile = current_user.profile
@@ -33,17 +47,16 @@ class RepositoriesController < ApplicationController
     end
   end
 
-  # GET /gitty/repositories/costan/rails/edit
+  # GET /costan/rails/edit
   def edit
     @profile = Profile.where(:name => params[:profile_name]).first
     @repository = @profile.repositories.where(:name => params[:repo_name]).first
   end
 
-  # POST /gitty/repositories
-  # POST /gitty/repositories
+  # POST /_/repositories
+  # POST /_/repositories
   def create
     @repository = Repository.new(params[:repository])
-    @profile = @repository.profile
 
     respond_to do |format|
       if @repository.save
@@ -92,7 +105,7 @@ class RepositoriesController < ApplicationController
     end
   end
   
-  # GET /gitty/check_access.json?repo_path=costan/rails.git&ssh_key_id=1&commit_access=true
+  # GET /_/check_access.json?repo_path=costan/rails.git&ssh_key_id=1&commit_access=true
   def check_access
     @repository = Repository.find_by_ssh_path params[:repo_path]
     ssh_key = SshKey.where(:id => params[:ssh_key_id]).first
@@ -125,7 +138,7 @@ class RepositoriesController < ApplicationController
     end
   end
   
-  # POST /gitty/change_notice.json?repo_path=costan/rails.git&ssh_key_id=1
+  # POST /_/change_notice.json?repo_path=costan/rails.git&ssh_key_id=1
   protect_from_forgery :except => :change_notice
   def change_notice
     @ssh_key = SshKey.find(params[:ssh_key_id])

@@ -74,3 +74,17 @@ class Profile
     FileUtils.rm_r local_path if File.exist? local_path
   end
 end
+
+# :nodoc: access control
+class Profile
+  # True if the user can charge repositories to this profile.
+  def can_charge?(user)
+    # NOTE: this will be replaced to support group profiles.
+    user && id == user.profile_id
+  end
+  
+  # True if the user can edit the profile.
+  def can_edit?(user)
+    user && id == user.profile_id
+  end
+end
