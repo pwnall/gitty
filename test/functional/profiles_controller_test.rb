@@ -4,8 +4,9 @@ class ProfilesControllerTest < ActionController::TestCase
   setup :mock_profile_paths
   
   setup do
-    set_session_current_user users(:john)
     @profile = profiles(:costan)
+    @session_user = profiles(:costan).user
+    set_session_current_user @session_user
   end
 
   test "should get index" do
@@ -51,6 +52,27 @@ class ProfilesControllerTest < ActionController::TestCase
     assert_redirected_to profiles_path
   end
   
+  test "should grant read access to non-owner" do
+    non_owner = User.all.find { |u| u != @session_user }
+    assert non_owner, 'non-owner finding failed'
+    set_session_current_user non_owner
+    
+    get :show, :profile_name => @profile.to_param
+    assert_response :success
+    
+    get :edit, :profile_name => @profile.to_param
+    assert_response :forbidden
+    
+    put :update, :profile_name => @profile.to_param,
+                 :profile => @profile.attributes
+    assert_response :forbidden
+    
+    assert_no_difference 'Repository.count' do
+      delete :destroy, :profile_name => @profile.to_param
+    end
+    assert_response :forbidden
+  end
+    
   test "profile routes" do
     assert_routing({:path => '/_/profiles', :method => :get},
                    {:controller => 'profiles', :action => 'index'})

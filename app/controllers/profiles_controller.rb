@@ -1,4 +1,13 @@
 class ProfilesController < ApplicationController
+  # before_filter verifying that the current user is authorized to do changes
+  def current_user_can_edit_profile
+    @profile = Profile.where(:name => params[:profile_name]).first
+    head :forbidden unless @profile.can_edit? current_user
+  end
+  private :current_user_can_edit_profile
+  before_filter :current_user_can_edit_profile,
+      :except => [:new, :create, :index, :show]
+  
   # GET /profiles
   # GET /profiles.xml
   def index
@@ -34,7 +43,6 @@ class ProfilesController < ApplicationController
 
   # GET /profiles/costan/edit
   def edit
-    @profile = Profile.where(:name => params[:profile_name]).first
   end
 
   # POST /profiles
@@ -62,8 +70,6 @@ class ProfilesController < ApplicationController
   # PUT /profiles/costan
   # PUT /profiles/costan.xml
   def update
-    @profile = Profile.where(:name => params[:profile_name]).first
-
     respond_to do |format|
       if @profile.update_attributes!(params[:profile])
         format.html { redirect_to(@profile, :notice => 'Profile was successfully updated.') }
@@ -78,7 +84,6 @@ class ProfilesController < ApplicationController
   # DELETE /profiles/costan
   # DELETE /profiles/costan.xml
   def destroy
-    @profile = Profile.where(:name => params[:profile_name]).first
     @profile.destroy
 
     respond_to do |format|
