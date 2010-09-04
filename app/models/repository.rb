@@ -4,9 +4,14 @@ class Repository < ActiveRecord::Base
   belongs_to :profile
   validates :profile, :presence => true
   
-  # Virtual field because we don't want to expose the profile ID.
+  # Virtual attribute, backed by profile_id.
   def profile_name
-    profile.name
+    @profile_name ||= profile && profile.name
+  end
+  def profile_name=(new_profile_name)
+    self.profile = new_profile_name &&
+        Profile.where(:name => new_profile_name).first    
+    @profile_name = profile && profile.name
   end
   
   # Branch information cached from the on-disk repository.

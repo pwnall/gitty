@@ -5,11 +5,9 @@ class RepositoriesController < ApplicationController
   # before_filter that validates the repository's profile and converts the name
   # to the ActiveRecord id
   def current_user_can_charge_repo_profile
-    profile_name = params[:repository].delete :profile_name
+    profile_name = params[:repository][:profile_name]
     profile = Profile.where(:name => profile_name).first    
-    if profile && profile.can_charge?(current_user)
-      params[:repository][:profile_id] = profile.id
-    else
+    unless profile && profile.can_charge?(current_user)
       head :forbidden
     end
   end
@@ -61,12 +59,12 @@ class RepositoriesController < ApplicationController
     respond_to do |format|
       if @repository.save
         format.html do
-          redirect_to profile_repository_url(@profile, @repository),
+          redirect_to profile_repository_url(@repository.profile, @repository),
                       :notice => 'Repository was successfully created.'
         end
         format.xml do
           render :xml => @repository, :status => :created,
-                 :location => [@profile, @repository]
+                 :location => [@repository.profile, @repository]
         end
       else
         format.html { render :action => "new" }

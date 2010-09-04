@@ -28,6 +28,28 @@ class RepositoryTest < ActiveSupport::TestCase
     end    
   end
   
+  test 'profile_name' do
+    assert_equal 'dexter', @repo.profile_name
+  end
+  
+  test 'profile_name set to nil' do
+    @repo.profile_name  # Uncover any caching issues.
+    @repo.profile
+
+    @repo.profile_name = nil
+    assert_equal nil, @repo.profile_name, 'profile_name'
+    assert_equal nil, @repo.profile, 'profile association'
+  end
+  
+  test 'profile_name set' do
+    @repo.profile_name  # Uncover any caching issues.
+    @repo.profile
+
+    @repo.profile_name = 'costan'
+    assert_equal 'costan', @repo.profile_name
+    assert_equal profiles(:costan), @repo.profile
+  end
+  
   test 'local_path' do
     mock_profile_paths_undo
     if RUBY_PLATFORM =~ /darwin/
