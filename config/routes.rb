@@ -3,10 +3,21 @@ Gitty::Application.routes.draw do
     config_vars    
   
     resource :session, :controller => 'session'
-  
-    resources :users
-  
+    
     resources :ssh_keys
+    
+    # Users.
+    get '/users' => 'users#index', :as => :users
+    post '/users' => 'users#create'
+    get '/users/register' => 'users#new', :as => :new_user
+    get '/user/:user_param(.:format)' => 'users#show', :as => :user,
+        :constraints => { :user_param => /[^\/]*/ }
+    get '/user/:user_param/edit(.:format)' => 'users#edit', :as => :edit_user,
+        :constraints => { :user_param => /[^\/]*/ }
+    put '/user/:user_param(.:format)' => 'users#update',
+        :constraints => { :user_param => /[^\/]*/ }
+    delete '/user/:user_param(.:format)' => 'users#destroy',
+           :constraints => { :user_param => /[^\/]*/ }
   end
 
   # The priority is based upon order of creation:

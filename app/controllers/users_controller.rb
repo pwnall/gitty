@@ -1,4 +1,27 @@
 class UsersController < ApplicationController
+  # before_filter that validates the current user's ability to make changes
+  def current_user_can_edit_user
+    @user = User.find_by_param(params[:user_param])
+    head :forbidden unless @user && @user.can_edit?(current_user)
+  end
+  private :current_user_can_edit_user
+  before_filter :current_user_can_edit_user, :only => [:edit, :update, :destroy]
+  
+  # before_filter that validates the current user's ability to see an account
+  def current_user_can_read_user
+    @user = User.find_by_param(params[:user_param])
+    head :forbidden unless @user && @user.can_read?(current_user)
+  end
+  private :current_user_can_read_user
+  before_filter :current_user_can_read_user, :only => [:show]
+  
+  # before_filter that validates the current user's ability to list accounts  
+  def current_user_can_list_users
+    head :forbidden unless User.can_list_users? current_user
+  end
+  private :current_user_can_list_users
+  before_filter :current_user_can_list_users, :only => [:index]
+  
   # GET /users
   # GET /users.xml
   def index
@@ -13,8 +36,6 @@ class UsersController < ApplicationController
   # GET /users/1
   # GET /users/1.xml
   def show
-    @user = User.find(params[:id])
-
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @user }
@@ -34,7 +55,6 @@ class UsersController < ApplicationController
 
   # GET /users/1/edit
   def edit
-    @user = User.find(params[:id])
   end
 
   # POST /users
@@ -57,8 +77,6 @@ class UsersController < ApplicationController
   # PUT /users/1
   # PUT /users/1.xml
   def update
-    @user = User.find(params[:id])
-
     respond_to do |format|
       if @user.update_attributes(params[:user])
         format.html { redirect_to(@user, :notice => 'User was successfully updated.') }
@@ -73,7 +91,6 @@ class UsersController < ApplicationController
   # DELETE /users/1
   # DELETE /users/1.xml
   def destroy
-    @user = User.find(params[:id])
     @user.destroy
 
     respond_to do |format|

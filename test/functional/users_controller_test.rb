@@ -3,9 +3,30 @@ require 'test_helper'
 class UsersControllerTest < ActionController::TestCase
   setup do
     @user = users(:john)
+    admin = users(:jane)
+
+    User.class_eval do
+      (class <<self; self; end).class_eval do      
+        alias_method :real_can_list_users?, :can_list_users?
+        define_method :can_list_users? do |user|
+          user == admin
+        end
+      end
+    end
+  end
+  
+  teardown do
+    User.class_eval do
+      (class <<self; self; end).class_eval do
+        undef can_list_users?
+        alias_method :can_list_users?, :real_can_list_users?
+        undef real_can_list_users?
+      end
+    end    
   end
 
   test "should get index" do
+    set_session_current_user users(:jane)
     get :index
     assert_response :success
     assert_not_nil assigns(:users)
@@ -28,25 +49,53 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "should show user" do
-    get :show, :id => @user.to_param
+    set_session_current_user users(:john)
+    get :show, :user_param => @user.to_param
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :id => @user.to_param
+    set_session_current_user users(:john)
+    get :edit, :user_param => @user.to_param
     assert_response :success
   end
-
+  
   test "should update user" do
-    put :update, :id => @user.to_param, :user => @user.attributes
+    set_session_current_user users(:john)
+    put :update, :user_param => @user.to_param, :user => @user.attributes
     assert_redirected_to user_path(assigns(:user))
   end
 
   test "should destroy user" do
+    set_session_current_user users(:john)
     assert_difference('User.count', -1) do
-      delete :destroy, :id => @user.to_param
+      delete :destroy, :user_param => @user.to_param
     end
 
     assert_redirected_to users_path
+  end
+  
+  test "another user should not be able to change account" do
+    set_session_current_user users(:jane)
+
+    get :show, :user_param => @user.to_param
+    assert_response :forbidden
+
+    get :edit, :user_param => @user.to_param
+    assert_response :forbidden
+
+    put :update, :user_param => @user.to_param, :user => @user.attributes
+    assert_response :forbidden
+    
+    assert_no_difference 'User.count' do
+      delete :destroy, :user_param => @user.to_param
+    end
+    assert_response :forbidden
+  end
+  
+  test "random users should not be able to list conditions" do
+    set_session_current_user users(:john)
+    get :index
+    assert_response :forbidden
   end
 end
