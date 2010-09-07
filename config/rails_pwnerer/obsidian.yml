@@ -1,0 +1,3 @@
+--- 
+dns_name: git.pwnb.us
+frontends_per_core: 2
