@@ -7,7 +7,6 @@ class TreeEntry < ActiveRecord::Base
   # The child tree (sub-directory) or blob (file).
   belongs_to :child, :polymorphic => true
   validates :child, :presence => true
-  validates :child_id, :uniqueness => { :scope => [:tree_id, :child_type] }  
 
   # The child's name.
   validates :name, :length => 1..256, :presence => true,
