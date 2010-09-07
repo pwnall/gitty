@@ -115,7 +115,6 @@ ActiveRecord::Schema.define(:version => 20100814090540) do
     t.string  "name",       :limit => 128, :null => false
   end
 
-  add_index "tree_entries", ["tree_id", "child_type", "child_id"], :name => "index_tree_entries_on_tree_id_and_child_type_and_child_id", :unique => true
   add_index "tree_entries", ["tree_id", "name"], :name => "index_tree_entries_on_tree_id_and_name", :unique => true
 
   create_table "trees", :force => true do |t|

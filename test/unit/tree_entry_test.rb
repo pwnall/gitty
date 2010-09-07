@@ -16,10 +16,10 @@ class TreeEntryTest < ActiveSupport::TestCase
     assert !@entry.valid?
   end
   
-  test 'no duplicate objects' do
+  test 'duplicate objects with different names are ok' do
     @entry.name = 'new'
     @entry.tree = trees(:commit2_d1)
-    assert !@entry.valid?
+    assert @entry.valid?
   end
   
   test 'tree must be set' do

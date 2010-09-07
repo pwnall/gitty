@@ -44,6 +44,14 @@ class Profile
     # TODO: background job.
     FileUtils.mkdir_p local_path
     FileUtils.chmod_R 0770, local_path
+    begin
+      FileUtils.chown_R ConfigVar['git_user'], nil, local_path
+    rescue ArgumentError
+      # Happens in unit testing, when the git user isn't created yet.
+      raise unless Rails.env.test?
+    rescue Errno::EPERM
+      # Not root, not allowed to chown.    
+    end    
     local_path
   end
   
