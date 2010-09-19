@@ -26,7 +26,8 @@ class Repository < ActiveRecord::Base
   has_many :blobs, :dependent => :destroy
   
   # The repository name.
-  validates :name, :length => 1..64, :format => /\A\w+\Z/, :presence => true,
+  validates :name, :length => 1..64, :format => /\A\w([\w.-]*\w)?\Z/,
+                   :presence => true,
                    :uniqueness => { :scope => :profile_id }
 
   # The repository's location on disk.
