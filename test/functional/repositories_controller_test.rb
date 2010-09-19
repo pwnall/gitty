@@ -76,6 +76,42 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_redirected_to profile_repository_path(assigns(:repository).profile,
                                                  assigns(:repository))
   end
+  
+  test "should rename repository" do
+    old_local_path = @repository.local_path
+    FileUtils.mkdir_p old_local_path
+    attributes = @repository.attributes.merge(
+        :profile_name => @repository.profile.name, :name => 'randomness')
+
+    put :update, :repository => attributes,
+        :repo_name => @repository.to_param,
+        :profile_name => @repository.profile.to_param
+    
+    assert_equal 'randomness', @repository.reload.name
+    
+    assert_not_equal old_local_path, @repository.local_path,
+                     'rename test case broken'
+    assert !File.exist?(old_local_path), 'repository not renamed'
+    assert File.exist?(@repository.local_path), 'repository not renamed'
+    
+    assert_redirected_to profile_repository_path(assigns(:repository).profile,
+                                                 assigns(:repository))        
+  end
+  
+  test "should use old repository url on rejected rename" do
+    attributes = @repository.attributes.merge(
+        :profile_name => @repository.profile.name, :name => '-broken')
+
+    put :update, :repository => attributes,
+        :repo_name => @repository.to_param,
+        :profile_name => @repository.profile.to_param
+    
+    assert_not_equal '-broken', @repository.reload.name
+    repo_path = profile_repository_path(@repository.profile, @repository)
+    assert_template :edit
+    assert_select "form[action=#{repo_path}]"
+    assert_select 'input[id=repository_name][value="-broken"]'
+  end
 
   test "should destroy repository" do
     assert_difference 'Repository.count', -1 do

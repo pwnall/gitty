@@ -71,10 +71,11 @@ class ProfilesController < ApplicationController
   # PUT /profiles/costan.xml
   def update
     respond_to do |format|
-      if @profile.update_attributes!(params[:profile])
+      if @profile.update_attributes(params[:profile])
         format.html { redirect_to(@profile, :notice => 'Profile was successfully updated.') }
         format.xml  { head :ok }
       else
+        @original_profile = Profile.find(@profile.id)        
         format.html { render :action => "edit" }
         format.xml  { render :xml => @profile.errors, :status => :unprocessable_entity }
       end

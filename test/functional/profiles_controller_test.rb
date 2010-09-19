@@ -43,6 +43,33 @@ class ProfilesControllerTest < ActionController::TestCase
                  :profile => @profile.attributes
     assert_redirected_to profile_path(assigns(:profile))
   end
+  
+  test "should rename profile" do
+    old_local_path = @profile.local_path
+    FileUtils.mkdir_p old_local_path
+
+    put :update, :profile_name => @profile.to_param,
+                 :profile => @profile.attributes.merge(:name => 'randomness')
+    
+    assert_equal 'randomness', @profile.reload.name
+    
+    assert_not_equal old_local_path, @profile.local_path,
+                     'rename test case broken'
+    assert !File.exist?(old_local_path), 'profile not renamed'
+    assert File.exist?(@profile.local_path), 'profile not renamed'
+    
+    assert_redirected_to profile_path(assigns(:profile))
+  end
+  
+  test "should use old profile url on rejected rename" do
+    put :update, :profile_name => @profile.to_param,
+                 :profile => @profile.attributes.merge(:name => '-broken')
+    
+    assert_not_equal '-broken', @profile.reload.name
+    assert_template :edit
+    assert_select "form[action=#{profile_path(@profile)}]"
+    assert_select 'input[id=profile_name][value="-broken"]'
+  end  
 
   test "should destroy profile" do
     assert_difference('Profile.count', -1) do

@@ -80,10 +80,11 @@ class RepositoriesController < ApplicationController
     @repository = @profile.repositories.where(:name => params[:repo_name]).first
 
     respond_to do |format|
-      if @repository.update_attributes(params[:repository])
+      if @repository.update_attributes(params[:repository])        
         format.html { redirect_to(profile_repository_url(@profile, @repository), :notice => 'Repository was successfully updated.') }
         format.xml  { head :ok }
       else
+        @original_repository = Repository.find(@repository.id)
         format.html { render :action => "edit" }
         format.xml  { render :xml => @repository.errors, :status => :unprocessable_entity }
       end
