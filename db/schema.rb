@@ -10,7 +10,17 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100814090540) do
+ActiveRecord::Schema.define(:version => 20100925185122) do
+
+  create_table "acl_entries", :force => true do |t|
+    t.string   "role"
+    t.integer  "subject_id"
+    t.string   "subject_type"
+    t.integer  "principle_id"
+    t.string   "principle_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "blobs", :force => true do |t|
     t.integer "repository_id",               :null => false

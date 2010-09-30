@@ -1,4 +1,6 @@
 Gitty::Application.routes.draw do
+  resources :acl_entries
+
   scope '_' do
     config_vars    
   

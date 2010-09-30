@@ -3,6 +3,11 @@ class Profile < ActiveRecord::Base
   # The repositories created by this profile.
   has_many :repositories, :dependent => :destroy
   
+  has_many :user_acl_entries, :class_name => "AclEntry", :as => :subject, 
+                              :dependent => :destroy
+  has_many :profile_acl_entries, :class_name => "AclEntry", :as => :principal, 
+                                 :dependent => :destroy
+  
   # The profile's short name, used in URLs.
   validates :name, :length => 1..32, :format => /\A\w+\Z/, :presence => true,
                    :uniqueness => true
@@ -85,14 +90,26 @@ end
 
 # :nodoc: access control
 class Profile
+  def can_participate?(user)
+    can? user, [:participate, :charge, :edit] 
+  end
+  
   # True if the user can charge repositories to this profile.
   def can_charge?(user)
     # NOTE: this will be replaced to support group profiles.
-    user && id == user.profile_id
+    can? user, [:charge, :edit]
   end
   
   # True if the user can edit the profile.
   def can_edit?(user)
-    user && id == user.profile_id
+    can? user, [:edit]
   end
+
+  def can?(user, role)
+    user && (! user_acl_entries.find(:principal_id => user.id, 
+                                     :principal_type => user.class.name,
+                                     :role => role).empty?)
+  end
+  
+  private :can?
 end

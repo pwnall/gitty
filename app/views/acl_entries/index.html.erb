@@ -1,0 +1,23 @@
+<h1>Listing acl_entries</h1>
+
+<table>
+  <tr>
+    <th>Role</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @acl_entries.each do |acl_entry| %>
+  <tr>
+    <td><%= acl_entry.role %></td>
+    <td><%= link_to 'Show', acl_entry %></td>
+    <td><%= link_to 'Edit', edit_acl_entry_path(acl_entry) %></td>
+    <td><%= link_to 'Destroy', acl_entry, :confirm => 'Are you sure?', :method => :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Acl entry', new_acl_entry_path %>

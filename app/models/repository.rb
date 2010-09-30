@@ -24,6 +24,7 @@ class Repository < ActiveRecord::Base
   has_many :trees, :dependent => :destroy  
   # Blob information cached from the on-disk repository.
   has_many :blobs, :dependent => :destroy
+  has_many :acl_entries, :as => :subject, :dependent => :destroy
   
   # The repository name.
   validates :name, :length => 1..64, :format => /\A\w([\w.-]*\w)?\Z/,
@@ -356,7 +357,7 @@ class Repository
   # Committing means the user can push branches and tags.
   def can_commit?(user)
     # TODO(costan): proper ACLs
-
+    
     user && profile_id == user.profile_id
   end
   

@@ -1,0 +1,10 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Role:</b>
+  <%= @acl_entry.role %>
+</p>
+
+
+<%= link_to 'Edit', edit_acl_entry_path(@acl_entry) %> |
+<%= link_to 'Back', acl_entries_path %>
