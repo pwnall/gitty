@@ -9,5 +9,5 @@ class AclEntry < ActiveRecord::Base
   validates :principal, :presence => true
   
   # The type of operation that the subject is allowed to perform.
-  validates :role, :presence => true, :length => 16
+  validates :role, :presence => true, :length => 1..16
 end

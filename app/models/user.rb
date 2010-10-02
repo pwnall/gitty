@@ -27,10 +27,11 @@ class User < ActiveRecord::Base
   # The SSH keys used to authenticate this user.
   has_many :ssh_keys, :dependent => :destroy
   
+  # Entries for profiles that this user has bits for.
   has_many :acl_entries, :as => :principal, :dependent => :destroy
   
   # All the profiles such that profile.can_charge? returns true for this user.
   def chargeable_profiles
-    acl_entries.find(:role => "charge")
+    acl_entries.where(:role => [:charge, :edit]).map(&:subject)
   end
 end

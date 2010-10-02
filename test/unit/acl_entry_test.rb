@@ -7,8 +7,27 @@ class AclEntryTest < ActiveSupport::TestCase
                               :role => 'member'
   end
   
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
+  test 'setup' do
+    assert @acl_entry.valid?
   end
+  
+  test 'rejects entries without roles' do
+    @acl_entry.role = nil
+    assert !@acl_entry.valid?
+  end
+  
+  test 'rejects entries with empty roles' do
+    @acl_entry.role = ''
+    assert !@acl_entry.valid?
+  end
+  
+  test 'rejects entries without subjects' do
+    @acl_entry.subject = nil
+    assert !@acl_entry.valid?
+  end
+
+  test 'rejects entries without principals' do
+    @acl_entry.principal = nil
+    assert !@acl_entry.valid?
+  end  
 end

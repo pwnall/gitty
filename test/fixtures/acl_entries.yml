@@ -3,3 +3,14 @@ jane_csail:
   subject: csail (Profile)
   role: member
 
+# Should be added by AR hook after_create.
+jane_dexter:
+  principal: jane (User)
+  subject: dexter (Profile)
+  role: edit
+
+# Should be added by AR hook after_create.
+john_costan:
+  principal: john (User)
+  subject: costan (Profile)
+  role: edit
