@@ -13,11 +13,11 @@
 ActiveRecord::Schema.define(:version => 20100925185122) do
 
   create_table "acl_entries", :force => true do |t|
-    t.string   "role"
-    t.integer  "subject_id"
-    t.string   "subject_type"
-    t.integer  "principle_id"
-    t.string   "principle_type"
+    t.string   "role",           :null => false
+    t.integer  "subject_id",     :null => false
+    t.string   "subject_type",   :null => false
+    t.integer  "principal_id",   :null => false
+    t.string   "principal_type", :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,7 +1,5 @@
-# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+jane_csail:
+  principal: jane (User)
+  subject: csail (Profile)
+  role: member
 
-one:
-  role: MyString
-
-two:
-  role: MyString
