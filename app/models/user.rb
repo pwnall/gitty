@@ -35,3 +35,25 @@ class User < ActiveRecord::Base
     acl_entries.where(:role => [:charge, :edit]).map(&:subject)
   end
 end
+
+
+# :nodoc: set up an ACL entry for the profile's user
+class User
+  before_save :save_old_profile
+  after_save :add_acl_entry
+  
+  # Saves the user's current profile for the post-save ACL fixup.
+  def save_old_profile
+    @_old_profile_id = profile_id_change ? profile_id_change.first : false
+    true
+  end
+  
+  # Creates an ACL entry for the user's profile.
+  def add_acl_entry
+    return if @_old_profile_id == false
+    
+    old_profile = @_old_profile_id && Profile.find(@_old_profile_id)
+    AclEntry.set self, old_profile, nil if old_profile
+    AclEntry.set self, profile, :edit if profile
+  end
+end

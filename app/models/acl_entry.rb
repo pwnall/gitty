@@ -21,7 +21,7 @@ class AclEntry < ActiveRecord::Base
     if role
       entry ||= new conditions
       entry.role = role
-      entry.save
+      entry.save!
     else
       entry.destroy if entry
     end
