@@ -5,7 +5,7 @@ class AclEntryTest < ActiveSupport::TestCase
     @john = users(:john)
     @acl_entry = AclEntry.new :principal => @john, 
                               :subject => profiles(:csail),
-                              :role => :member
+                              :role => :participate
   end
   
   test 'setup' do

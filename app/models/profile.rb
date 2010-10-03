@@ -91,23 +91,23 @@ end
 # :nodoc: access control
 class Profile
   def can_participate?(user)
-    can? user, [:participate, :charge, :edit] 
+    can_x? user, [:participate, :charge, :edit] 
   end
   
   # True if the user can charge repositories to this profile.
   def can_charge?(user)
     # NOTE: this will be replaced to support group profiles.
-    can? user, [:charge, :edit]
+    can_x? user, [:charge, :edit]
   end
   
   # True if the user can edit the profile.
   def can_edit?(user)
-    can? user, [:edit]
+    can_x? user, [:edit]
   end
 
-  def can?(user, role)
+  def can_x?(user, role)
     user && !user_acl_entries.where(:principal_id => user.id, 
         :principal_type => user.class.name, :role => role).empty?
   end
-  private :can?
+  private :can_x?
 end
