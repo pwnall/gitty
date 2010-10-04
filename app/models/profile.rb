@@ -106,8 +106,8 @@ class Profile
   end
 
   def can_x?(user, role)
-    user && !user_acl_entries.where(:principal_id => user.id, 
-        :principal_type => user.class.name, :role => role).empty?
+    user && user_acl_entries.exists?(:principal_id => user.id, 
+        :principal_type => user.class.name, :role => role)
   end
   private :can_x?
 end

@@ -327,22 +327,36 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Changed tags'
   end
     
+  test 'acl for new repository' do
+    @repo.save!
+    assert_equal :edit, AclEntry.get(@repo.profile, @repo)
+    assert @repo.can_read?(users(:jane)), 'author'
+    assert @repo.can_commit?(users(:jane)), 'author'
+    assert @repo.can_edit?(users(:jane)), 'author'
+    assert !@repo.can_read?(users(:john)), 'unrelated user'
+    assert !@repo.can_commit?(users(:john)), 'unrelated user'
+    assert !@repo.can_edit?(users(:john)), 'unrelated user'
+  end
+
   test 'can_read?' do
     assert !@repo.can_read?(nil), 'no user'
-    assert @repo.can_read?(users(:jane)), 'author'
-    assert @repo.can_read?(users(:john)), 'unrelated user'
+    repo = repositories(:costan_ghost)
+    assert repo.can_read?(users(:john))
+    assert repo.can_read?(users(:jane))
   end
   
   test 'can_commit?' do
     assert !@repo.can_commit?(nil), 'no user'
-    assert @repo.can_commit?(users(:jane)), 'author'
-    assert !@repo.can_commit?(users(:john)), 'unrelated user'
+    repo = repositories(:costan_ghost)
+    assert repo.can_commit?(users(:john)) 
+    assert repo.can_commit?(users(:jane))
   end
   
   test 'can_edit?' do
     assert !@repo.can_edit?(nil), 'no user'
-    assert @repo.can_edit?(users(:jane)), 'author'
-    assert !@repo.can_edit?(users(:john)), 'unrelated user'
+    repo = repositories(:costan_ghost)
+    assert repo.can_edit?(users(:john))
+    assert !repo.can_edit?(users(:jane))
   end
   
   test 'default_branch' do

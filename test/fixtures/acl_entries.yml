@@ -1,16 +1,28 @@
-jane_csail:
+jane_costan:
   principal: jane (User)
-  subject: csail (Profile)
+  subject: costan (Profile)
   role: participate
 
-# Should be added by AR hook after_create.
+# Should be added by AR hook after_save.
 jane_dexter:
   principal: jane (User)
   subject: dexter (Profile)
   role: edit
 
-# Should be added by AR hook after_create.
+# Should be added by AR hook after_save.
 john_costan:
   principal: john (User)
   subject: costan (Profile)
+  role: edit
+  
+# Should be added by AR hook after_save.
+costan_ghost:
+  principal: costan (Profile)
+  subject: costan_ghost (Repository)
+  role: edit
+
+# Should be added by AR hool after_save.
+dexter_ghost:
+  principal: dexter (Profile)
+  subject: dexter_ghost (Repository)
   role: edit
