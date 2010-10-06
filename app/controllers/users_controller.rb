@@ -22,6 +22,12 @@ class UsersController < ApplicationController
   private :current_user_can_list_users
   before_filter :current_user_can_list_users, :only => [:index]
   
+  before_filter :set_profile
+  def set_profile
+    @profile = current_user && current_user.profile
+  end
+  private :set_profile
+  
   # GET /users
   # GET /users.xml
   def index

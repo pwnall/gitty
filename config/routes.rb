@@ -115,6 +115,13 @@ Gitty::Application.routes.draw do
     
     # Admin.
     get 'edit' => 'repositories#edit', :as => :edit_profile_repository
+    
+    # ACLs.
+    get 'acl_entries' => 'acl_entries#index', :as => :profile_repository_acl_entries
+    post 'acl_entries' => 'acl_entries#create'
+    put 'acl_entries/:principal_name' => 'acl_entries#update',
+        :as => :profile_repository_acl_entry,
+        :constraints => { :principal_name => /[^_][^\/]*/ }
   end
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):

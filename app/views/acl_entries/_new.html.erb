@@ -1,0 +1,8 @@
+<% entry = subject.acl_entries.build(:subject => @subject,
+       :role => acl_entry_roles(subject.class).first) %>
+<%= form_for_acl_entry entry  do |f| %>
+  <%= f.hidden_field :principal_type %>
+  <%= f.text_field :principal_name %>
+  <%= f.select :role, acl_entry_roles(subject.class) %>
+  <%= f.submit 'Add Member' %>
+<% end %>

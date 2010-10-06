@@ -1,23 +1,26 @@
-<h1>Listing acl_entries</h1>
+<h2>Members</h2>
 
-<table>
-  <tr>
-    <th>Role</th>
-    <th></th>
-    <th></th>
-    <th></th>
-  </tr>
-
-<% @acl_entries.each do |acl_entry| %>
-  <tr>
-    <td><%= acl_entry.role %></td>
-    <td><%= link_to 'Show', acl_entry %></td>
-    <td><%= link_to 'Edit', edit_acl_entry_path(acl_entry) %></td>
-    <td><%= link_to 'Destroy', acl_entry, :confirm => 'Are you sure?', :method => :delete %></td>
-  </tr>
+<ul class="acl_entries">
+<% @acl_entries.each do |entry| %>
+  <li>
+    <%= form_for_acl_entry entry do |f| %>
+      <% profile = entry.principal.respond_to?(:profile) ? entry.principal.profile : entry.principal %>
+      <% if profile %>      
+        <%= profile.name %> (<%= profile.display_name %>)
+      <% else %>
+        <%= entry.principal.name %>
+      <% end %>
+      
+      <%= f.hidden_field :principal_type %>
+      <%= f.hidden_field :principal_name %>
+      <%= f.select :role, acl_entry_roles(entry.subject.class) %>
+      <%= f.submit 'Change Role' %>
+      <%= link_to 'Remove', acl_entry_path(entry), :method => :delete, :class => 'button'  %>
+    <% end %>
+  </li>
 <% end %>
-</table>
+</ul>
 
-<br />
-
-<%= link_to 'New Acl entry', new_acl_entry_path %>
+<p>
+  <%= render 'acl_entries/new', :subject => @subject %>
+</p>

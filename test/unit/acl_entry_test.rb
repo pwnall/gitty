@@ -69,6 +69,13 @@ class AclEntryTest < ActiveSupport::TestCase
     assert_equal @john.id, entry.principal_id
     assert_equal @john, entry.principal
   end
+  test 'set principal_name after empty principal_type' do
+    entry = AclEntry.new :principal_type => ''
+    entry.principal_name = @john.name
+    assert_equal @john.name, entry.principal_name
+    assert_nil entry.principal_id
+    assert_nil entry.principal
+  end
   test 'set principal_name on existing record' do
     entry = acl_entries(:jane_costan)
     entry.principal_name = @john.name
@@ -88,5 +95,5 @@ class AclEntryTest < ActiveSupport::TestCase
     entry.principal_name = @john.name
     assert_equal @john.id, entry.principal_id
     assert_equal @john, entry.principal
-  end  
+  end
 end

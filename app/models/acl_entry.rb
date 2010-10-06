@@ -17,11 +17,11 @@ class AclEntry < ActiveRecord::Base
   # Virtual field that we use so we don't expose principal_id.
   def principal_name=(new_principal_name)
     @principal_name = new_principal_name
-    if principal_type
+    if principal_type.blank?
+      self.principal_id = nil
+    else
       self.principal = Object.const_get(principal_type).
                               find_by_name(new_principal_name)
-    else
-      self.principal_id = nil
     end
   end
   def principal_name
