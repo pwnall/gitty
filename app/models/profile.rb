@@ -8,6 +8,11 @@ class Profile < ActiveRecord::Base
   has_many :profile_acl_entries, :class_name => "AclEntry", :as => :principal, 
                                  :dependent => :destroy
   
+  # The ACL entries shown in the ACL editing UI.
+  def acl_entries
+    user_acl_entries
+  end
+  
   # The profile's short name, used in URLs.
   validates :name, :length => 1..32, :format => /\A\w+\Z/, :presence => true,
                    :uniqueness => true

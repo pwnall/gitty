@@ -30,6 +30,14 @@ class User < ActiveRecord::Base
   # Entries for profiles that this user has bits for.
   has_many :acl_entries, :as => :principal, :dependent => :destroy
   
+  # Aliases e-mail, to conform to the ACL principal interface.
+  def name
+    email
+  end
+  def self.find_by_name(name)
+    find_by_email name
+  end
+
   # All the profiles such that profile.can_charge? returns true for this user.
   def chargeable_profiles
     acl_entries.where(:role => [:charge, :edit]).map(&:subject)

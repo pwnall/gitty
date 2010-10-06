@@ -52,4 +52,41 @@ class AclEntryTest < ActiveSupport::TestCase
     AclEntry.set(@john, @john.profile, nil)
     assert_equal nil, AclEntry.get(@john, @john.profile)
   end
+  
+  test 'principal_name' do
+    assert_equal @john.email, @acl_entry.principal_name
+  end
+    
+  test 'set principal_name before principal_type on new record' do
+    entry = AclEntry.new :principal_name => @john.name
+    entry.principal_type = @john.class.name
+    assert_equal @john.id, entry.principal_id
+    assert_equal @john, entry.principal
+  end
+  test 'set principal_type before principal_name on new record' do
+    entry = AclEntry.new :principal_type => @john.class.name
+    entry.principal_name = @john.name
+    assert_equal @john.id, entry.principal_id
+    assert_equal @john, entry.principal
+  end
+  test 'set principal_name on existing record' do
+    entry = acl_entries(:jane_costan)
+    entry.principal_name = @john.name
+    assert_equal @john.id, entry.principal_id
+    assert_equal @john, entry.principal
+  end
+  test 'set principal_name before principal_type on existing record' do
+    entry = acl_entries(:jane_costan)
+    entry.principal_name = @john.name
+    entry.principal_type = @john.class.name
+    assert_equal @john.id, entry.principal_id
+    assert_equal @john, entry.principal
+  end
+  test 'set principal_type before principal_name on existing record' do
+    entry = acl_entries(:jane_costan)
+    entry.principal_type = @john.class.name
+    entry.principal_name = @john.name
+    assert_equal @john.id, entry.principal_id
+    assert_equal @john, entry.principal
+  end  
 end

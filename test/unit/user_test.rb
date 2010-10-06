@@ -9,6 +9,16 @@ class UserTest < ActiveSupport::TestCase
     assert @user.valid?
   end
   
+  test 'name' do
+    assert_equal 'john@doe.com', @user.name
+  end
+  
+  test 'find_by_name' do
+    assert_equal users(:john), User.find_by_name(users(:john).name)
+    assert_equal nil, User.find_by_name('random@user.com')
+    assert_equal nil, User.find_by_name(nil)
+  end
+  
   test 'chargeable_profiles' do
     assert_equal [], @user.chargeable_profiles
     assert_equal [profiles(:dexter)], profiles(:dexter).user.chargeable_profiles

@@ -13,7 +13,35 @@ class AclEntry < ActiveRecord::Base
   
   validates :principal_id, :uniqueness => {:scope => [:principal_type, 
       :subject_id, :subject_type]}
-      
+
+  # Virtual field that we use so we don't expose principal_id.
+  def principal_name=(new_principal_name)
+    @principal_name = new_principal_name
+    if principal_type
+      self.principal = Object.const_get(principal_type).
+                              find_by_name(new_principal_name)
+    else
+      self.principal_id = nil
+    end
+  end
+  def principal_name
+    @principal_name ||= principal && principal.name
+  end
+  
+  # Sets principal_id if principal_name= is called before principal_type=.
+  def principal_type=(new_principal_type)
+    super
+    if @principal_name && !principal_id
+      principal = Object.const_get(principal_type).find_by_name(@principal_name)
+      self.principal_id = principal && principal.id
+    end
+  end
+  
+  # Use principal (profile / user) names instead of IDs.
+  def to_param
+    principal_name
+  end
+
   # Sets the principal-subject ACL entry to role. Role can be nil.
   def self.set(principal, subject, role)
     conditions = where_clause principal, subject
