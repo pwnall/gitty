@@ -55,6 +55,13 @@ class ProfileTest < ActiveSupport::TestCase
            'Old directory not deleted on rename'
   end
   
+  test 'can_participate' do
+    profile = profiles(:costan)
+    assert !profile.can_participate?(nil), 'no user'
+    assert profile.can_participate?(users(:jane)), 'participating user'
+    assert profile.can_participate?(users(:john)), 'owning user'  
+  end
+  
   test 'can_charge?' do
     profile = profiles(:dexter)
     assert !profile.can_charge?(nil), 'no user'

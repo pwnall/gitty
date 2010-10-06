@@ -337,6 +337,15 @@ class RepositoryTest < ActiveSupport::TestCase
     assert !@repo.can_commit?(users(:john)), 'unrelated user'
     assert !@repo.can_edit?(users(:john)), 'unrelated user'
   end
+  
+  test 'acl for repository profile change ' do 
+    repo = repositories(:costan_ghost)
+    repo.profile = profiles(:csail)
+    assert_no_difference 'AclEntry.count' do
+      repo.save!
+    end
+    assert_equal :edit, AclEntry.get(repo.profile, repo) 
+  end
 
   test 'can_read?' do
     assert !@repo.can_read?(nil), 'no user'
