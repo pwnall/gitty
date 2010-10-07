@@ -2,6 +2,7 @@ require 'test_helper'
 
 class AclEntriesControllerTest < ActionController::TestCase
   setup do
+    @repository = repositories(:dexter_ghost)
     @acl_entry = acl_entries(:one)
   end
 
@@ -9,11 +10,6 @@ class AclEntriesControllerTest < ActionController::TestCase
     get :index
     assert_response :success
     assert_not_nil assigns(:acl_entries)
-  end
-
-  test "should get new" do
-    get :new
-    assert_response :success
   end
 
   test "should create acl_entry" do
@@ -26,11 +22,6 @@ class AclEntriesControllerTest < ActionController::TestCase
 
   test "should show acl_entry" do
     get :show, :id => @acl_entry.to_param
-    assert_response :success
-  end
-
-  test "should get edit" do
-    get :edit, :id => @acl_entry.to_param
     assert_response :success
   end
 

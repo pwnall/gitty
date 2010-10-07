@@ -115,4 +115,18 @@ class Profile
         :principal_type => user.class.name, :role => role)
   end
   private :can_x?
+
+  # All the valid ACL roles when a Profile is the subject.   
+  def self.acl_roles
+    [
+      ['Reader', :read],
+      ['Committer', :commit],
+      ['Administrator', :edit]
+    ]
+  end
+  
+  # Expected class of principals on ACL entries whose subjects are Profiles. 
+  def self.acl_principal_class
+    User
+  end
 end

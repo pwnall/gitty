@@ -96,4 +96,11 @@ class AclEntryTest < ActiveSupport::TestCase
     assert_equal @john.id, entry.principal_id
     assert_equal @john, entry.principal
   end
+  
+  test 'for' do
+    assert_equal nil, AclEntry.for(@acl_entry.principal, @acl_entry.subject)
+    
+    entry = acl_entries(:jane_costan)
+    assert_equal entry, AclEntry.for(entry.principal, entry.subject)
+  end
 end

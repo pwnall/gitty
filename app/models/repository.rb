@@ -407,4 +407,18 @@ class Repository
     AclEntry.set old_profile, self, nil if old_profile
     AclEntry.set profile, self, :edit if profile
   end
+  
+  # All the valid ACL roles when a Repository is the subject.   
+  def self.acl_roles
+    [
+      ['Contributor', :participate],
+      ['Billing', :charge],
+      ['Administrator', :edit]
+    ]
+  end
+  
+  # Expected class of principals on ACL entries whose subjects are Repositories. 
+  def self.acl_principal_class
+    Profile
+  end  
 end

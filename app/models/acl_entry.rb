@@ -45,7 +45,7 @@ class AclEntry < ActiveRecord::Base
   # Sets the principal-subject ACL entry to role. Role can be nil.
   def self.set(principal, subject, role)
     conditions = where_clause principal, subject
-    entry = where(conditions).first
+    entry = self.for(principal, subject)
     if role
       entry ||= new conditions
       entry.role = role
@@ -57,8 +57,13 @@ class AclEntry < ActiveRecord::Base
   
   # The role in a principal-subject ACL entry. Nil if there is no entry.
   def self.get(principal, subject)
-    entry = where(where_clause(principal, subject)).first
+    entry = self.for(principal, subject)
     entry && entry.role.to_sym
+  end
+  
+  # The ACL entry between a principal and a subject. Nil if there is no entry.
+  def self.for(principal, subject)
+    where(where_clause(principal, subject)).first
   end
   
   # Used to find or construct a principal-subject ACL entry. 

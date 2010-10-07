@@ -13,7 +13,7 @@
       
       <%= f.hidden_field :principal_type %>
       <%= f.hidden_field :principal_name %>
-      <%= f.select :role, acl_entry_roles(entry.subject.class) %>
+      <%= f.select :role, entry.subject.class.acl_roles %>
       <%= f.submit 'Change Role' %>
       <%= link_to 'Remove', acl_entry_path(entry), :method => :delete, :class => 'button'  %>
     <% end %>

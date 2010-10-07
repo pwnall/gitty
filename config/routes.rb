@@ -1,6 +1,4 @@
 Gitty::Application.routes.draw do
-  resources :acl_entries
-
   scope '_' do
     config_vars    
   
@@ -121,6 +119,8 @@ Gitty::Application.routes.draw do
     post 'acl_entries' => 'acl_entries#create'
     put 'acl_entries/:principal_name' => 'acl_entries#update',
         :as => :profile_repository_acl_entry,
+        :constraints => { :principal_name => /[^_][^\/]*/ }
+    delete 'acl_entries/:principal_name' => 'acl_entries#destroy',
         :constraints => { :principal_name => /[^_][^\/]*/ }
   end
 
