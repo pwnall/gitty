@@ -3,6 +3,16 @@ class Profile < ActiveRecord::Base
   # The repositories created by this profile.
   has_many :repositories, :dependent => :destroy
   
+  has_many :user_acl_entries, :class_name => "AclEntry", :as => :subject, 
+                              :dependent => :destroy
+  has_many :profile_acl_entries, :class_name => "AclEntry", :as => :principal, 
+                                 :dependent => :destroy
+  
+  # The ACL entries shown in the ACL editing UI.
+  def acl_entries
+    user_acl_entries
+  end
+  
   # The profile's short name, used in URLs.
   validates :name, :length => 1..32, :format => /\A\w+\Z/, :presence => true,
                    :uniqueness => true
@@ -85,14 +95,38 @@ end
 
 # :nodoc: access control
 class Profile
+  def can_participate?(user)
+    can_x? user, [:participate, :charge, :edit] 
+  end
+  
   # True if the user can charge repositories to this profile.
   def can_charge?(user)
     # NOTE: this will be replaced to support group profiles.
-    user && id == user.profile_id
+    can_x? user, [:charge, :edit]
   end
   
   # True if the user can edit the profile.
   def can_edit?(user)
-    user && id == user.profile_id
+    can_x? user, [:edit]
+  end
+
+  def can_x?(user, role)
+    user && user_acl_entries.exists?(:principal_id => user.id, 
+        :principal_type => user.class.name, :role => role)
+  end
+  private :can_x?
+
+  # All the valid ACL roles when a Profile is the subject.   
+  def self.acl_roles
+    [
+      ['Reader', :read],
+      ['Committer', :commit],
+      ['Administrator', :edit]
+    ]
+  end
+  
+  # Expected class of principals on ACL entries whose subjects are Profiles. 
+  def self.acl_principal_class
+    User
   end
 end

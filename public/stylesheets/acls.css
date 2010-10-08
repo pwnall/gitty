@@ -1,0 +1,12 @@
+.acl_entries {
+  padding: 0;
+  margin: 0;
+  list-style-type: none; 
+}
+.acl_entries .acl_principal {
+  display: inline-block;
+  min-width: 40ex;
+}
+.acl_principal input {
+  width: 30ex;
+}

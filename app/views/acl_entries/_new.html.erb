@@ -1,0 +1,21 @@
+<%= form_for_acl_entry @acl_entry, :html => {:class => 'acl_entries'} do |f| %>
+  <% if @acl_entry.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@acl_entry.errors.count, "error") %> prohibited this ACL entry from being saved:</h2>
+
+      <ul>
+      <% @acl_entry.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <span class="acl_principal">
+    <%= f.text_field :principal_name %>
+  </span>
+  <%= f.select :role, subject.class.acl_roles %>
+  <span class="action">
+    <%= f.submit 'Add Member' %>    
+  </span>
+<% end %>

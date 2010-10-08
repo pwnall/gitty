@@ -327,26 +327,73 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Changed tags'
   end
     
+  test 'acl for new repository' do
+    @repo.save!
+    assert_equal :edit, AclEntry.get(@repo.profile, @repo)
+    assert @repo.can_read?(users(:jane)), 'author'
+    assert @repo.can_commit?(users(:jane)), 'author'
+    assert @repo.can_edit?(users(:jane)), 'author'
+    assert !@repo.can_read?(users(:john)), 'unrelated user'
+    assert !@repo.can_commit?(users(:john)), 'unrelated user'
+    assert !@repo.can_edit?(users(:john)), 'unrelated user'
+  end
+  
+  test 'acl for repository profile change' do 
+    repo = repositories(:costan_ghost)
+    repo.profile = profiles(:csail)
+    assert_no_difference 'AclEntry.count' do
+      repo.save!
+    end
+    assert_equal :edit, AclEntry.get(repo.profile, repo) 
+  end
+
   test 'can_read?' do
     assert !@repo.can_read?(nil), 'no user'
-    assert @repo.can_read?(users(:jane)), 'author'
-    assert @repo.can_read?(users(:john)), 'unrelated user'
+    repo = repositories(:dexter_ghost)
+    assert repo.can_read?(users(:john))
+    assert repo.can_read?(users(:jane))
   end
   
   test 'can_commit?' do
     assert !@repo.can_commit?(nil), 'no user'
-    assert @repo.can_commit?(users(:jane)), 'author'
-    assert !@repo.can_commit?(users(:john)), 'unrelated user'
+    repo = repositories(:dexter_ghost)
+    assert !repo.can_commit?(users(:john)) 
+    assert repo.can_commit?(users(:jane))
   end
   
   test 'can_edit?' do
     assert !@repo.can_edit?(nil), 'no user'
-    assert @repo.can_edit?(users(:jane)), 'author'
-    assert !@repo.can_edit?(users(:john)), 'unrelated user'
+    repo = repositories(:dexter_ghost)
+    assert repo.can_edit?(users(:jane))
+    assert !repo.can_edit?(users(:john))
   end
+  
+  test 'acl_roles' do
+    roles = Profile.acl_roles
+    assert roles.length >= 0, 'There should be at least one ACL role'
+    
+    roles.each do |role|
+      assert_equal 2, role.length, 'Role should have description and name'
+      assert_operator role.first, :kind_of?, String,
+          'Role should start with description'
+      assert_operator role.last, :kind_of?, Symbol,
+          'Role should end with name'
+    end
+  end
+  
+  test 'acl_principal_class' do
+    assert_equal Repository.acl_principal_class,
+                 repositories(:costan_ghost).acl_entries.first.principal.class
+  end    
   
   test 'default_branch' do
     assert_equal nil, @repo.default_branch
     assert_equal branches(:master), repositories(:dexter_ghost).default_branch    
   end
+  
+  
+  test 'mass-assignment protection' do
+    repository = Repository.new :profile_id => 42
+    assert_nil repository.profile_id
+  end  
 end

@@ -26,7 +26,7 @@ class GitPushTest < ActionDispatch::IntegrationTest
     @fail_repository = Repository.create! :name => 'rfail',
                                          :profile => profiles(:dexter)
 
-    @keyfile = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'id_rsa'
+    @keyfile = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'id_dsa'
     File.chmod 0600, @keyfile  # NOTE: ssh 0.9.8o gets bitchy otherwise
     ssh_wrapper = @temp_dir.join('git-ssh.sh').to_s
     File.open ssh_wrapper, 'w' do |f|

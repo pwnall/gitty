@@ -3,6 +3,7 @@ class Repository < ActiveRecord::Base
   # The profile representing the repository's author.
   belongs_to :profile
   validates :profile, :presence => true
+  attr_protected :profile_id
   
   # Virtual attribute, backed by profile_id.
   def profile_name
@@ -24,6 +25,7 @@ class Repository < ActiveRecord::Base
   has_many :trees, :dependent => :destroy  
   # Blob information cached from the on-disk repository.
   has_many :blobs, :dependent => :destroy
+  has_many :acl_entries, :as => :subject, :dependent => :destroy
   
   # The repository name.
   validates :name, :length => 1..64, :format => /\A\w([\w.-]*\w)?\Z/,
@@ -348,16 +350,14 @@ class Repository
   #
   # Reading implies git pull rights.
   def can_read?(user)
-    user ? true : false
+    can_x? user, [:read, :commit, :edit], [:participate, :charge, :edit]
   end
   
   # True if the user can commit to the repository.
   #
   # Committing means the user can push branches and tags.
   def can_commit?(user)
-    # TODO(costan): proper ACLs
-
-    user && profile_id == user.profile_id
+    can_x? user, [:commit, :edit], [:participate, :charge, :edit]
   end
   
   # True if the user can edit (administrate) the repository.
@@ -365,12 +365,20 @@ class Repository
   # Administrating implies changing the repository ACL, as well as renaming and
   # deleting the repository. 
   def can_edit?(user)
-    # TODO(costan): proper ACLs
-    
     # NOTE: users who can charge the profile can always edit the repo by
     #       deleting it and creating a similar repo with the same name 
-    profile.can_charge? user
+    can_x? user, [:edit], [:charge, :edit]
   end
+  
+  def can_x?(user, profile_role, user_role)
+    return false if !user
+    profile_ids = user.acl_entries.
+        where(:role => user_role, :subject_type => 'Profile').map(&:subject_id)
+    acl_entries.exists?(:role => profile_role, :principal_type => 'Profile',
+                        :principal_id => profile_ids)
+  end
+  
+  private :can_x?
 end
 
 # :nodoc: almost-UI
@@ -379,4 +387,39 @@ class Repository
   def default_branch
     branches.where(:name => 'master').first || branches.first
   end
+end
+
+# :nodoc: set up an ACL entry for the repository
+class Repository
+  before_save :save_old_profile
+  after_save :add_acl_entry
+  
+  # Saves the user's current profile for the post-save ACL fixup.
+  def save_old_profile
+    @_old_profile_id = profile_id_change ? profile_id_change.first : false
+    true
+  end
+  
+  # Creates an ACL entry for the user's profile.
+  def add_acl_entry
+    return if @_old_profile_id == false
+    
+    old_profile = @_old_profile_id && Profile.find(@_old_profile_id)
+    AclEntry.set old_profile, self, nil if old_profile
+    AclEntry.set profile, self, :edit if profile
+  end
+  
+  # All the valid ACL roles when a Repository is the subject.   
+  def self.acl_roles
+    [
+      ['Contributor', :participate],
+      ['Billing', :charge],
+      ['Administrator', :edit]
+    ]
+  end
+  
+  # Expected class of principals on ACL entries whose subjects are Repositories. 
+  def self.acl_principal_class
+    Profile
+  end  
 end

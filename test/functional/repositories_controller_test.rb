@@ -52,6 +52,7 @@ class RepositoriesControllerTest < ActionController::TestCase
   test "should show oops page to non-committer for empty repository" do
     repository = repositories(:costan_ghost)
     set_session_current_user users(:jane)
+    AclEntry.set(users(:jane).profile, repository, :read)
 
     get :show, :repo_name => repository.to_param,
                :profile_name => repository.profile.to_param
@@ -122,10 +123,9 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_redirected_to repositories_url
   end
   
-  test "should grant read access to non-owner" do
-    non_owner = User.all.find { |u| u != @author }
-    assert non_owner, 'non-owner finding failed'
-    set_session_current_user non_owner
+  test "should grant read access to participating user" do
+    set_session_current_user users(:john)
+    AclEntry.set(users(:john).profile, @repository, :participate)
     
     get :show, :repo_name => @repository.to_param,
                :profile_name => @repository.profile.to_param
@@ -209,7 +209,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_equal true, JSON.parse(response.body)['access']
   end
 
-  test "check_access does not allow another user to push" do
+  test "check_access does not allow random user to push" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
     post :check_access, :format => 'json',
          :repo_path => @repository.ssh_path,

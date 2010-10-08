@@ -55,7 +55,8 @@ class ProfilesController < ApplicationController
         if current_user.profile
           # TODO(costan): add to the list of secondary profiles
         else
-          current_user.update_attributes! :profile => @profile
+          current_user.profile = @profile
+          current_user.save!
         end
 
         format.html { redirect_to session_path }

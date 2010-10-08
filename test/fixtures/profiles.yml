@@ -5,3 +5,7 @@ costan:
 dexter:
   name: dexter
   display_name: Dexter
+
+csail:
+  name: csail 
+  display_name: Computer Science and AI Lab
