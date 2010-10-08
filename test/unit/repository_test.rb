@@ -390,4 +390,10 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal nil, @repo.default_branch
     assert_equal branches(:master), repositories(:dexter_ghost).default_branch    
   end
+  
+  
+  test 'mass-assignment protection' do
+    repository = Repository.new :profile_id => 42
+    assert_nil repository.profile_id
+  end  
 end

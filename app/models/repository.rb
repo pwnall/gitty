@@ -3,6 +3,7 @@ class Repository < ActiveRecord::Base
   # The profile representing the repository's author.
   belongs_to :profile
   validates :profile, :presence => true
+  attr_protected :profile_id
   
   # Virtual attribute, backed by profile_id.
   def profile_name

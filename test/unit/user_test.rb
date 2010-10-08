@@ -54,4 +54,12 @@ class UserTest < ActiveSupport::TestCase
       user.save!
     end
   end
+  
+  test 'mass-assignment protection' do
+    user = User.new :profile_id => 42
+    assert_nil user.profile_id
+
+    user = User.new :profile => profiles(:csail)
+    assert_nil user.profile
+  end
 end

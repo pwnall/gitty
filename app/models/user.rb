@@ -20,6 +20,7 @@ class User < ActiveRecord::Base
   # Add your extensions to the User class here.
 
   belongs_to :profile
+  attr_protected :profile, :profile_id
   
   # The repositories accessible to this user.
   has_many :repositories, :through => :profile
