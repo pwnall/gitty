@@ -37,7 +37,7 @@ class UserTest < ActiveSupport::TestCase
   end
   
   test 'acl for user profile change' do
-    user = users(:john)
+    user = users(:jane)
     assert user.profile
     user.profile = profiles(:csail)
     assert_no_difference 'AclEntry.count' do
@@ -47,7 +47,7 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'acl deletion for user profile removal' do
-    user = users(:john)
+    user = users(:jane)
     assert user.profile
     user.profile = nil
     assert_difference 'AclEntry.count', -1 do

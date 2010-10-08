@@ -1,12 +1,12 @@
-jane_costan:
-  principal: jane (User)
-  subject: costan (Profile)
+john_csail:
+  principal: john (User)
+  subject: csail (Profile)
   role: participate
 
 csail_dexter_ghost:
   principal: csail (Profile)
   subject: dexter_ghost (Repository)
-  role: commit
+  role: read
 
 # Should be added by AR hook after_save.
 jane_dexter:

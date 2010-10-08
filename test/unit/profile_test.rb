@@ -56,24 +56,24 @@ class ProfileTest < ActiveSupport::TestCase
   end
   
   test 'can_participate' do
-    profile = profiles(:costan)
+    profile = profiles(:csail)
     assert !profile.can_participate?(nil), 'no user'
-    assert profile.can_participate?(users(:jane)), 'participating user'
-    assert profile.can_participate?(users(:john)), 'owning user'  
+    assert profile.can_participate?(users(:john)), 'participating user'
+    assert !profile.can_participate?(users(:jane)), 'unrelated user'  
   end
   
   test 'can_charge?' do
-    profile = profiles(:dexter)
+    profile = profiles(:costan)
     assert !profile.can_charge?(nil), 'no user'
-    assert profile.can_charge?(users(:jane)), 'owning user'
-    assert !profile.can_charge?(users(:john)), 'unrelated user'
+    assert profile.can_charge?(users(:john)), 'owning user'
+    assert !profile.can_charge?(users(:jane)), 'unrelated user'
   end
   
   test 'can_edit?' do
-    profile = profiles(:dexter)
+    profile = profiles(:costan)
     assert !profile.can_edit?(nil), 'no user'
-    assert profile.can_edit?(users(:jane)), 'owning user'
-    assert !profile.can_edit?(users(:john)), 'unrelated user'
+    assert profile.can_edit?(users(:john)), 'owning user'
+    assert !profile.can_edit?(users(:jane)), 'unrelated user'
   end
   
   test 'acl_roles' do
