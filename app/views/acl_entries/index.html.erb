@@ -4,23 +4,22 @@
 <% @subject.acl_entries.each do |entry| %>
   <li>
     <%= form_for_acl_entry entry do |f| %>
-      <% profile = entry.principal.respond_to?(:profile) ? entry.principal.profile : entry.principal %>
-      <% if profile %>      
-        <%= profile.name %> (<%= profile.display_name %>)
-      <% else %>
-        <%= entry.principal.name %>
-      <% end %>
-      
-      <%= f.hidden_field :principal_type %>
-      <%= f.hidden_field :principal_name %>
+      <span class="acl_principal">
+        <% profile = entry.principal.respond_to?(:profile) ? entry.principal.profile : entry.principal %>
+        <% if profile %>      
+          <%= profile.name %> (<%= profile.display_name %>)
+        <% else %>
+          <%= entry.principal.name %>
+        <% end %>
+      </span>
       <%= f.select :role, entry.subject.class.acl_roles %>
-      <%= f.submit 'Change Role' %>
-      <%= link_to 'Remove', acl_entry_path(entry), :method => :delete, :class => 'button'  %>
+      <span class="action">
+        <%= f.submit 'Change Role' %>
+        <%= link_to 'Remove', acl_entry_path(entry), :method => :delete, :class => 'button'  %>
+      </span>
     <% end %>
   </li>
 <% end %>
 </ul>
 
-<p>
-  <%= render 'acl_entries/new', :subject => @subject %>
-</p>
+<%= render 'acl_entries/new', :subject => @subject %>
