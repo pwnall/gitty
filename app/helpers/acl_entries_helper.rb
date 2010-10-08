@@ -11,11 +11,13 @@ module AclEntriesHelper
   end
   
   def acl_entries_path(subject)
-    case entry.subject
+    case subject
     when Repository
       profile_repository_acl_entries_path(subject.profile, subject)
     when Profile
       profile_acl_entries_path(subject)
+    else  
+      raise "Unimplemented ACL subject class for #{subject}"
     end
   end
   
