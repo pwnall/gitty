@@ -38,8 +38,12 @@
     </li>
     <% if repository.can_edit? current_user %>
     <li>
-      <%= link_to 'Admin', edit_profile_repository_path(repository.profile,
-                                                        repository) %>
+      <%= link_to 'Sharing',
+          profile_repository_acl_entries_path(repository.profile, repository) %>
+    </li>
+    <li>
+      <%= link_to 'Settings', edit_profile_repository_path(repository.profile,
+                                                           repository) %>
     </li>
     <% end %>
   </ul>

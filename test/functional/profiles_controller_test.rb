@@ -20,10 +20,13 @@ class ProfilesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  test "should create profile" do
+  test "should create user's main profile" do
+    user = users(:disconnected)
+    set_session_current_user user
     assert_difference('Profile.count') do
       post :create, :profile => @profile.attributes.merge(:name => 'newest')
     end
+    assert_equal assigns(:profile), user.reload.profile
 
     assert_redirected_to session_path
   end

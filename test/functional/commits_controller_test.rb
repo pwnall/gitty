@@ -42,10 +42,9 @@ class CommitsControllerTest < ActionController::TestCase
     assert_response :success
   end
   
-  test "should grant read access to non-owner" do
-    non_owner = User.all.find { |u| u != @session_user }
-    assert non_owner, 'non-owner finding failed'
-    set_session_current_user non_owner
+  test "should grant read access to participating user" do
+    set_session_current_user users(:john)
+    AclEntry.set(users(:john).profile, @commit.repository, :participate)
 
     get :index, :repo_name => @commit.repository.to_param,
                 :profile_name => @commit.repository.profile.to_param

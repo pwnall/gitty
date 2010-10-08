@@ -1,0 +1,25 @@
+<h2>Members</h2>
+
+<ul class="acl_entries">
+<% @subject.acl_entries.each do |entry| %>
+  <li>
+    <%= form_for_acl_entry entry do |f| %>
+      <span class="acl_principal">
+        <% profile = entry.principal.respond_to?(:profile) ? entry.principal.profile : entry.principal %>
+        <% if profile %>      
+          <%= profile.name %> (<%= profile.display_name %>)
+        <% else %>
+          <%= entry.principal.name %>
+        <% end %>
+      </span>
+      <%= f.select :role, entry.subject.class.acl_roles %>
+      <span class="action">
+        <%= f.submit 'Change Role' %>
+        <%= link_to 'Remove', acl_entry_path(entry), :method => :delete, :class => 'button'  %>
+      </span>
+    <% end %>
+  </li>
+<% end %>
+</ul>
+
+<%= render 'acl_entries/new', :subject => @subject %>
