@@ -3,7 +3,7 @@ jane_costan:
   subject: costan (Profile)
   role: participate
 
-csail_ghost:
+csail_dexter_ghost:
   principal: csail (Profile)
   subject: dexter_ghost (Repository)
   role: commit
