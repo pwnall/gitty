@@ -79,7 +79,7 @@ Gitty::Application.routes.draw do
   end
   
   scope ':profile_name/:repo_name',
-      :constraints => { :profile_name => /[^_\/].*/, :repo_name => /[^\/]+/ } do
+      :constraints => { :profile_name => /[^_\/]*/, :repo_name => /[^\/]+/ } do
     # Commits.
     get 'commits(/:ref_name)' => 'commits#index',
         :as => :profile_repository_commits,
