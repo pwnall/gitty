@@ -3,10 +3,12 @@ class AclEntry < ActiveRecord::Base
   # The object that an operation is performed on.
   belongs_to :subject, :polymorphic => true
   validates :subject, :presence => true
+  attr_protected :subject_id, :subject_type
   
   # The entity that is allowed to perform the operation.
   belongs_to :principal, :polymorphic => true
   validates :principal, :presence => true
+  attr_protected :principal_id, :principal_type
   
   # The type of operation that the subject is allowed to perform.
   validates :role, :presence => true, :length => 1..16
@@ -44,10 +46,13 @@ class AclEntry < ActiveRecord::Base
 
   # Sets the principal-subject ACL entry to role. Role can be nil.
   def self.set(principal, subject, role)
-    conditions = where_clause principal, subject
     entry = self.for(principal, subject)
     if role
-      entry ||= new conditions
+      unless entry
+        entry = new
+        entry.principal = principal
+        entry.subject = subject
+      end
       entry.role = role
       entry.save!
     else
@@ -63,13 +68,8 @@ class AclEntry < ActiveRecord::Base
   
   # The ACL entry between a principal and a subject. Nil if there is no entry.
   def self.for(principal, subject)
-    where(where_clause(principal, subject)).first
-  end
-  
-  # Used to find or construct a principal-subject ACL entry. 
-  def self.where_clause(principal, subject)
-    { :principal_id => principal.id,
-      :principal_type => principal.class.name, :subject_id => subject.id,
-      :subject_type => subject.class.name }   
+    where(:principal_id => principal.id,
+          :principal_type => principal.class.name, :subject_id => subject.id,
+          :subject_type => subject.class.name).first
   end
 end

@@ -1,7 +1,7 @@
 <h2>Members</h2>
 
 <ul class="acl_entries">
-<% @acl_entries.each do |entry| %>
+<% @subject.acl_entries.each do |entry| %>
   <li>
     <%= form_for_acl_entry entry do |f| %>
       <% profile = entry.principal.respond_to?(:profile) ? entry.principal.profile : entry.principal %>

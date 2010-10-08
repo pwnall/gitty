@@ -65,13 +65,15 @@ class AclEntryTest < ActiveSupport::TestCase
     assert_equal @jane, entry.principal
   end
   test 'set principal_type before principal_name on new record' do
-    entry = AclEntry.new :principal_type => @jane.class.name
+    entry = AclEntry.new
+    entry.principal_type = @jane.class.name
     entry.principal_name = @jane.name
     assert_equal @jane.id, entry.principal_id
     assert_equal @jane, entry.principal
   end
   test 'set principal_name after empty principal_type' do
-    entry = AclEntry.new :principal_type => ''
+    entry = AclEntry.new 
+    entry.principal_type = ''
     entry.principal_name = @jane.name
     assert_equal @jane.name, entry.principal_name
     assert_nil entry.principal_id
@@ -103,5 +105,15 @@ class AclEntryTest < ActiveSupport::TestCase
     
     entry = acl_entries(:john_csail)
     assert_equal entry, AclEntry.for(entry.principal, entry.subject)
+  end
+  
+  test 'mass-assignment protection' do
+    entry = AclEntry.new :principal_id => 37, :principal_type => 'Profile',
+                         :subject_id => 42, :subject_type => 'Repository',
+                         :role => 'read'
+    assert_nil entry.principal_id
+    assert_nil entry.principal_type
+    assert_nil entry.subject_id
+    assert_nil entry.subject_type
   end
 end

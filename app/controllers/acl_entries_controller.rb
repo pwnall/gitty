@@ -35,7 +35,6 @@ class AclEntriesController < ApplicationController
   # GET /acl_entries
   # GET /acl_entries.xml
   def index
-    @acl_entries = @subject.acl_entries
     @acl_entry = AclEntry.new :subject => @subject,
        :role => @subject.class.acl_roles.first,
        :principal_type => @subject.class.acl_principal_class.name
@@ -50,6 +49,7 @@ class AclEntriesController < ApplicationController
   # POST /acl_entries.xml
   def create
     @acl_entry = AclEntry.new params[:acl_entry]
+    @acl_entry.principal_type = @subject.class.acl_principal_class.name
     @acl_entry.subject = @subject
 
     respond_to do |format|
@@ -63,7 +63,7 @@ class AclEntriesController < ApplicationController
                  :location => @acl_entry
         end
       else
-        format.html { render :action => "new" }
+        format.html { render :action => :index }
         format.xml do
           render :xml => @acl_entry.errors, :status => :unprocessable_entity
         end

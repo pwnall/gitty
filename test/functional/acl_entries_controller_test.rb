@@ -14,8 +14,7 @@ class AclEntriesControllerTest < ActionController::TestCase
                 :repo_name => @repository.to_param
 
     assert_response :success
-    assert_not_nil assigns(:acl_entries)
-    assert_operator assigns(:acl_entries), :include?, @repo_acl_entry
+    assert_equal @repository, assigns(:subject)
   end
 
   test "should create acl_entry for repository" do
