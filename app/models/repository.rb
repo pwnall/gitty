@@ -209,8 +209,8 @@ class Repository
                                      where(:gitid => unknown_ids).map(&:gitid)
       unknown_ids.each { |p_id| db_ids[p_id] = db_ids2.include? p_id }
 
-      next_commits = parents.reject { |parent| db_ids[parent.id] }
-      { :id => commit.id, :next => next_commits }
+      parents = parents.reject { |parent| db_ids[parent.id] }
+      { :id => commit.id, :next => parents }
     end
   end
   
@@ -226,37 +226,35 @@ class Repository
   #           that, if the trees are created in order, a tree's children will
   #           always exist before it is created.
   def contents_added(git_commits)
-    blobs = []
+    db_ids = {}  # f(tree git id) -> {true, false} if it's in the db or not
     
-    # Topological-sorting BFS.
-    queue = []
-    visited = Set.new
-    # NOTE: yup, Grit::Commit objects with the same id aren't necessarily == 
-    git_commits.each do |commit| 
-      next if visited.include? commit.tree.id
-      visited << commit.tree.id
-      unless self.trees.where(:gitid => commit.tree.id).first
-        queue << commit.tree
-      end
+    roots = git_commits.map(&:tree)
+    root_ids = roots.map(&:id)
+    db_roots = Set.new self.trees.select(:gitid).
+                                  where(:gitid => root_ids).map(&:gitid)
+    root_ids.each { |root_id| db_ids[root_id] = db_roots.include? root_id }
+    roots = roots.reject { |root| db_ids[root.id] }
+    
+    new_trees = topological_sort roots do |tree|
+      parents = tree.contents.reject { |child| child.kind_of? Grit::Blob }
+      unknown_ids = parents.map(&:id).reject { |p_id| db_ids.has_key? p_id }
+      db_ids2 = Set.new self.trees.select(:gitid).
+                                   where(:gitid => unknown_ids).map(&:gitid)
+      unknown_ids.each { |p_id| db_ids[p_id] = db_ids2.include? p_id }
+
+      parents = parents.reject { |parent| db_ids[parent.id] }
+      { :id => tree.id, :next => parents }
     end
     
-    i = 0
-    while i < queue.length  # The queue keeps growing, so can't use each.
-      tree = queue[i]
-      i += 1
-      
-      tree.contents.each do |child|
-        next if visited.include? child.id
-        visited << child.id
-        if child.kind_of? Grit::Blob
-          blobs << child unless self.blobs.where(:gitid => child.id).first
-        else
-          queue << child unless self.trees.where(:gitid => child.id).first
-        end
-      end
-    end
-  
-    { :blobs => blobs, :trees => queue.reverse! }
+    new_blobs = new_trees.map { |tree|
+      tree.contents.select { |child| child.kind_of? Grit::Blob }
+    }.flatten.index_by(&:id).values
+    new_ids = new_blobs.map(&:id)
+    db_ids = Set.new self.blobs.select(:gitid).
+                                where(:gitid => new_ids).map(&:gitid)
+    new_blobs = new_blobs.reject { |blob| db_ids.include? blob.id }
+    
+    { :blobs => new_blobs, :trees => new_trees }
   end
   
   # Integrates changes to the on-disk repository into the database.

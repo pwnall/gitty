@@ -253,10 +253,10 @@ class RepositoryTest < ActiveSupport::TestCase
     #       on Grit implementation
 
     bits = @repo.contents_added([commit_a, commit_b1])
-    assert_equal [blobs(:d1_b), blobs(:d1_d2_a)].map(&:gitid),
-                 bits[:blobs].map(&:id), 'Blobs for commit 2'
-    assert_equal [trees(:d1_d2), trees(:commit2_d1), trees(:commit1_d1),
-                  trees(:commit2_root), trees(:commit1_root)].map(&:gitid),
+    assert_equal [blobs(:d1_d2_a), blobs(:d1_b)].map(&:gitid).sort,
+                 bits[:blobs].map(&:id).sort, 'Blobs for commit 2'
+    assert_equal [trees(:d1_d2), trees(:commit1_d1), trees(:commit1_root),
+                  trees(:commit2_d1), trees(:commit2_root)].map(&:gitid),
                  bits[:trees].map(&:id), 'Trees for commit 2'
   end
   
@@ -286,8 +286,8 @@ class RepositoryTest < ActiveSupport::TestCase
     
     bits = repo.contents_added([commit_a, commit_b1, commit_c, commit_b2])
     assert_equal [d1_b2], bits[:blobs].map(&:id), 'Blobs for merge commit'
-    assert_equal [commit3_d1_d2, commit3_d1, commitm_d1, commit3_root,
-                  commitm_root],
+    assert_equal [commit3_d1_d2, commitm_d1, commitm_root, commit3_d1,
+                  commit3_root],
                  bits[:trees].map(&:id), 'Trees for merge commit'
   end
   
