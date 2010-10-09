@@ -1,14 +1,23 @@
 class AclEntriesController < ApplicationController
+  include AclEntriesHelper
+  
   before_filter :set_subject_from_params
   before_filter :set_acl_entry_from_params, :only => [:update, :destroy]
-  before_filter :current_user_can_edit_subject
+  before_filter :current_user_can_edit_subject  
   
   # Sets @subject (the subject for ACL entries) based on URL params.
   def set_subject_from_params
     return if @subject
-    subject_type = params[:repo_name] ? Repository : Profile
-    subject_name = params[:repo_name] || params[:profile_name]
-    @subject = subject_type.find_by_name subject_name
+    
+    profile = Profile.where(:name => params[:profile_name]).first
+    if params[:repo_name].blank?
+      @subject = profile
+    else
+      @subject = profile &&
+                 profile.repositories.where(:name => params[:repo_name]).first
+    end
+    
+    # TODO(costan): 404 handling
   end
   
   # Sets @acl_entry based on URL params.
@@ -55,7 +64,7 @@ class AclEntriesController < ApplicationController
     respond_to do |format|
       if @acl_entry.save
         format.html do
-          redirect_to acl_entries_path(@acl_entry.subject),
+          redirect_to acl_entries_path(@subject),
                       :notice => 'Acl entry was successfully created.'
         end
         format.xml do
@@ -76,8 +85,9 @@ class AclEntriesController < ApplicationController
   def update
     respond_to do |format|
       if @acl_entry.update_attributes params[:acl_entry]
+        Rails.logger.error [acl_entries_path(@subject), @subject].inspect
         format.html do
-          redirect_to acl_entries_path(@acl_entry.subject),
+          redirect_to acl_entries_path(@subject),
                       :notice => 'Acl entry was successfully updated.'
         end
         format.xml  { head :ok }

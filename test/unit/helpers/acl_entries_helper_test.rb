@@ -7,6 +7,14 @@ class AclEntriesHelperTest < ActionView::TestCase
   
     assert_select 'form[action="/dexter/ghost/acl_entries/csail"]', 'form body'
   end
+
+  test 'form_for_acl_entry for Profile' do
+    entry = acl_entries(:john_csail)
+    render :text => form_for_acl_entry(entry) { 'form body' }
+  
+    assert_select 'form[action="/_/profiles/csail/acl_entries/john@gmail.com"]',
+                  'form body'
+  end
   
   test 'form_for_acl_entry raises error for User subject' do
     assert_raise RuntimeError do
@@ -18,6 +26,8 @@ class AclEntriesHelperTest < ActionView::TestCase
   end
   
   test 'acl_entries_path' do
+    assert_equal '/_/profiles/dexter/acl_entries',
+                 acl_entries_path(profiles(:dexter))
     assert_equal '/dexter/ghost/acl_entries',
                  acl_entries_path(repositories(:dexter_ghost))
     assert_raise RuntimeError do
@@ -26,6 +36,8 @@ class AclEntriesHelperTest < ActionView::TestCase
   end
   
   test 'acl_entry_path' do
+    assert_equal '/_/profiles/csail/acl_entries/john@gmail.com',
+                 acl_entry_path(acl_entries(:john_csail))
     assert_equal '/dexter/ghost/acl_entries/csail',
                  acl_entry_path(acl_entries(:csail_dexter_ghost))
     

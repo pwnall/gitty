@@ -24,7 +24,8 @@ module AclEntriesHelper
   def acl_entry_path(entry)
     case entry.subject
     when Repository
-      profile_repository_acl_entry_path(entry.subject.profile, entry.subject, entry)
+      profile_repository_acl_entry_path(entry.subject.profile, entry.subject,
+                                        entry)
     when Profile
       profile_acl_entry_path(entry.subject, entry)
     else  

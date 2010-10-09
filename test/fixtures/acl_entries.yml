@@ -1,7 +1,7 @@
 john_csail:
   principal: john (User)
   subject: csail (Profile)
-  role: participate
+  role: edit
 
 csail_dexter_ghost:
   principal: csail (Profile)

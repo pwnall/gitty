@@ -51,12 +51,12 @@ Gitty::Application.routes.draw do
       get ':profile_name/edit(.:format)' => 'profiles#edit',
           :as => :edit_profile
       put ':profile_name(.:format)' => 'profiles#update'
-      delete ':profile_name(.:format)' => 'profiles#destroy'
+      delete ':profile_name(.:format)' => 'profiles#destroy'    
     end
-  end    
+  end
       
-  # Repositories.
   scope ':profile_name', :constraints => { :profile_name => /[^_][^\/]*/ } do
+    # Repositories.
     get ':repo_name(.:format)' => 'repositories#show',
         :constraints => { :repo_name => /[^\/]+/ },
         :as => :profile_repository
@@ -123,6 +123,21 @@ Gitty::Application.routes.draw do
     delete 'acl_entries/:principal_name' => 'acl_entries#destroy',
         :constraints => { :principal_name => /[^_][^\/]*/ }
   end
+  
+  # Profile ACLs (must follow repository ACLs).
+  scope '_' do
+    scope 'profiles/:profile_name',
+          :constraints => { :profile_name => /[^_][^\/]*/ } do
+      get 'acl_entries' => 'acl_entries#index', :as => :profile_acl_entries
+      post 'acl_entries' => 'acl_entries#create'
+      put 'acl_entries/:principal_name' => 'acl_entries#update',
+          :as => :profile_acl_entry,
+          :constraints => { :principal_name => /[^_][^\/]*/ }
+      delete 'acl_entries/:principal_name' => 'acl_entries#destroy',
+          :constraints => { :principal_name => /[^_][^\/]*/ }
+    end
+  end
+  
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   #   resources :products
