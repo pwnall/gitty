@@ -22,6 +22,7 @@ gem 'configvars_rails'
 gem 'grit'
 gem 'json'
 gem 'net-ssh', :require => 'net/ssh'
+gem 'topological_sort'
 
 # gem 'bj'
 # gem 'nokogiri', '1.4.1'
