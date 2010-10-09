@@ -87,6 +87,9 @@ class ProfileTest < ActiveSupport::TestCase
       assert_operator role.last, :kind_of?, Symbol,
           'Role should end with name'
     end
+    
+    assert roles.any? { |role| role.last == :charge },
+           'No charging role on a profile'
   end
   
   test 'acl_principal_class' do

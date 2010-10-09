@@ -369,7 +369,7 @@ class RepositoryTest < ActiveSupport::TestCase
   end
   
   test 'acl_roles' do
-    roles = Profile.acl_roles
+    roles = Repository.acl_roles
     assert roles.length >= 0, 'There should be at least one ACL role'
     
     roles.each do |role|
@@ -379,6 +379,9 @@ class RepositoryTest < ActiveSupport::TestCase
       assert_operator role.last, :kind_of?, Symbol,
           'Role should end with name'
     end
+    
+    assert roles.any? { |role| role.last == :commit },
+           'No committer role on a repository'
   end
   
   test 'acl_principal_class' do

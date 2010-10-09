@@ -119,8 +119,8 @@ class Profile
   # All the valid ACL roles when a Profile is the subject.   
   def self.acl_roles
     [
-      ['Reader', :read],
-      ['Committer', :commit],
+      ['Contributor', :participate],
+      ['Billing', :charge],
       ['Administrator', :edit]
     ]
   end

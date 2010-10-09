@@ -399,8 +399,8 @@ class Repository
   # All the valid ACL roles when a Repository is the subject.   
   def self.acl_roles
     [
-      ['Contributor', :participate],
-      ['Billing', :charge],
+      ['Reader', :read],
+      ['Committer', :commit],
       ['Administrator', :edit]
     ]
   end
