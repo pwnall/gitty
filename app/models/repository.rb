@@ -197,14 +197,16 @@ class Repository
     
     roots = git_refs.map(&:commit)
     root_ids = roots.map(&:id)
-    db_roots = Set.new self.commits.where(:gitid => root_ids).map(&:gitid)
+    db_roots = Set.new self.commits.select(:gitid).
+                                    where(:gitid => root_ids).map(&:gitid)
     root_ids.each { |root_id| db_ids[root_id] = db_roots.include? root_id }
     roots = roots.reject { |root| db_ids[root.id] }
     
     topological_sort roots do |commit|
       parents = commit.parents
       unknown_ids = parents.map(&:id).reject { |p_id| db_ids.has_key? p_id }
-      db_ids2 = Set.new self.commits.where(:gitid => unknown_ids).map(&:gitid)
+      db_ids2 = Set.new self.commits.select(:gitid).
+                                     where(:gitid => unknown_ids).map(&:gitid)
       unknown_ids.each { |p_id| db_ids[p_id] = db_ids2.include? p_id }
 
       next_commits = parents.reject { |parent| db_ids[parent.id] }
