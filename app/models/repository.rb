@@ -193,36 +193,23 @@ class Repository
   # that, if the commits are created in order, a commit's parents will always
   # exist before it is created.
   def commits_added(git_refs)
-    new_commits = []
+    db_ids = {}  # f(commit git id) -> {true, false} if it's in the db or not
+    
+    roots = git_refs.map(&:commit)
+    root_ids = roots.map(&:id)
+    db_roots = Set.new self.commits.where(:gitid => root_ids).map(&:gitid)
+    root_ids.each { |root_id| db_ids[root_id] = db_roots.include? root_id }
+    roots = roots.reject { |root| db_ids[root.id] }
+    
+    topological_sort roots do |commit|
+      parents = commit.parents
+      unknown_ids = parents.map(&:id).reject { |p_id| db_ids.has_key? p_id }
+      db_ids2 = Set.new self.commits.where(:gitid => unknown_ids).map(&:gitid)
+      unknown_ids.each { |p_id| db_ids[p_id] = db_ids2.include? p_id }
 
-    # Topological-sorting DFS for discovering new commits.    
-    visited = Set.new  # Git ids for visited commits.
-    stack = []  # DFS stack state. Each node is a [commit, parent_number].
-    git_refs.each do |git_ref|
-      next if visited.include? git_ref.commit.id
-      visited << git_ref.commit.id
-      next if self.commits.where(:gitid => git_ref.commit.id).first
-      stack << [git_ref.commit, -1] 
-      
-      until stack.empty?
-        stack.last[1] += 1        
-        git_commit, parent_number = *stack.last
-        
-        if parent_git_commit = git_commit.parents[parent_number]
-          unless visited.include? parent_git_commit.id
-            visited << parent_git_commit.id
-            unless self.commits.where(:gitid => parent_git_commit.id).first
-              stack << [parent_git_commit, -1]
-            end
-          end
-        else
-          new_commits << git_commit
-          stack.pop
-        end
-      end
+      next_commits = parents.reject { |parent| db_ids[parent.id] }
+      { :id => commit.id, :next => next_commits }
     end
-        
-    new_commits
   end
   
   # Trees and blobs that don't have associated database models.

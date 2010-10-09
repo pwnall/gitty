@@ -101,6 +101,7 @@ GEM
       eventmachine (>= 0.12.6)
       rack (>= 1.0.0)
     thor (0.14.2)
+    topological_sort (0.1.1)
     treetop (1.4.8)
       polyglot (>= 0.3.1)
     tzinfo (0.3.23)
@@ -118,3 +119,4 @@ DEPENDENCIES
   net-ssh
   rails (= 3.0.0)
   thin
+  topological_sort
