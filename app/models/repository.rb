@@ -297,6 +297,12 @@ class Repository
 
       commit_parents = CommitParent.from_git_commit git_commit, self, commit
       commit_parents.each &:save!
+      
+      commit_diffs = CommitDiff.from_git_commit git_commit, commit
+      commit_diffs.each do |diff, hunks|
+        diff.save!
+        hunks.each(&:save!)
+      end
     end
     new_branches = []
     branch_delta[:added].each do |git_branch|
