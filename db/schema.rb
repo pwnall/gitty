@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20100925185122) do
+ActiveRecord::Schema.define(:version => 20101011062236) do
 
   create_table "acl_entries", :force => true do |t|
     t.string   "role",           :null => false
@@ -38,6 +38,28 @@ ActiveRecord::Schema.define(:version => 20100925185122) do
   end
 
   add_index "branches", ["repository_id", "name"], :name => "index_branches_on_repository_id_and_name", :unique => true
+
+  create_table "commit_diff_hunks", :force => true do |t|
+    t.integer "diff_id",    :null => false
+    t.integer "old_start",  :null => false
+    t.integer "old_count",  :null => false
+    t.integer "new_start",  :null => false
+    t.integer "new_count",  :null => false
+    t.text    "patch_text"
+  end
+
+  add_index "commit_diff_hunks", ["diff_id", "old_start", "new_start"], :name => "index_commit_diff_hunks_on_diff_id_and_old_start_and_new_start", :unique => true
+  add_index "commit_diff_hunks", ["diff_id"], :name => "index_commit_diff_hunks_on_diff_id"
+
+  create_table "commit_diffs", :force => true do |t|
+    t.integer "commit_id",   :null => false
+    t.integer "old_blob_id"
+    t.integer "new_blob_id"
+    t.string  "old_path"
+    t.string  "new_path"
+  end
+
+  add_index "commit_diffs", ["commit_id"], :name => "index_commit_diffs_on_commit_id"
 
   create_table "commit_parents", :force => true do |t|
     t.integer "commit_id", :null => false

@@ -1,0 +1,15 @@
+commit1_d1_d2_a_hunk1:
+  diff: commit1_d1_d2_a 
+  old_start: 0
+  old_count: 0
+  new_start: 1
+  new_count: 1
+  patch_text: "+Version 1\n"
+
+commit2_d1_b_hunk1:
+  diff: commit2_d1_b
+  old_start: 0
+  old_count: 0
+  new_start: 1
+  new_count: 1
+  patch_text: "+Version 1.1\n"

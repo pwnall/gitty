@@ -1,0 +1,9 @@
+commit1_d1_d2_a:
+  commit: commit1
+  new_blob: d1_d2_a
+  new_path: d1/d2/a
+
+commit2_d1_b:
+  commit: commit2
+  new_blob: d1_b
+  new_path: d1/b

@@ -123,6 +123,6 @@ DEPENDENCIES
   mocha
   mysql2
   net-ssh
-  rails (= 3.0.0)
+  rails (>= 3.0.0)
   thin
   topological_sort
