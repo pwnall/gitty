@@ -19,7 +19,7 @@ gem 'mysql2'
 # Bundle the extra gems:
 gem 'authpwn_rails'
 gem 'configvars_rails'
-gem 'grit'
+gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json'
 gem 'net-ssh', :require => 'net/ssh'
 gem 'topological_sort'
