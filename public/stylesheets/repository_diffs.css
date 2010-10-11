@@ -34,7 +34,7 @@
 }
 
 .repository_hunk .added .data {
-  background-color: #AAFFAA;
+  background-color: #BBEEBB;
 }
 
 .repository_hunk .deleted .data {
@@ -43,4 +43,9 @@
 
 .repository_hunk .same {
   background-color: #E7F5D0;
+}
+
+.repository_hunk .hunk_header {
+  background-color: #EEEEEE;
+  color: #AAAAAA;  
 }
