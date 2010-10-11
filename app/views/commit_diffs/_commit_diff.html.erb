@@ -1,0 +1,17 @@
+<div class="repository_diff">
+  <h3 class="path">
+  <% if commit_diff.old_path != commit_diff.new_path %>
+    <% if !commit_diff.old_path %>
+    Added <%= commit_diff.new_path %>
+    <% elsif !commit_diff.new_path %>
+    Deleted <%= commit_diff.old_path %>
+    <% else %>
+    Renamed <%= commit_diff.old_path %> -> <%= commit_diff.new_path %>
+    <% end %>
+  <% else %>
+    <%= commit_diff.new_path %>
+  <% end %>
+  </h3>
+  
+  <%= render 'commit_diff_hunks/list', :commit_diff_hunks => commit_diff.hunks %>
+</div>

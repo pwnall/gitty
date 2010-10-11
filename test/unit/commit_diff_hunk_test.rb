@@ -99,6 +99,7 @@ END_PATCH
     assert_equal 0, hunks[0].old_count, 'old_count'
     assert_equal 1, hunks[0].new_start, 'new_start'
     assert_equal 1, hunks[0].new_count, 'new_count'
+    assert_nil hunks[0].context, 'context'
     assert_equal "+Version 1", hunks[0].patch_text
     
     # Smoke test to ensure the hunk is really valid.

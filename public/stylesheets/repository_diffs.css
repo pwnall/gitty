@@ -1,0 +1,46 @@
+.repository_diff {
+  border: 1px solid #BECFA2;
+  margin: 5px 0;
+  padding: 0;
+  background: #EEEEEE;
+}
+
+.repository_diff .path {
+  margin: 0 0 0 0;
+  padding: 0.3em 0 0.5em 1ex;
+  border-bottom: 1px solid #AAAAAA;
+}
+
+.repository_hunk {
+  border-spacing: 0;
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.repository_hunk .line_number {
+  background-color: #EEEEEE;
+  color: #AAAAAA;
+  text-align: right;
+  border-right: 1px solid #AAAAAA;
+  width: 1em;
+  padding: 0 3px 0 5px;
+}
+
+.repository_hunk pre {
+  margin: 0;
+  padding: 0;
+}
+
+.repository_hunk .added .data {
+  background-color: #AAFFAA;
+}
+
+.repository_hunk .deleted .data {
+  background-color: #FFCCCC;
+}
+
+.repository_hunk .same {
+  background-color: #E7F5D0;
+}

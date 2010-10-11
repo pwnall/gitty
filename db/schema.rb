@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(:version => 20101011062236) do
     t.integer "old_count",  :null => false
     t.integer "new_start",  :null => false
     t.integer "new_count",  :null => false
+    t.text    "context"
     t.text    "patch_text"
   end
 

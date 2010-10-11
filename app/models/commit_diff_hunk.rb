@@ -21,6 +21,11 @@ class CommitDiffHunk < ActiveRecord::Base
   validates :new_count, :numericality => { :greater_than_or_equal_to => 0 },
                         :presence => true
 
+  # The patch context (first line with no blank spaces preceding the patch).
+  #
+  # This can be nil if the patch lines aren't indented.
+  validates :context, :length => { :maximum => 1.kilobyte, :allow_nil => true }
+
   # The text of the diff, in patch format.
   #
   # For large patches, this field will be set to nil. It's unlikely that a human
@@ -72,10 +77,12 @@ class CommitDiffHunk < ActiveRecord::Base
       new_start = git_hunk.b_first_line || 0
       new_count = git_hunk.b_lines
       new_count ||= diff.new_blob ? diff.new_blob.data_line_count : 0
+      context = git_hunk.context.blank? ? nil : git_hunk.context
       
       hunk = self.new :diff => diff, :old_start => old_start,
           :new_start => new_start, :old_count => old_count,
-          :new_count => new_count, :patch_text => git_hunk.diff
+          :new_count => new_count, :context => context,
+          :patch_text => git_hunk.diff
     end
   end
 end

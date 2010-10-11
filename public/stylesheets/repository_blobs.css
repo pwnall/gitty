@@ -3,6 +3,8 @@
   padding: 0;  
   border: 1px solid #BECFA2;
   border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;  
   background: #E7F5D0;
   overflow: hidden;
 }

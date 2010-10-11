@@ -1,0 +1,17 @@
+<tr class="line head">
+  <td class="line_number"></td>
+  <td class="line_number"></td>
+  <td class="data">
+    @@
+    -<%= commit_diff_hunk.old_start %>,<%= commit_diff_hunk.old_count %>
+    +<%= commit_diff_hunk.new_start %>,<%= commit_diff_hunk.new_count %>
+    @@ <%= commit_diff_hunk.context %>
+  </td>
+</tr>
+<% commit_diff_hunk.patch_lines.each do |line| %>
+<tr class="line <%= commit_patch_line_class(line) %>">
+  <td class="line_number"><%= line[0] %></td>
+  <td class="line_number"><%= line[1] %></td>
+  <td class="data"><pre><%= line[2] || line[3] %></pre></td>
+</tr>
+<% end %>
