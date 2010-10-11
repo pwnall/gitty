@@ -38,10 +38,9 @@ class CommitDiffHunk < ActiveRecord::Base
     lines = []
     old_line, new_line = old_start, new_start
     
-    # TODO(costan): replace this stupidly naive algorithm with something more
-    #               decent
     patch_text.split("\n").each do |line|
-      case line[0]
+      line_type, line = line[0], line[1..-1]
+      case line_type
       when ?+
         lines << [nil, new_line, nil, line]
         new_line += 1
@@ -55,5 +54,26 @@ class CommitDiffHunk < ActiveRecord::Base
       end
     end
     lines
+  end
+  
+  # The diff hunks that make up a diff.
+  #
+  # Args:
+  #   git_diff:: a Grit::Commit::Diff object
+  #   diff:: the CommitDiff model corresponding to the Grit::Commit::Diff object
+  #
+  # Returns an array of unsaved CommitDiffHunk objects.
+  def self.from_git_diff(git_diff, diff)
+    diffs = {}    
+    git_diff.hunks.map do |git_hunk|
+      old_start = git_hunk.a_first_line || 0
+      old_count = git_hunk.a_lines || diff.old_blob.data_line_count
+      new_start = git_hunk.b_first_line || 0
+      new_count = git_hunk.b_lines || diff.new_blob.data_line_count
+      
+      hunk = self.new :diff => diff, :old_start => old_start,
+          :new_start => new_start, :old_count => old_count,
+          :new_count => new_count, :patch_text => git_hunk.diff
+    end
   end
 end

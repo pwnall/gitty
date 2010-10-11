@@ -3,8 +3,11 @@ class Profile < ActiveRecord::Base
   # The repositories created by this profile.
   has_many :repositories, :dependent => :destroy
   
+  # This profile's ACL. All entries have Users as principals.
   has_many :user_acl_entries, :class_name => "AclEntry", :as => :subject, 
                               :dependent => :destroy
+
+  # The repositories that have this profile on their ACLs.
   has_many :profile_acl_entries, :class_name => "AclEntry", :as => :principal, 
                                  :dependent => :destroy
   

@@ -25,6 +25,8 @@ class Repository < ActiveRecord::Base
   has_many :trees, :dependent => :destroy  
   # Blob information cached from the on-disk repository.
   has_many :blobs, :dependent => :destroy
+  
+  # This repository's ACL. All entries have Profiles as principals.
   has_many :acl_entries, :as => :subject, :dependent => :destroy
   
   # The repository name.

@@ -27,5 +27,37 @@ class CommitDiff < ActiveRecord::Base
   validates :new_blob, :presence => true, :if => lambda { |d| d.new_path }
   
   # Hunks in the diff.
-  has_many :hunks, :class_name => 'CommitDiffHunk', :foreign_key => 'diff_id'
+  has_many :hunks, :class_name => 'CommitDiffHunk', :foreign_key => 'diff_id',
+           :dependent => :destroy
+
+  # The diffs that make up a commit.
+  #
+  # Args:
+  #   git_commit:: a Grit::Commit object
+  #   commit:: the (saved) Commit model corresponding to the Grit::Commit object
+  #
+  # Returns a hash mapping unsaved CommitDiff objects to arrays of unsaved
+  # CommitDiffHunk objects. The CommitDiff objects need to be saved before
+  # the hunks can be saved.
+  def self.from_git_commit(git_commit, commit)
+    unless git_commit.id == commit.gitid
+      raise ArgumentError, "commit doesn't correspond to git_commit"
+    end
+    
+    diffs = {}    
+    repo = commit.repository
+    git_commit.diffs.each do |git_diff|
+      old_blob = git_diff.a_blob &&
+          repo.blobs.where(:gitid => git_diff.a_blob.id).first
+      new_blob = git_diff.b_blob &&
+          repo.blobs.where(:gitid => git_diff.b_blob.id).first
+      old_path = old_blob && git_diff.a_path
+      new_path = new_blob && git_diff.b_path
+    
+      diff = self.new :commit => commit, :old_path => old_path,
+          :new_path => new_path, :old_blob => old_blob, :new_blob => new_blob
+      diffs[diff] = CommitDiffHunk.from_git_diff(git_diff, diff)
+    end
+    diffs
+  end
 end

@@ -27,7 +27,7 @@ class Commit < ActiveRecord::Base
   validates :message, :length => 1..1.kilobyte, :presence => true
   
   # Diffs for the blobs changed by the commit.
-  has_many :diffs, :class_name => 'CommitDiff'
+  has_many :diffs, :class_name => 'CommitDiff', :dependent => :destroy
   
   # The commit's parents.
   has_many :commit_parents, :dependent => :destroy

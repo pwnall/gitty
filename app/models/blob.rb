@@ -37,6 +37,11 @@ class Blob < ActiveRecord::Base
   
   # The contents of the file stored in the blob.
   def data
-    repository.grit_repo.blob(gitid).data
+    @data ||= repository.grit_repo.blob(gitid).data
+  end
+  
+  # The number of lines in the file stored in the blob.
+  def data_line_count
+    @line_count ||= data.split("\n").count
   end
 end

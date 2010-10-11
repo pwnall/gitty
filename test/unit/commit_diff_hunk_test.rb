@@ -14,6 +14,7 @@ class CommitDiffHunkTest < ActiveSupport::TestCase
 +Added line 3.
  Third base line.
 END_PATCH
+    @repo = @hunk.diff.commit.repository
   end
   
   test 'setup' do
@@ -77,5 +78,32 @@ END_PATCH
       assert_equal line[1].nil?, line[3].nil?,
                    'new line number and contents are consistent'
     end
+    
+    assert_equal [4, nil, 'Dead line 2.', nil], lines[3]
+    assert_equal [nil, 6, nil, 'Added line 2.'], lines[5]
+    assert_equal [5, 8, 'Third base line.', 'Third base line.'], lines[7]
   end
+  
+  test 'from_git_diff' do
+    mock_any_repository_path
+    diff = @hunk.diff
+    commit = diff.commit
+    g_commit = @repo.grit_repo.commit(commit.gitid)
+
+    
+    hunks = CommitDiffHunk.from_git_diff(g_commit.diffs.first, diff)
+
+    assert_equal 1, hunks.length, '1 hunk'
+    assert_equal diff, hunks[0].diff
+    assert_equal 0, hunks[0].old_start, 'old_start'
+    assert_equal 0, hunks[0].old_count, 'old_count'
+    assert_equal 1, hunks[0].new_start, 'new_start'
+    assert_equal 1, hunks[0].new_count, 'new_count'
+    assert_equal "+Version 1", hunks[0].patch_text
+    
+    # Smoke test to ensure the hunk is really valid.
+    diff.hunks.destroy_all
+    assert commit.valid?
+    commit.save!
+  end  
 end

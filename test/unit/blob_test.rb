@@ -51,5 +51,6 @@ class BlobTest < ActiveSupport::TestCase
   test 'data' do
     mock_repository_path @repo
     assert_equal "Version 1.2\n", @blob.data
+    assert_equal 1, @blob.data_line_count
   end
 end
