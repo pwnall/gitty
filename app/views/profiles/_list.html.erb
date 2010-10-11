@@ -1,0 +1,7 @@
+<ul class="wide_list ssh_keys">
+<% profiles.each do |profile| %>
+  <li>
+    <%= link_to profile.name, profile %>
+  </li>
+<% end %>
+</ul>

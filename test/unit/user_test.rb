@@ -20,10 +20,20 @@ class UserTest < ActiveSupport::TestCase
   end
   
   test 'chargeable_profiles' do
+    @user.save!
     assert_equal [], @user.chargeable_profiles
     assert_equal [profiles(:dexter)], profiles(:dexter).user.chargeable_profiles
   end
   
+  test 'team_profiles' do
+    @user.save!
+    assert_equal [], @user.team_profiles
+    john = users(:john)
+    assert_equal [profiles(:csail), profiles(:mit)], john.team_profiles
+    sam = users(:sam)
+    assert_equal [profiles(:csail)], sam.team_profiles
+  end
+
   test 'no acl for user with no profile' do
     assert_no_difference 'AclEntry.count' do
       @user.save!
@@ -62,4 +72,5 @@ class UserTest < ActiveSupport::TestCase
     user = User.new :profile => profiles(:csail)
     assert_nil user.profile
   end
+  
 end

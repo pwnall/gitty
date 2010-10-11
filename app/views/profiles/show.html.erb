@@ -3,4 +3,10 @@
 <div class="home_panel repositories">
   <h3>Repositories</h3>
   <%= render 'repositories/list', :repositories => @profile.repositories %>
+  <% if @profile.is_team_profile? %>
+    <h3><%= link_to 'Members', acl_entries_path(@profile)%></h3>
+  <% else %>
+    <h3>Teams</h3>
+    <%= render 'profiles/list', :profiles => current_user.team_profiles %>
+  <% end %>
 </div>

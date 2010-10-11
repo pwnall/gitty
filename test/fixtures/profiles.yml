@@ -6,6 +6,12 @@ dexter:
   name: dexter
   display_name: Dexter
 
+# Team profile.
 csail:
   name: csail 
   display_name: Computer Science and AI Lab
+
+# Tea profile.
+mit:
+  name: mit
+  display_name: MIT

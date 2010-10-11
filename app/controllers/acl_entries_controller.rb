@@ -39,6 +39,7 @@ class AclEntriesController < ApplicationController
       # TODO(costan): if no user is logged in, make them log in
       head :forbidden
     end
+    head :forbidden if @subject.kind_of?(Profile) && @subject.user
   end
   
   # GET /acl_entries

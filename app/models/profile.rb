@@ -33,6 +33,11 @@ class Profile < ActiveRecord::Base
     name
   end
   
+  # True if this is a team profile.
+  def is_team_profile?
+    user == nil
+  end
+  
   # The location of a profile's repositories on disk.
   #
   # Args:

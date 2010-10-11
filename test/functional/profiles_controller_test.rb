@@ -31,6 +31,19 @@ class ProfilesControllerTest < ActionController::TestCase
     assert_redirected_to session_path
   end
 
+  test "should create a team profile" do
+    user = users(:john)
+    set_session_current_user user
+    assert_difference 'Profile.count' do
+      post :create, :profile => @profile.attributes.merge(:name => 'newest')
+    end
+    profile = assigns(:profile)
+    assert_not_nil profile
+    assert_not_equal profile, user.reload.profile  
+    
+    assert_redirected_to session_path
+  end
+  
   test "should show profile" do
     get :show, :profile_name => @profile.to_param
     assert_response :success

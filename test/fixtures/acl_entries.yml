@@ -2,6 +2,16 @@ john_csail:
   principal: john (User)
   subject: csail (Profile)
   role: edit
+  
+john_mit:
+  principal: john (User)
+  subject: mit (Profile)
+  role: charge
+
+sam_csail:
+  principal: sam (User)
+  subject: csail (Profile)
+  role: participate
 
 csail_dexter_ghost:
   principal: csail (Profile)

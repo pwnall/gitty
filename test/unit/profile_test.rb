@@ -96,4 +96,9 @@ class ProfileTest < ActiveSupport::TestCase
     assert_equal Profile.acl_principal_class,
                  profiles(:dexter).acl_entries.first.principal.class
   end
+  
+  test 'is_team_profile?' do 
+    assert !profiles(:costan).is_team_profile?
+    assert profiles(:csail).is_team_profile?
+  end
 end

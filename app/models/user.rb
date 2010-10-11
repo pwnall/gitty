@@ -43,6 +43,12 @@ class User < ActiveRecord::Base
   def chargeable_profiles
     acl_entries.where(:role => [:charge, :edit]).map(&:subject)
   end
+  
+  # All the team profiles that this user is a member of. 
+  def team_profiles
+    acl_entries.where(:role => [:participate, :charge, :edit]).map(&:subject).
+        reject { |p| p == profile }
+  end
 end
 
 
