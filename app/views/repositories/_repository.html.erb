@@ -20,8 +20,8 @@
     </dd>
   </dl>
   
-  <% if repository.default_branch %>
   <ul class="actions">
+    <% if repository.default_branch %>
     <li>
       <%= branch_switcher repository, @branch %>
     </li>
@@ -36,6 +36,17 @@
       <%= link_to 'Commits',
               contextual_commits_path(repository, @branch, @tag, @commit) %>
     </li>
+    <% else %>
+    <li>
+      This repository is empty.
+    </li>
+    <% if repository.can_commit? current_user %>
+    <li>
+      <%= link_to 'Guide to committing',
+              profile_repository_path(repository.profile, repository) %>
+      <% end %>
+    </li>
+    <% end %>
     <% if repository.can_edit? current_user %>
     <li>
       <%= link_to 'Sharing',
@@ -47,5 +58,4 @@
     </li>
     <% end %>
   </ul>
-  <% end %>
 </div>

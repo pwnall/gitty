@@ -1,6 +1,6 @@
 GIT
   remote: git://github.com/pwnall/grit.git
-  revision: 2e57b584e20e8faf41e39ffb8cfcf830c0bb0c18
+  revision: e7d9de056b7d13d3259fb99a5c9fa734fb0dd03b
   branch: hunks
   specs:
     grit (2.3.0)
