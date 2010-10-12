@@ -2,8 +2,9 @@
 
 Web front-end for hosting Git repositories.
 
-This is a reduced-functionality clone of Github. On the bright side, you can
-install it on your intranet, and get free private repositories.
+This is a reduced-functionality clone of Github. But have access to the source
+code, so you can add that feature that you always wished GitHub would have! You
+can also install it behind your firewall for free.
 
 == Installation
 
@@ -21,10 +22,8 @@ configuration variable git_user by going to
  
 * Fork the project.
 * Make your feature addition or bug fix.
-* Add tests for it. This is important so I don't break it in a
-  future version unintentionally.
-* Commit, do not mess with rakefile, version, or history.
-  (if you want to have your own version, that is fine but bump version in a commit by itself I can ignore when I pull)
+* Add tests for it. This is important so I don't break it in a future version
+  unintentionally.
 * Send me a pull request. Bonus points for topic branches.
 
 == Copyright
