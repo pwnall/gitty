@@ -5,6 +5,9 @@
       <%= link_to 'New Repository', new_repository_path, :class => 'button' %>      
     </p>
     <%= render 'repositories/list', :repositories => @profile.repositories %>
+
+    <h2>Team Repositories</h2>
+    <%= render 'repositories/list', :repositories => @profile.user.team_repositories %>
   </div>
 
 

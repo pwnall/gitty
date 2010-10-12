@@ -84,7 +84,7 @@ end
 # :nodoc: keep on-disk repositories synchronized
 class Repository
   after_create :create_local_repository
-  before_save :save_old_repository_name
+  before_save :save_old_repository_identity
   after_update :relocate_local_repository
   after_destroy :delete_local_repository
 
@@ -106,23 +106,28 @@ class Repository
   end
   
   # Relocates a Git repository on disk.
-  def self.relocate_local_repository(profile, old_name, new_name)
+  def self.relocate_local_repository(old_profile, profile, old_name, name)
     # TODO: maybe this should be a background job.
-    old_path = local_path profile, old_name
-    new_path = local_path profile, new_name
+    old_path = local_path old_profile, old_name
+    new_path = local_path profile, name
+    FileUtils.mkdir_p File.dirname(new_path)
     FileUtils.mv old_path, new_path
   end
   
-  # Saves the repository's old name, so it can be relocated.
-  def save_old_repository_name
-    @_old_repository_name = name_change.first if name_change
+  # Saves the repository's old name and profile, so it can be relocated.
+  def save_old_repository_identity
+    @_old_repository_name = name_change && name_change.first 
+    @_old_repository_profile_id = profile_id_change && profile_id_change.first
   end
   
-  # Relocates the on-disk repository after the model's name is changed.
+  # Relocates the on-disk repository if the model's name or profile is changed.
   def relocate_local_repository
-    return unless old_name = @_old_repository_name
-    
-    self.class.relocate_local_repository profile, old_name, name
+    return unless @_old_repository_name or @_old_repository_profile_id
+    old_name = @_old_repository_name || name
+    old_profile_id = @_old_repository_profile_id || profile_id
+
+    old_profile = Profile.where(:id => old_profile_id).first
+    self.class.relocate_local_repository old_profile, profile, old_name, name
     @grit_repo = nil
   end    
   

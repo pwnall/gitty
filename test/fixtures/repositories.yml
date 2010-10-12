@@ -2,6 +2,10 @@ costan_ghost:
   name: ghost
   profile: costan
   
+csail_ghost:
+  name: ghost
+  profile: csail
+
 dexter_ghost:
   name: ghost
   profile: dexter

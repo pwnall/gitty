@@ -47,8 +47,6 @@ class RepositoriesController < ApplicationController
 
   # GET /costan/rails/edit
   def edit
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
   end
 
   # POST /_/repositories
@@ -68,7 +66,9 @@ class RepositoriesController < ApplicationController
         end
       else
         format.html { render :action => "new" }
-        format.xml  { render :xml => @repository.errors, :status => :unprocessable_entity }
+        format.xml do
+          render :xml => @repository.errors, :status => :unprocessable_entity
+        end
       end
     end
   end
@@ -76,17 +76,19 @@ class RepositoriesController < ApplicationController
   # PUT /costan/rails
   # PUT /costan/rails.xml
   def update
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-
     respond_to do |format|
       if @repository.update_attributes(params[:repository])        
-        format.html { redirect_to(profile_repository_url(@profile, @repository), :notice => 'Repository was successfully updated.') }
+        format.html do
+          redirect_to profile_repository_url(@repository.profile, @repository),
+                      :notice => 'Repository was successfully updated.'
+        end
         format.xml  { head :ok }
       else
         @original_repository = Repository.find(@repository.id)
         format.html { render :action => "edit" }
-        format.xml  { render :xml => @repository.errors, :status => :unprocessable_entity }
+        format.xml do
+          render :xml => @repository.errors, :status => :unprocessable_entity
+        end
       end
     end
   end

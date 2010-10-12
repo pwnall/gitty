@@ -97,11 +97,20 @@ class RepositoryTest < ActiveSupport::TestCase
            'Old repository not deleted on rename'
     assert File.exist?('tmp/test_git_root/dexter/pwnage.git/objects'),
            'New repository not created on rename'
-    assert @repo.grit_repo.branches,
+    assert @repo.grit_repo.tags,
+           'The Grit repository object is broken after rename'
+
+    @repo.profile = profiles(:csail)
+    @repo.save!
+    assert !File.exist?('tmp/test_git_root/dexter/pwnage.git/objects'),
+           'Old repository not deleted on rename'
+    assert File.exist?('tmp/test_git_root/csail/pwnage.git/objects'),
+           'New repository not created on rename'
+    assert @repo.grit_repo.commits,
            'The Grit repository object is broken after rename'
 
     @repo.destroy
-    assert !File.exist?('tmp/test_git_root/dexter/pwnage.git/objects'),
+    assert !File.exist?('tmp/test_git_root/csail/pwnage.git/objects'),
            'Old repository not deleted on rename'
     assert !@repo.grit_repo, 'The Grit repository object exists after deletion'
   end
@@ -344,7 +353,8 @@ class RepositoryTest < ActiveSupport::TestCase
   
   test 'acl for repository profile change' do 
     repo = repositories(:costan_ghost)
-    repo.profile = profiles(:csail)
+    FileUtils.mkdir_p repo.local_path
+    repo.profile = profiles(:mit)
     assert_no_difference 'AclEntry.count' do
       repo.save!
     end

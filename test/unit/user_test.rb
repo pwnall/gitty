@@ -29,8 +29,8 @@ class UserTest < ActiveSupport::TestCase
     @user.save!
     assert_equal [], @user.profiles
     john = users(:john)
-    assert_equal [profiles(:costan), profiles(:csail), profiles(:mit)],
-                 john.profiles
+    assert_equal Set.new([profiles(:costan), profiles(:csail), profiles(:mit)]),
+                 Set.new(john.profiles)
     sam = users(:sam)
     assert_equal [profiles(:csail)], sam.profiles
   end
@@ -42,6 +42,10 @@ class UserTest < ActiveSupport::TestCase
     assert_equal [profiles(:csail), profiles(:mit)], john.team_profiles
     sam = users(:sam)
     assert_equal [profiles(:csail)], sam.team_profiles
+  end
+  
+  test 'team_repositories' do
+    assert_equal [repositories(:csail_ghost)], users(:john).team_repositories
   end
 
   test 'no acl for user with no profile' do

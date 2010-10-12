@@ -30,7 +30,7 @@ class User < ActiveRecord::Base
   
   # Entries for profiles that this user has bits for.
   has_many :acl_entries, :as => :principal, :dependent => :destroy
-  
+    
   # Aliases e-mail, to conform to the ACL principal interface.
   def name
     email
@@ -43,16 +43,20 @@ class User < ActiveRecord::Base
   def chargeable_profiles
     acl_entries.where(:role => [:charge, :edit]).map(&:subject)
   end
-  
-  # All the profiles that this user has an acl entry with.
+    
+  # All the profiles with an ACL entry for this user.
   def profiles
-    acl_entries.where(:role => [:participate, :charge, :edit]).map(&:subject).
-                sort_by(&:name)
+    acl_entries.map(&:subject)
   end
   
-  # All the team profiles that this user is a member of. 
+  # Profiles for the teams that this user is a member of, with any privilege. 
   def team_profiles
     profiles.reject { |p| p == profile }
+  end
+  
+  # All the repositories that this user can access, through a team.
+  def team_repositories
+    team_profiles.map(&:repositories).flatten
   end
 end
 
