@@ -25,6 +25,16 @@ class UserTest < ActiveSupport::TestCase
     assert_equal [profiles(:dexter)], profiles(:dexter).user.chargeable_profiles
   end
   
+  test 'profiles' do
+    @user.save!
+    assert_equal [], @user.profiles
+    john = users(:john)
+    assert_equal [profiles(:costan), profiles(:csail), profiles(:mit)],
+                 john.profiles
+    sam = users(:sam)
+    assert_equal [profiles(:csail)], sam.profiles
+  end
+  
   test 'team_profiles' do
     @user.save!
     assert_equal [], @user.team_profiles

@@ -15,13 +15,6 @@
     <%= render 'ssh_keys/list', :ssh_keys => current_user.ssh_keys %>
   </div>
   
-  <div class="home_panel teams">
-    <h2>Teams</h2>
-    <p class="actions">
-      <%= link_to 'New Team', new_profile_path, :class => 'button' %>      
-    </p>
-    <%= render 'profiles/list', :profiles => current_user.team_profiles %>
-  </div>
 <% else %>
   <h2>Create a profile</h2>
 

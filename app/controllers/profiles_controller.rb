@@ -53,7 +53,6 @@ class ProfilesController < ApplicationController
     respond_to do |format|
       if @profile.save
         if current_user.profile
-          # TODO(costan): add to the list of secondary profiles
           AclEntry.set current_user, @profile, :edit
         else
           current_user.profile = @profile

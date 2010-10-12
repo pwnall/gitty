@@ -34,9 +34,15 @@ class Profile < ActiveRecord::Base
   end
   
   # True if this is a team profile.
-  def is_team_profile?
-    user == nil
+  def team_profile?
+    user.nil?
   end
+  
+  # Users that are members of a team profile.
+  def members
+    team_profile? ? user_acl_entries.map(&:principal) : []
+  end
+  
   
   # The location of a profile's repositories on disk.
   #

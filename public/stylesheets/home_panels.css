@@ -9,10 +9,9 @@
   width: 350px;
   margin: 0 0 0 50px;
 }
-.home_panel.teams {
+.home_panel.profiles {
   width: 350px;
   margin: 0 0 0 50px;
-  float: right;
 }
 .home_panel .actions {
   position: absolute;

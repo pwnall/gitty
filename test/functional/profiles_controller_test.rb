@@ -48,6 +48,18 @@ class ProfilesControllerTest < ActionController::TestCase
     get :show, :profile_name => @profile.to_param
     assert_response :success
   end
+  
+  test "should show a user profile's teams" do 
+    set_session_current_user nil
+    get :show, :profile_name => @profile.to_param
+    assert_response :success
+    assert_equal @profile, assigns(:profile)
+    assert_select '.profiles' do
+      assert_select 'li', 2
+      assert_select 'li:nth-child(1)', 'csail'
+      assert_select 'li:nth-child(2)', 'mit'
+    end
+  end
 
   test "should get edit" do
     get :edit, :profile_name => @profile.to_param
