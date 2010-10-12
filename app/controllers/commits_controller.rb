@@ -16,8 +16,13 @@ class CommitsController < ApplicationController
       @branch = ref = @repository.default_branch
     end
     
-    # TODO(costan): List commits backwards.
-    @commits = [ref.commit]
+    commits_page = (params[:page] || 1).to_i
+    commits_page = 1 if commits_page < 1
+    parent_commits = ref.commit.walk_parents((commits_page - 1) * 20, 21)
+    @commits = parent_commits[0, 20]
+    
+    @next_page = parent_commits[20] ? commits_page + 1 : nil
+    @previous_page = (commits_page > 1) ? commits_page - 1 : nil
 
     respond_to do |format|
       format.html # index.html.erb

@@ -100,6 +100,7 @@ GEM
       rake (>= 0.8.4)
       thor (~> 0.14.0)
     rake (0.8.7)
+    rbtree (0.3.0)
     rest-client (1.6.1)
       mime-types (>= 1.16)
     thin (1.2.7)
@@ -124,5 +125,6 @@ DEPENDENCIES
   mysql2
   net-ssh
   rails (>= 3.0.0)
+  rbtree
   thin
   topological_sort

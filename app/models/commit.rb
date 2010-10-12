@@ -62,4 +62,49 @@ class Commit < ActiveRecord::Base
   def walk_path(path)
     tree.walk_path(path)
   end
+  
+  # A range of commits obtained by walking the commit's parent graph.
+  #
+  # The commits are ordered by their commit time.
+  #
+  # Args:
+  #   index:: the index of the first commit to be returned; this commit is 0
+  #   count:: the number of commits to return
+  def walk_parents(index, count)
+    enumerator = Commit::Enumerator.new self
+    index.times { enumerator.next }    
+    commits = []
+    count.times do
+      break unless commit = enumerator.next
+      commits << commit
+    end
+    commits
+  end
+end
+
+# Enumerator for a commit's ascendants.
+class Commit::Enumerator
+  # Creates a new enumerator based at the given commit.
+  def initialize(commit)
+    @tree = RBTree.new
+    @tree[self.class.commit_key(commit)] = commit
+  end
+  
+  # Yields the next ancestor of the master commit.
+  def next
+    return nil if @tree.empty?
+    
+    key, commit = *@tree.pop
+    commit.parents.each do |parent_commit|
+      key = self.class.commit_key parent_commit
+      next if @tree.has_key? key
+      @tree[key] = parent_commit
+    end
+    commit
+  end
+  
+  # Determines the sorting order for commits. Larger keys come first.
+  def self.commit_key(commit)
+    [commit.committed_at.to_f, commit.gitid]
+  end
 end

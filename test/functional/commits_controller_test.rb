@@ -15,7 +15,10 @@ class CommitsControllerTest < ActionController::TestCase
                 :profile_name => @commit.repository.profile.to_param
     assert_response :success
     assert_equal branches(:master), assigns(:branch)
-    assert_not_nil assigns(:commits)
+    assert_equal [commits(:commit1)], assigns(:commits)
+    
+    assert_nil assigns(:previous_page)
+    assert_nil assigns(:next_page)
   end
 
   test "should show commits with branch ref" do
@@ -24,7 +27,10 @@ class CommitsControllerTest < ActionController::TestCase
                 :ref_name => @branch.to_param
     assert_response :success
     assert_equal @branch, assigns(:branch)
-    assert_not_nil assigns(:commits)
+    assert_equal [commits(:commit2), commits(:commit1)], assigns(:commits)
+
+    assert_nil assigns(:previous_page)
+    assert_nil assigns(:next_page)
   end
 
   test "should show commits with tag ref" do

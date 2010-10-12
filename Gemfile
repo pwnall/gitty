@@ -22,6 +22,7 @@ gem 'configvars_rails'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json'
 gem 'net-ssh', :require => 'net/ssh'
+gem 'rbtree'
 gem 'topological_sort'
 
 # gem 'bj'

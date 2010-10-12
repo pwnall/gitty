@@ -70,6 +70,22 @@ class CommitTest < ActiveSupport::TestCase
     assert !@commit.valid?, "Commit incorrectly created from git"
   end
   
+  test 'walk_parents' do
+    c1 = Commit.new :committed_at => Time.now - 10, :gitid => 'c1'
+    c2 = Commit.new :committed_at => Time.now - 9, :gitid => 'c2',
+                    :parents => [c1]
+    c3 = Commit.new :committed_at => Time.now - 8, :gitid => 'c3'
+    c4 = Commit.new :committed_at => Time.now - 7, :gitid => 'c4',
+                    :parents => [c2, c3]
+    c5 = Commit.new :committed_at => Time.now - 6, :gitid => 'c5',
+                    :parents => [c3, c4]
+
+    assert_equal [c5, c4, c3, c2, c1], c5.walk_parents(0, 10)    
+    assert_equal [c5, c4, c3], c5.walk_parents(0, 3)    
+    assert_equal [c4, c3, c2, c1], c5.walk_parents(1, 4)
+    assert_equal [c2, c1], c5.walk_parents(3, 5)
+  end
+  
   test 'walk_path' do
     assert_equal trees(:d1_d2), commits(:commit1).walk_path('/d1/d2')
   end  
