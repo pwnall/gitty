@@ -51,6 +51,18 @@ class BlobTest < ActiveSupport::TestCase
   test 'data' do
     mock_repository_path @repo
     assert_equal "Version 1.2\n", @blob.data
-    assert_equal 1, @blob.data_line_count
+    assert_raise TypeError, 'data should be frozen' do
+      @blob.data[1] = 'E'
+    end
+    
+    assert_equal ['Version 1.2'], @blob.data_lines
+    assert_raise TypeError, 'data_lines array should be frozen' do
+      @blob.data_lines[0] = 'New version'
+    end
+    assert_raise TypeError, 'data_lines elements should be frozen' do
+      @blob.data_lines[0][1] = 'E'
+    end
+    
+    assert_equal 1, @blob.data_line_count, 'data_line_count'
   end
 end

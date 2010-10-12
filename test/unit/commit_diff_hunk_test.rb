@@ -4,16 +4,7 @@ class CommitDiffHunkTest < ActiveSupport::TestCase
   setup do
     @hunk = CommitDiffHunk.new :diff => commit_diffs(:commit1_d1_d2_a),
         :old_start => 1, :old_count => 5, :new_start => 3, :new_count => 6,
-        :patch_text => <<END_PATCH
- First base line.
- Second base line.
--Dead line 1.
--Dead line 2.
-+Added line 1.
-+Added line 2.
-+Added line 3.
- Third base line.
-END_PATCH
+        :summary => ' 2-2+3 1'
     @repo = @hunk.diff.commit.repository
   end
   
@@ -63,8 +54,74 @@ END_PATCH
     @hunk.old_start, @hunk.new_start = hunk.old_start, hunk.new_start
     assert !@hunk.valid?
   end
+    
+  test 'from_git_diff' do
+    mock_any_repository_path
+    diff = @hunk.diff
+    commit = diff.commit
+    g_commit = @repo.grit_repo.commit(commit.gitid)
+
+    
+    hunks = CommitDiffHunk.from_git_diff(g_commit.diffs.first, diff)
+
+    assert_equal 1, hunks.length, '1 hunk'
+    assert_equal diff, hunks[0].diff
+    assert_equal 0, hunks[0].old_start, 'old_start'
+    assert_equal 0, hunks[0].old_count, 'old_count'
+    assert_equal 1, hunks[0].new_start, 'new_start'
+    assert_equal 1, hunks[0].new_count, 'new_count'
+    assert_nil hunks[0].context, 'context'
+    assert_equal "+1", hunks[0].summary
+    
+    # Smoke test to ensure the hunk is really valid.
+    diff.hunks.destroy_all
+    assert commit.valid?
+    commit.save!
+  end
   
+  test 'patch_summary' do
+    patch_text = <<END_PATCH
+ First base line.
+ Second base line.
+-Dead line 1.
+-Dead line 2.
++Added line 1.
++Added line 2.
++Added line 3.
+ Third base line.
+END_PATCH
+    assert_equal ' 2-2+3 1', CommitDiffHunk.patch_summary(patch_text)
+  end
+
   test 'patch_lines' do
+    # Lengthy setup to simulate on-disk blobs. Should've thought of this when
+    # setting up the mock repository.
+    old_blob = Blob.new
+    old_blob.stubs(:data).returns <<END_DATA
+First base line.
+Second base line.
+Dead line 1.
+Dead line 2.
+Third base line.
+Not in patch 1A.
+Not in patch 2A.
+END_DATA
+
+    new_blob = Blob.new
+    new_blob.stubs(:data).returns <<END_DATA
+Not in patch 1B.
+Not in patch 2B.
+First base line.
+Second base line.
+Added line 1.
+Added line 2.
+Added line 3.
+Third base line.
+Not in patch 3B.
+Not in patch 4B.
+END_DATA
+    diff = CommitDiff.new :old_blob => old_blob, :new_blob => new_blob
+    @hunk.diff = diff
     lines = @hunk.patch_lines
     
     assert_equal (1..5).to_a, lines.map { |l| l[0] }.select { |l| l},
@@ -83,28 +140,4 @@ END_PATCH
     assert_equal [nil, 6, nil, 'Added line 2.'], lines[5]
     assert_equal [5, 8, 'Third base line.', 'Third base line.'], lines[7]
   end
-  
-  test 'from_git_diff' do
-    mock_any_repository_path
-    diff = @hunk.diff
-    commit = diff.commit
-    g_commit = @repo.grit_repo.commit(commit.gitid)
-
-    
-    hunks = CommitDiffHunk.from_git_diff(g_commit.diffs.first, diff)
-
-    assert_equal 1, hunks.length, '1 hunk'
-    assert_equal diff, hunks[0].diff
-    assert_equal 0, hunks[0].old_start, 'old_start'
-    assert_equal 0, hunks[0].old_count, 'old_count'
-    assert_equal 1, hunks[0].new_start, 'new_start'
-    assert_equal 1, hunks[0].new_count, 'new_count'
-    assert_nil hunks[0].context, 'context'
-    assert_equal "+Version 1", hunks[0].patch_text
-    
-    # Smoke test to ensure the hunk is really valid.
-    diff.hunks.destroy_all
-    assert commit.valid?
-    commit.save!
-  end  
 end

@@ -26,11 +26,14 @@ class CommitDiffHunk < ActiveRecord::Base
   # This can be nil if the patch lines aren't indented.
   validates :context, :length => { :maximum => 1.kilobyte, :allow_nil => true }
 
-  # The text of the diff, in patch format.
+  # A compressed version of the patch text produced by git's diff algorithm.
   #
-  # For large patches, this field will be set to nil. It's unlikely that a human
-  # would be able to review the patches in a normal UI.
-  validates :patch_text, :presence => true, :length => 1..1.megabyte
+  # Summaries are produced by calling CommitDiffHunk#patch_summary and they are
+  # de-compressed in the patch_lines implementation.
+  #
+  # For large and complex patches, this field will be set to nil. It's unlikely
+  # that a human would be able to review such patches with a conventional UI.
+  validates :summary, :presence => true, :length => 1..32.kilobytes
   
   # An array of parsed lines making up the hunk's patch.
   #
@@ -40,22 +43,35 @@ class CommitDiffHunk < ActiveRecord::Base
   #   * the line contents in the old file
   #   * the line contents in the new file
   def patch_lines
-    lines = []
+    return @patch_lines if @patch_lines
+    
     old_line, new_line = old_start, new_start
     
-    patch_text.split("\n").each do |line|
-      line_type, line = line[0], line[1..-1]
-      case line_type
-      when ?+
-        lines << [nil, new_line, nil, line]
-        new_line += 1
-      when ?-
-        lines << [old_line, nil, line, nil]
-        old_line += 1
-      else
-        lines << [old_line, new_line, line, line]
-        old_line += 1
-        new_line += 1
+    old_lines = diff.old_blob && diff.old_blob.data_lines
+    new_lines = diff.new_blob && diff.new_blob.data_lines
+    
+    diff_data = summary.split /(\d+)/
+    lines = []
+    i = 0
+    while i < diff_data.length
+      line_type, line_count = diff_data[i][0], diff_data[i + 1].to_i
+      i += 2
+      line_count.times do
+        case line_type
+        when ?+
+          line = [nil, new_line, nil, nil]
+          new_line += 1
+        when ?-
+          line = [old_line, nil, nil, nil]
+          old_line += 1
+        else
+          line = [old_line, new_line, nil, nil]
+          old_line += 1
+          new_line += 1
+        end
+        line[2] = line[0] && old_lines[line[0] - 1]
+        line[3] = line[1] && new_lines[line[1] - 1]
+        lines << line
       end
     end
     lines
@@ -82,7 +98,34 @@ class CommitDiffHunk < ActiveRecord::Base
       hunk = self.new :diff => diff, :old_start => old_start,
           :new_start => new_start, :old_count => old_count,
           :new_count => new_count, :context => context,
-          :patch_text => git_hunk.diff
+          :summary => patch_summary(git_hunk.diff)
     end
+  end
+  
+  # Computes a summary of a hunk patch.
+  #
+  # Args:
+  #   patch_text:: the output of Grit::Commit::Diff::Hunk#diff
+  #
+  # Returns a compressed representation of the patch. It can be used to retrieve
+  # the patch, together with the two blobs involved in the diff.
+  def self.patch_summary(patch_text)
+    # Line types are sufficient to get line numbers. These can be used to get
+    # the rest of the patch lines from the blobs involved in the diff.
+    line_types = patch_text.split("\n").map { |line| line[0] }
+    
+    # Slightly-modified RLE compression.
+    rle = []
+    i = 0
+    while line_types[i]
+      j = 1
+      while line_types[i + j] == line_types[i]
+        j += 1
+      end
+      rle << line_types[i].chr
+      rle << j
+      i += j
+    end
+    rle.join
   end
 end

@@ -7,6 +7,7 @@ class CommitsControllerTest < ActionController::TestCase
     @tag = tags(:v1)
     @session_user = @branch.repository.profile.user
     set_session_current_user @session_user    
+    mock_any_repository_path
   end
 
   test "should show commits with no ref" do

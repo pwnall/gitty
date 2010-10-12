@@ -40,13 +40,13 @@ ActiveRecord::Schema.define(:version => 20101011062236) do
   add_index "branches", ["repository_id", "name"], :name => "index_branches_on_repository_id_and_name", :unique => true
 
   create_table "commit_diff_hunks", :force => true do |t|
-    t.integer "diff_id",    :null => false
-    t.integer "old_start",  :null => false
-    t.integer "old_count",  :null => false
-    t.integer "new_start",  :null => false
-    t.integer "new_count",  :null => false
+    t.integer "diff_id",   :null => false
+    t.integer "old_start", :null => false
+    t.integer "old_count", :null => false
+    t.integer "new_start", :null => false
+    t.integer "new_count", :null => false
     t.text    "context"
-    t.text    "patch_text"
+    t.text    "summary"
   end
 
   add_index "commit_diff_hunks", ["diff_id", "old_start", "new_start"], :name => "index_commit_diff_hunks_on_diff_id_and_old_start_and_new_start", :unique => true
