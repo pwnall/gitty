@@ -7,12 +7,29 @@
     <%= render 'repositories/list', :repositories => @profile.repositories %>
   </div>
 
+
   <div class="home_panel keys">
     <h2>SSH Keys</h2>
     <p class="actions">
       <%= link_to 'New Key', new_ssh_key_path, :class => 'button' %>       
     </p>
-    <%= render 'ssh_keys/list', :ssh_keys => current_user.ssh_keys %>
+    <% if @profile.user.ssh_keys.empty? %>
+    <p>You have no SSH keys!</p>
+    <p>
+      <%= link_to 'Add a key', new_ssh_key_path %> to access your repositories
+      via git.
+    </p>
+    <% else %>
+    <%= render 'ssh_keys/list', :ssh_keys => @profile.user.ssh_keys %>
+    <% end %>
+  </div>
+
+  <div class="home_panel teams">
+    <h2>Teams</h2>
+    <p class="actions">
+      <%= link_to 'New Team', new_profile_path, :class => 'button' %>       
+    </p>
+    <%= render 'profiles/list', :profiles => @profile.user.team_profiles %>
   </div>
   
 <% else %>

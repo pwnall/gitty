@@ -1,15 +1,23 @@
 .home_panel {
   position: relative;
-  float: left;
 }
 .home_panel.repositories {
   width: 600px; 
+  float: left;
 }
 .home_panel.keys {
+  float: right;
+  width: 350px;
+  margin: 0 0 0 50px;
+}
+.home_panel.teams {
+  clear: right;
+  float: right;
   width: 350px;
   margin: 0 0 0 50px;
 }
 .home_panel.profiles {
+  float: right;
   width: 350px;
   margin: 0 0 0 50px;
 }
