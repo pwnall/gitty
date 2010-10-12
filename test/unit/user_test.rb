@@ -14,8 +14,11 @@ class UserTest < ActiveSupport::TestCase
   end
   
   test 'find_by_name' do
-    assert_equal users(:john), User.find_by_name(users(:john).name)
-    assert_equal nil, User.find_by_name('random@user.com')
+    assert_equal users(:john), User.find_by_name(users(:john).name), 'by email'
+    assert_equal users(:john), User.find_by_name(users(:john).profile.name),
+                 'by profile name'
+    assert_equal nil, User.find_by_name('random@user.com'), 'invalid e-mail'
+    assert_equal nil, User.find_by_name('csail'), 'team profile name'
     assert_equal nil, User.find_by_name(nil)
   end
   

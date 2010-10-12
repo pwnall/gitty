@@ -36,7 +36,10 @@ class User < ActiveRecord::Base
     email
   end
   def self.find_by_name(name)
-    find_by_email name
+    if user = self.find_by_email(name)
+      return user
+    end
+    (profile = Profile.find_by_name(name)) && profile.user
   end
 
   # All the profiles such that profile.can_charge? returns true for this user.
