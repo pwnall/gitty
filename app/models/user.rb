@@ -44,10 +44,15 @@ class User < ActiveRecord::Base
     acl_entries.where(:role => [:charge, :edit]).map(&:subject)
   end
   
+  # All the profiles that this user has an acl entry with.
+  def profiles
+    acl_entries.where(:role => [:participate, :charge, :edit]).map(&:subject).
+                sort_by(&:name)
+  end
+  
   # All the team profiles that this user is a member of. 
   def team_profiles
-    acl_entries.where(:role => [:participate, :charge, :edit]).map(&:subject).
-        reject { |p| p == profile }
+    profiles.reject { |p| p == profile }
   end
 end
 

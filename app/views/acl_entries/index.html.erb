@@ -17,7 +17,7 @@
       <%= f.select :role, entry.subject.class.acl_roles %>
       <span class="action">
         <%= f.submit 'Change Role' %>
-        <%= link_to 'Remove', acl_entry_path(entry), :method => :delete, :class => 'button'  %>
+        <%= link_to 'Remove', acl_entry_path(entry), :method => :delete, :class => 'button' %>
       </span>
     <% end %>
   </li>
