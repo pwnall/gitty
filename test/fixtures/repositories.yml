@@ -1,11 +1,17 @@
 costan_ghost:
   name: ghost
   profile: costan
+  description: "Tests need to mock the backing git repo for this repository."
+  url: "http://costan.us/ghost"
   
 csail_ghost:
   name: ghost
   profile: csail
+  description: "Tests need to mock the backing git repo for this repository."
+  url: "http://csail.mit.edu/projects/ghost"
 
 dexter_ghost:
   name: ghost
   profile: dexter
+  description: "Tests need to mock the backing git repo for this repository."
+  url: "http://gho.st"

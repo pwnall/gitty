@@ -4,7 +4,8 @@ class RepositoryTest < ActiveSupport::TestCase
   setup :mock_profile_paths
 
   setup do
-    @repo = Repository.new :name => 'awesome', :profile => profiles(:dexter)
+    @repo = Repository.new :name => 'awesome', :profile => profiles(:dexter),
+                           :description => 'yeah', :url => 'http://something'
   end
     
   test 'setup' do
@@ -26,7 +27,7 @@ class RepositoryTest < ActiveSupport::TestCase
      'loose-', '.hidden', 'confused.'].each do |name|
       @repo.name = name
       assert !@repo.valid?
-    end    
+    end
   end
   
   test 'valid names' do
@@ -34,6 +35,26 @@ class RepositoryTest < ActiveSupport::TestCase
       @repo.name = name
       assert @repo.valid?
     end    
+  end
+  
+  test 'description can be missing' do
+    @repo.description = nil
+    assert @repo.valid?
+  end
+    
+  test 'description will never be empty' do
+    @repo.description = ''
+    assert_nil @repo.description
+  end
+
+  test 'url can be missing' do
+    @repo.url = nil
+    assert @repo.valid?
+  end
+    
+  test 'url will never be empty' do
+    @repo.url = ''
+    assert_nil @repo.url
   end
   
   test 'profile_name' do

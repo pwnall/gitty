@@ -34,6 +34,20 @@ class Repository < ActiveRecord::Base
                    :presence => true,
                    :uniqueness => { :scope => :profile_id }
 
+  # Usually a blog post introducing the repository's contents, or a development site.
+  validates :url, :length => { :in => 1..256, :allow_nil => true }
+  def url=(new_url)
+    new_url = nil if new_url.blank?
+    super new_url
+  end
+  
+  # A description for the contents of the repository.
+  validates :description, :length => { :in => 1..1.kilobyte, :allow_nil => true }
+  def description=(new_description)
+    new_description = nil if new_description.blank?
+    super new_description
+  end
+
   # The repository's location on disk.
   def local_path
     self.class.local_path profile, name
