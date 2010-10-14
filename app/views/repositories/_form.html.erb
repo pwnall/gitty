@@ -20,6 +20,18 @@
     <%= f.label :name %>
     <%= f.text_field :name %>
   </div>
+  <div class="field">
+    <%= f.label :description %>
+    <%= f.text_field :description %>
+  </div>
+  <div class="field">
+    <%= f.label :url, 'Homepage URL' %>
+    <%= f.text_field :url %>
+  </div>
+  <div class="field">
+    <%= f.label :public, 'Public' %>
+    <%= f.check_box :public %> anyone can read this repository
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

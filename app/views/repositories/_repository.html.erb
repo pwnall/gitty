@@ -3,10 +3,41 @@
     <%= link_to repository.profile.name, repository.profile %>
     /
     <%= link_to repository.name, [repository.profile, repository] %>
+    [<%= repository.public ? 'public' : 'private' %>]
   </p>
+  <% if repository.description %>
+  <p class="description">
+    <%= repository.description %>
+  </p>
+  <% else %>
+  <p class="description missing">    
+    This repository has no description.
+    <% if repository.can_edit? current_user %>
+    <%= link_to 'Add a description',
+                edit_profile_repository_path(repository.profile, repository) %>
+    <% end %>
+  </p>
+  <% end %>
   <dl class="metadata">
+    <% if repository.url %>
     <dt>
-      Web
+      Home page
+    </dt>
+    <dd>
+      <%= link_to repository.url, repository.url, :rel => 'nofollow' %>
+    </dd>
+    <% elsif repository.can_edit? current_user %>
+    <dt>
+      Home page
+    </dt>
+    <dd>
+      This repository has no home page.
+      <%= link_to 'Add a homepage',
+              edit_profile_repository_path(repository.profile, repository) %>
+    </dd>
+    <% end %>
+    <dt>
+      Gitty page
     </dt>
     <dd>
       <%= link_to profile_repository_url(repository.profile, repository),

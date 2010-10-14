@@ -5,7 +5,8 @@ class RepositoryTest < ActiveSupport::TestCase
 
   setup do
     @repo = Repository.new :name => 'awesome', :profile => profiles(:dexter),
-                           :description => 'yeah', :url => 'http://something'
+                           :description => 'yeah', :url => 'http://something',
+                           :public => false
   end
     
   test 'setup' do
@@ -57,6 +58,19 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_nil @repo.url
   end
   
+  test 'url must be http or https' do
+    ['htt://google', 'ftp://google.com', 'javascript:alert()',
+     'httpsx://www.google.com'].each do |bad_url|
+      @repo.url = bad_url
+      assert !@repo.valid?, bad_url
+    end
+  end
+  
+  test 'public cannot be missing' do
+    @repo.public = nil
+    assert !@repo.valid?
+  end
+
   test 'profile_name' do
     assert_equal 'dexter', @repo.profile_name
   end
@@ -384,9 +398,16 @@ class RepositoryTest < ActiveSupport::TestCase
 
   test 'can_read?' do
     assert !@repo.can_read?(nil), 'no user'
+    assert !@repo.can_read?(users(:john))
     repo = repositories(:dexter_ghost)
     assert repo.can_read?(users(:john))
     assert repo.can_read?(users(:jane))
+  end
+
+  test 'can_read? for public repos' do
+    @repo.public = true
+    assert @repo.can_read?(nil), 'no user'
+    assert @repo.can_read?(users(:john))
   end
   
   test 'can_commit?' do
@@ -395,10 +416,30 @@ class RepositoryTest < ActiveSupport::TestCase
     assert !repo.can_commit?(users(:john)) 
     assert repo.can_commit?(users(:jane))
   end
+
+  test 'can_commit? for public repos' do
+    # Same test as can_commit? except the public flag is set.
+    @repo.public = true
+    assert !@repo.can_commit?(nil), 'no user'
+    repo = repositories(:dexter_ghost)
+    repo.public = true
+    assert !repo.can_commit?(users(:john)) 
+    assert repo.can_commit?(users(:jane))
+  end
   
   test 'can_edit?' do
     assert !@repo.can_edit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
+    assert repo.can_edit?(users(:jane))
+    assert !repo.can_edit?(users(:john))
+  end
+
+  test 'can_edit? for public repos' do
+    # Same test as can_edit? except the public flag is set.
+    @repo.public = true
+    assert !@repo.can_edit?(nil), 'no user'
+    repo = repositories(:dexter_ghost)
+    repo.public = true
     assert repo.can_edit?(users(:jane))
     assert !repo.can_edit?(users(:john))
   end

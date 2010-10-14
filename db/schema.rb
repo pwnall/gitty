@@ -109,12 +109,13 @@ ActiveRecord::Schema.define(:version => 20101013232422) do
   add_index "profiles", ["name"], :name => "index_profiles_on_name", :unique => true
 
   create_table "repositories", :force => true do |t|
-    t.integer  "profile_id",                 :null => false
-    t.string   "name",        :limit => 64,  :null => false
+    t.integer  "profile_id",                                    :null => false
+    t.string   "name",        :limit => 64,                     :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.text     "description"
     t.string   "url",         :limit => 256
+    t.boolean  "public",                     :default => false, :null => false
   end
 
   add_index "repositories", ["profile_id", "name"], :name => "index_repositories_on_profile_id_and_name", :unique => true

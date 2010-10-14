@@ -15,7 +15,6 @@
   border: 1px solid #D6E8B6;
 }
 .wide_list > li:hover {
-  color: #E2F5C0;
 }
 .wide_list > li:active {
   background-color: #9BA884;
@@ -30,4 +29,8 @@
 .wide_list .actions li {
   float: left;
   padding: 0 2px;
+}
+.wide_list p {
+  margin: 5px 0 0 0;
+  padding: 0;
 }
