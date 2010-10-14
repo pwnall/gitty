@@ -1,7 +1,9 @@
 <ul class="wide_list repositories"> 
 <% repositories.each do |repository| %>
+  <% if repository.can_read? current_user %>
   <li>
     <%= link_to repository.name, [repository.profile, repository] %>
+    [<%= repository.public ? 'public' : 'private' %>]
 
     <ul class="actions">
       <li>
@@ -10,6 +12,11 @@
                 :confirm => "This will permanently delete all the information in the #{repository.name} repository." %>
       </li>
     </ul>
+    
+    <% if repository.description %>
+    <p class="description"><%= repository.description %></p>
+    <% end %>
   </li>
+  <% end %>
 <% end %>
 </ul>

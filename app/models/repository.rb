@@ -34,6 +34,26 @@ class Repository < ActiveRecord::Base
                    :presence => true,
                    :uniqueness => { :scope => :profile_id }
 
+  # Usually a blog post introducing the repository's contents, or a development site.
+  validates :url, :length => { :in => 1..256, :allow_nil => true },
+                  :format => { :with => /\Ahttps?:\/\//, :allow_nil => true,
+                               :message => 'must be a http or https URL' }
+
+  # Public repositories grant read access to anyone.
+  validates :public, :inclusion => [true, false]
+
+  def url=(new_url)
+    new_url = nil if new_url.blank?
+    super new_url
+  end
+  
+  # A description for the contents of the repository.
+  validates :description, :length => { :in => 1..1.kilobyte, :allow_nil => true }
+  def description=(new_description)
+    new_description = nil if new_description.blank?
+    super new_description
+  end
+
   # The repository's location on disk.
   def local_path
     self.class.local_path profile, name
@@ -350,6 +370,7 @@ class Repository
   #
   # Reading implies git pull rights.
   def can_read?(user)
+    return true if public?
     can_x? user, [:read, :commit, :edit], [:participate, :charge, :edit]
   end
   
