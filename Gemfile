@@ -20,7 +20,7 @@ gem 'mysql2'
 gem 'authpwn_rails'
 gem 'configvars_rails'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
-gem 'json'
+gem 'json', :platforms => [:mri_18, :jruby]
 gem 'net-ssh', :require => 'net/ssh'
 gem 'rbtree'
 gem 'topological_sort'
