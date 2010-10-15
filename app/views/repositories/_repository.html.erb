@@ -70,13 +70,13 @@
     <% else %>
     <li>
       This repository is empty.
-    </li>
+    </li>    
     <% if repository.can_commit? current_user %>
     <li>
       <%= link_to 'Guide to committing',
               profile_repository_path(repository.profile, repository) %>
-      <% end %>
     </li>
+    <% end %>
     <% end %>
     <% if repository.can_edit? current_user %>
     <li>
