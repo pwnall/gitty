@@ -7,7 +7,7 @@
 <%= form_for User.new, :url => session_path do |f| %>
   <div class="field">
     <%= f.label :email, 'Email Address' %>
-    <%= f.text_field :email %>
+    <%= f.email_field :email %>
   </div>
   
   <div class="field">

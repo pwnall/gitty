@@ -42,7 +42,7 @@ a.button {
 }
 
 /* Text fields. */
-input[type=text], input[type=password], textarea {
+input[type=text], input[type=email], input[type=password], textarea {
   margin: 0;
   padding: 3px 4px;
   border: 1px solid #9BA884;
@@ -55,10 +55,12 @@ input[type=text], input[type=password], textarea {
   background-color: #FFFFFF;
   color: #000000;
 }
-input[type=text]:hover, input[type=password]:hover, textarea:hover {
+input[type=text]:hover, input[type=email]:hover, input[type=password]:hover,
+textarea:hover {
   border: 1px solid #BECEA2;
 }
-input[type=text]:focus, input[type=password]:focus, textarea:focus {
+input[type=text]:focus, input[type=email]:focus, input[type=password]:focus,
+textarea:focus {
   color: #331400;
 }
 div.field_with_errors input[type=text],
@@ -97,7 +99,8 @@ div.field_with_errors {
 input {
   width: 40ex;
 }
-input[type=button], input[type=checkbox], input[type=file], input[type=radio], input[type=submit] {
+input[type=button], input[type=checkbox], input[type=file], input[type=radio],
+input[type=submit] {
   width: auto;
 }
 textarea {
