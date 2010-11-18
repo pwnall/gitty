@@ -8,7 +8,7 @@ module TagsHelper
             link_to tag.name,
                 profile_repository_tag_path(repository.profile, repository, tag)
           end
-        }.join
+        }.join.html_safe
       }
     end
   end    

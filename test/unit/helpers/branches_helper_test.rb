@@ -2,8 +2,8 @@ require 'test_helper'
 
 class BranchesHelperTest < ActionView::TestCase
   setup do
-    @repository = repositories(:dexter_ghost)
     @branch = branches(:branch1)
+    @repository = @branch.repository
   end
   
   test 'branch_switcher with no current branch' do

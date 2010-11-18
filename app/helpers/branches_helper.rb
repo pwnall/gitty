@@ -9,7 +9,7 @@ module BranchesHelper
                 profile_repository_branch_path(repository.profile, repository,
                                                branch)
           end
-        }.join
+        }.join.html_safe
       }
     end
   end
