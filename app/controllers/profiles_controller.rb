@@ -2,7 +2,7 @@ class ProfilesController < ApplicationController
   # before_filter verifying that the current user is authorized to do changes
   def current_user_can_edit_profile
     @profile = Profile.where(:name => params[:profile_name]).first
-    head :forbidden unless @profile.can_edit? current_user
+    bounce_user unless @profile.can_edit? current_user
   end
   private :current_user_can_edit_profile
   before_filter :current_user_can_edit_profile,

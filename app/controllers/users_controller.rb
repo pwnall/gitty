@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   # before_filter that validates the current user's ability to make changes
   def current_user_can_edit_user
     @user = User.find_by_param(params[:user_param])
-    head :forbidden unless @user && @user.can_edit?(current_user)
+    bounce_user unless @user && @user.can_edit?(current_user)
   end
   private :current_user_can_edit_user
   before_filter :current_user_can_edit_user, :only => [:edit, :update, :destroy]
@@ -10,14 +10,14 @@ class UsersController < ApplicationController
   # before_filter that validates the current user's ability to see an account
   def current_user_can_read_user
     @user = User.find_by_param(params[:user_param])
-    head :forbidden unless @user && @user.can_read?(current_user)
+    bounce_user unless @user && @user.can_read?(current_user)
   end
   private :current_user_can_read_user
   before_filter :current_user_can_read_user, :only => [:show]
   
   # before_filter that validates the current user's ability to list accounts  
   def current_user_can_list_users
-    head :forbidden unless User.can_list_users? current_user
+    bounce_user unless User.can_list_users? current_user
   end
   private :current_user_can_list_users
   before_filter :current_user_can_list_users, :only => [:index]

@@ -2,9 +2,7 @@ class SshKeysController < ApplicationController
   # before_filter that rejects users trying to access other people's keys
   def user_owns_ssh_key
     @ssh_key = SshKey.find(params[:id])
-    unless current_user && current_user.id == @ssh_key.user_id
-      head :forbidden
-    end
+    bounce_user unless current_user && current_user.id == @ssh_key.user_id
   end
   private :user_owns_ssh_key
   before_filter :user_owns_ssh_key, :except => [:index, :new, :create]
@@ -20,7 +18,7 @@ class SshKeysController < ApplicationController
   def show
     @ssh_key = SshKey.find(params[:id])
     unless @ssh_key.user_id == current_user.id
-      head :forbidden 
+      bounce_user 
       return
     end
 

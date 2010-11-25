@@ -22,9 +22,6 @@ class ApplicationController < ActionController::Base
     @profile = Profile.where(:name => params[:profile_name]).first
     @repository = @profile.repositories.where(:name => params[:repo_name]).first
     
-    unless @repository.send message, current_user
-      # TODO(costan): if no user is logged in, make them log in
-      head :forbidden
-    end
+    bounce_user unless @repository.send message, current_user
   end
 end

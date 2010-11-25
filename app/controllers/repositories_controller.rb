@@ -6,9 +6,7 @@ class RepositoriesController < ApplicationController
   def current_user_can_charge_repo_profile
     profile_name = params[:repository][:profile_name]
     profile = Profile.where(:name => profile_name).first    
-    unless profile && profile.can_charge?(current_user)
-      head :forbidden
-    end
+    bounce_user unless profile && profile.can_charge?(current_user)
   end
   private :current_user_can_charge_repo_profile
   before_filter :current_user_can_charge_repo_profile,

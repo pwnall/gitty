@@ -4,18 +4,29 @@
 <p class="notice"><%= flash[:notice] %></p>
 <% end %>
 
+<% if @redirect_url %>
+<p>
+  We need you to log in before we can show you the page that you are trying to
+  view.
+</p>
+<% end %>
+
 <%= form_for User.new, :url => session_path do |f| %>
   <div class="field">
-    <%= f.label :email, 'Email Address' %>
+    <%= f.label :email, 'Email Address' %><br />
     <%= f.email_field :email %>
   </div>
   
   <div class="field">
-    <%= f.label :password %>
+    <%= f.label :password %><br />
     <%= f.password_field :password %>
   </div>
   
   <div class="actions">
     <%= f.submit 'Log in' %>
+    
+    <% if @redirect_url %>
+    <%= hidden_field_tag :redirect_url, @redirect_url %>
+    <% end %>
   </div>
 <% end %>

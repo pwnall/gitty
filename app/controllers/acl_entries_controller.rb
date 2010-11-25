@@ -36,10 +36,9 @@ class AclEntriesController < ApplicationController
   def current_user_can_edit_subject
     set_subject_from_params unless @subject
     unless @subject.can_edit?(current_user)
-      # TODO(costan): if no user is logged in, make them log in
-      head :forbidden
+      bounce_user
     end
-    head :forbidden if @subject.kind_of?(Profile) && @subject.user
+    bounce_user if @subject.kind_of?(Profile) && @subject.user
   end
   
   # GET /acl_entries
