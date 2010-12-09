@@ -1,7 +1,7 @@
 # Join model between a commit and its parents.
 class CommitParent < ActiveRecord::Base
   # The commit.
-  belongs_to :commit
+  belongs_to :commit, :inverse_of => :commit_parents
   validates :commit, :presence => true
   
   # The commit's parent.

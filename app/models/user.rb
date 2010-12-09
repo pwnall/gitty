@@ -19,17 +19,19 @@ class User < ActiveRecord::Base
   
   # Add your extensions to the User class here.
 
-  belongs_to :profile
+  # The profile representing this user.
+  belongs_to :profile, :inverse_of => :user
   attr_protected :profile, :profile_id
   
-  # The repositories accessible to this user.
+  # The repositories created by this user.
   has_many :repositories, :through => :profile
   
   # The SSH keys used to authenticate this user.
-  has_many :ssh_keys, :dependent => :destroy
+  has_many :ssh_keys, :dependent => :destroy, :inverse_of => :user
   
   # Entries for profiles that this user has bits for.
-  has_many :acl_entries, :as => :principal, :dependent => :destroy
+  has_many :acl_entries, :as => :principal, :dependent => :destroy,
+                         :inverse_of => :principal
     
   # Aliases e-mail, to conform to the ACL principal interface.
   def name

@@ -1,15 +1,16 @@
 # The profile of an author (user or group) on the site.
 class Profile < ActiveRecord::Base
   # The repositories created by this profile.
-  has_many :repositories, :dependent => :destroy
+  has_many :repositories, :dependent => :destroy, :inverse_of => :profile
   
   # This profile's ACL. All entries have Users as principals.
   has_many :user_acl_entries, :class_name => "AclEntry", :as => :subject, 
-                              :dependent => :destroy
+                              :dependent => :destroy, :inverse_of => :subject
 
   # The repositories that have this profile on their ACLs.
   has_many :profile_acl_entries, :class_name => "AclEntry", :as => :principal, 
-                                 :dependent => :destroy
+                                 :dependent => :destroy,
+                                 :inverse_of => :principal
   
   # The ACL entries shown in the ACL editing UI.
   def acl_entries
@@ -24,7 +25,7 @@ class Profile < ActiveRecord::Base
   validates :display_name, :length => 1..256, :presence => true
   
   # For profiles that represent users (not groups).
-  has_one :user
+  has_one :user, :inverse_of => :profile
 
   # The location of the profile's repositories on disk.
   def local_path

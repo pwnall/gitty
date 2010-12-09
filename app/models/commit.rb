@@ -3,7 +3,7 @@ class Commit < ActiveRecord::Base
   include GitObjectModel
   
   # The repository that the commit is a part of.
-  belongs_to :repository
+  belongs_to :repository, :inverse_of => :commits
   validates :repository, :presence => true
   
   # The tree committed by this commit.
@@ -30,7 +30,7 @@ class Commit < ActiveRecord::Base
   has_many :diffs, :class_name => 'CommitDiff', :dependent => :destroy
   
   # The commit's parents.
-  has_many :commit_parents, :dependent => :destroy
+  has_many :commit_parents, :dependent => :destroy, :inverse_of => :commit
   has_many :parents, :through => :commit_parents
 
   # Commit model for an on-disk commit.

@@ -3,7 +3,7 @@ class Blob < ActiveRecord::Base
   include GitObjectModel
   
   # The repository that this blob is a part of.
-  belongs_to :repository
+  belongs_to :repository, :inverse_of => :blobs
   validates :repository, :presence => true
 
   # The git object id (sha of the object's data).

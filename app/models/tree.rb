@@ -3,7 +3,7 @@ class Tree < ActiveRecord::Base
   include GitObjectModel
   
   # The repository that this tree is a part of.
-  belongs_to :repository
+  belongs_to :repository, :inverse_of => :trees
   validates :repository, :presence => true
   
   # The git object id (sha of the object's data).
@@ -11,7 +11,7 @@ class Tree < ActiveRecord::Base
                     :uniqueness => { :scope => :repository_id }  
 
   # The tree's contents.
-  has_many :entries, :class_name => 'TreeEntry'
+  has_many :entries, :class_name => 'TreeEntry', :inverse_of => :tree
   
   # Tree model for an on-disk tree (directory).
   #

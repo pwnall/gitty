@@ -1,7 +1,7 @@
 # Tag in a git repository hosted on this server.
 class Tag < ActiveRecord::Base
   # The repository that the tag belongs to.
-  belongs_to :repository
+  belongs_to :repository, :inverse_of => :tags
   validates :repository, :presence => true
   
   # The tag's name.

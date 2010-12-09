@@ -1,7 +1,7 @@
 # Public SSL key used to connect to the repositories via git+ssh.
 class SshKey < ActiveRecord::Base
   # The user that uses the SSH key to authenticate.
-  belongs_to :user
+  belongs_to :user, :inverse_of => :ssh_keys
   validates :user, :presence => true
   
   # The key's SSH fingerprint.

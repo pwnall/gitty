@@ -1,7 +1,7 @@
 # Branch in a git repository hosted on this server.
 class Branch < ActiveRecord::Base
   # The repository that the branch belongs to.
-  belongs_to :repository
+  belongs_to :repository, :inverse_of => :branches
   validates :repository, :presence => true
   
   # The branch's name.

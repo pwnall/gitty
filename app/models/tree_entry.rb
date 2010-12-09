@@ -1,7 +1,7 @@
 # Entry (file or sub-directory) in a tree in a git repository on this server.
 class TreeEntry < ActiveRecord::Base  
   # The parent tree.
-  belongs_to :tree
+  belongs_to :tree, :inverse_of => :entries
   validates :tree, :presence => true
    
   # The child tree (sub-directory) or blob (file).

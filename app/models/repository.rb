@@ -1,7 +1,7 @@
 # Git repository hosted on this server.
 class Repository < ActiveRecord::Base
   # The profile representing the repository's author.
-  belongs_to :profile
+  belongs_to :profile, :inverse_of => :repositories
   validates :profile, :presence => true
   attr_protected :profile_id
   
@@ -16,18 +16,19 @@ class Repository < ActiveRecord::Base
   end
   
   # Branch information cached from the on-disk repository.
-  has_many :branches, :dependent => :destroy
+  has_many :branches, :dependent => :destroy, :inverse_of => :repository
   # Tag information cached from the on-disk repository.
-  has_many :tags, :dependent => :destroy
+  has_many :tags, :dependent => :destroy, :inverse_of => :repository
   # Commit information cached from the on-disk repository.
-  has_many :commits, :dependent => :destroy  
+  has_many :commits, :dependent => :destroy, :inverse_of => :repository
   # Tree information cached from the on-disk repository.
-  has_many :trees, :dependent => :destroy  
+  has_many :trees, :dependent => :destroy, :inverse_of => :repository
   # Blob information cached from the on-disk repository.
-  has_many :blobs, :dependent => :destroy
+  has_many :blobs, :dependent => :destroy, :inverse_of => :repository
   
   # This repository's ACL. All entries have Profiles as principals.
-  has_many :acl_entries, :as => :subject, :dependent => :destroy
+  has_many :acl_entries, :as => :subject, :dependent => :destroy,
+                         :inverse_of => :subject
   
   # The repository name.
   validates :name, :length => 1..64, :format => /\A\w([\w.-]*\w)?\Z/,
