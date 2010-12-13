@@ -373,7 +373,7 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Added tags'
     assert_equal ['unicorns'], delta[:tags][:changed].map(&:name),
                  'Changed tags'
-  end
+  end  
     
   test 'acl for new repository' do
     @repo.save!
@@ -501,5 +501,91 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal repository.name, item.data[:repository_name]
     assert_operator profiles(:costan).feed_items, :include?, item, 'author feed'
     assert repository.feed_items.empty?
+  end
+
+  test 'publish_changes with branches' do
+    repo = repositories(:dexter_ghost)
+    ghost_branch = Branch.create! :repository => repo, :name => 'ghosty',
+                                  :commit => commits(:commit2)
+    changes = {
+      :branches => {
+        :added => [branches(:branch1)],
+        :changed => [branches(:master), branches(:deleted)],
+        :deleted => [ghost_branch]
+      },
+      :tags => { :added => [], :changed => [], :deleted => [] },
+      :commits => Set.new([commits(:commit2)])
+    }
+    author = profiles(:costan)
+    items = repo.publish_changes author, changes  
+    assert_equal 4, items.count, 'FeedItem count'
+
+    assert_equal 'move_branch', items[0].verb
+    assert_equal author, items[0].author
+    assert_equal branches(:master), items[0].target
+    assert_equal 'dexter', items[0].data[:profile_name]
+    assert_equal 'ghost', items[0].data[:repository_name]
+    assert_equal 'master', items[0].data[:branch_name]
+    assert_equal 0, items[0].data[:commits].length
+
+    assert_equal 'new_branch', items[2].verb
+    assert_equal author, items[2].author
+    assert_equal branches(:branch1), items[2].target
+    assert_equal 'dexter', items[2].data[:profile_name]
+    assert_equal 'ghost', items[2].data[:repository_name]
+    assert_equal 'branch1', items[2].data[:branch_name]
+    assert_equal 1, items[2].data[:commits].length
+    assert_equal commits(:commit2).gitid, items[2].data[:commits][0][:gitid]
+    assert_equal commits(:commit2).message, items[2].data[:commits][0][:message]
+
+    assert_equal 'del_branch', items[3].verb
+    assert_equal author, items[3].author
+    assert_equal 'dexter', items[3].data[:profile_name]
+    assert_equal 'ghost', items[3].data[:repository_name]
+    assert_equal 'ghosty', items[3].data[:branch_name]
+  end
+  
+  test 'publish_changes with tags' do
+    repo = repositories(:dexter_ghost)
+    ghost_tag = Tag.create! :repository => repo, :name => 'ghosty',
+        :commit => commits(:commit2), :message => 'Ghosting around.',
+        :committer_name => profiles(:costan).name,
+        :committer_email => profiles(:costan).user.email,
+        :committed_at => Time.now - 1
+    changes = {
+      :branches => { :added => [], :changed => [], :deleted => [] },
+      :tags => {
+        :added => [tags(:v1)],
+        :changed => [tags(:ci_request), tags(:unicorns)],
+        :deleted => [ghost_tag]
+      },
+      :commits => nil
+    }
+    author = profiles(:costan)
+    items = repo.publish_changes author, changes
+    assert_equal 4, items.count, 'FeedItem count'
+
+    assert_equal 'move_tag', items[0].verb
+    assert_equal author, items[0].author
+    assert_equal tags(:ci_request), items[0].target
+    assert_equal 'dexter', items[0].data[:profile_name]
+    assert_equal 'ghost', items[0].data[:repository_name]
+    assert_equal 'ci_request', items[0].data[:tag_name]
+    assert_equal 'Continuous integration request.', items[0].data[:message]
+
+    assert_equal 'new_tag', items[2].verb
+    assert_equal author, items[2].author
+    assert_equal tags(:v1), items[2].target
+    assert_equal 'dexter', items[2].data[:profile_name]
+    assert_equal 'ghost', items[2].data[:repository_name]
+    assert_equal 'v1.0', items[2].data[:tag_name]
+    assert_equal 'Released version 1.', items[2].data[:message]
+
+    assert_equal 'del_tag', items[3].verb
+    assert_equal author, items[3].author
+    assert_equal ghost_tag, items[3].target
+    assert_equal 'dexter', items[3].data[:profile_name]
+    assert_equal 'ghost', items[3].data[:repository_name]
+    assert_equal 'ghosty', items[3].data[:tag_name]
   end
 end

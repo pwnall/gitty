@@ -32,8 +32,8 @@ class FeedItem < ActiveRecord::Base
 
   # Valid actions.
   def self.verbs
-    %w(new_repository new_branch new_commits del_repository del_branch
-       subscribe unsubscribe)
+    %w(new_repository new_branch new_tag del_repository del_branch del_tag
+       move_branch move_tag subscribe unsubscribe)
   end
   validates_inclusion_of :verb, :in => verbs
                                             

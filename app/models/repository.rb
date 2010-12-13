@@ -295,6 +295,12 @@ class Repository
   #                 changed:: array of Branch models whose head commit changed
   #                 deleted: array of Branch models removed from the on-disk
   #                          repository
+  #   :tags:: hash with the following keys:
+  #                 added:: array of Tag models created from the on-disk
+  #                         repository
+  #                 changed:: array of Tag models whose head commit changed
+  #                 deleted: array of Tag models removed from the on-disk
+  #                          repository
   def integrate_changes
     changes = {}
     
@@ -491,5 +497,75 @@ class Repository
     FeedItem.publish author_profile, 'del_repository', self, [author_profile,
         self.profile], { :profile_name => profile.name,
                          :repository_name => self.name }
+  end
+  
+  # Updates feeds to reflect changes made by a push.
+  #
+  # Args:
+  #   author_profile:: profile that gets credited for the change
+  #   changes:: result of call to integrate_changes
+  #
+  # Returns an array of published FeedItems.
+  def publish_changes(author_profile, changes)
+    publish_branch_changes(author_profile, changes) +
+        publish_tag_changes(author_profile, changes)
+  end
+
+  # Updates feeds to reflect branch changes made by a push. 
+  #
+  # Args:
+  #   author_profile:: profile that gets credited for the change
+  #   changes:: result of call to integrate_changes
+  #
+  # Returns an array of published FeedItems.
+  def publish_branch_changes(author_profile, changes)
+    topics = [author_profile, self, self.profile]
+    data_root = { :profile_name => profile.name,
+                  :repository_name => name }
+    delta = []
+    [:changed, :added, :deleted].each do |change_type|
+      changes[:branches][change_type].each do |branch|
+        delta << [change_type, branch]
+      end
+    end
+    
+    delta.map do |change_type, branch|
+      data = data_root.merge :branch_name => branch.name
+      if change_type != :deleted
+        commits = branch.commit.walk_parents(0, 16).
+            select { |commit| changes[:commits].include? commit }[0, 3]
+        data[:commits] = commits.map do |commit|
+          { :gitid => commit.gitid, :message => commit.message[0, 100] }
+        end
+      end
+      verb = {:added => 'new_branch', :changed => 'move_branch',
+              :deleted => 'del_branch'}[change_type]
+      FeedItem.publish author_profile, verb, branch, topics, data
+    end
+  end
+  
+  # Updates feeds to reflect tag changes made by a push. 
+  #
+  # Args:
+  #   author_profile:: profile that gets credited for the change
+  #   changes:: result of call to integrate_changes
+  #
+  # Returns an array of published FeedItems.
+  def publish_tag_changes(author_profile, changes)
+    topics = [author_profile, self, self.profile]
+    data_root = { :profile_name => profile.name,
+                  :repository_name => name }
+    delta = []
+    [:changed, :added, :deleted].each do |change_type|
+      changes[:tags][change_type].each { |tag| delta << [change_type, tag] }
+    end
+    
+    delta.map do |change_type, tag|
+      data = data_root.merge :tag_name => tag.name
+      data[:message] = tag.message if change_type != :deleted
+      verb = {:added => 'new_tag', :changed => 'move_tag',
+              :deleted => 'del_tag'}[change_type]
+      FeedItem.publish author_profile, verb, tag, topics, data
+    end
   end
 end
