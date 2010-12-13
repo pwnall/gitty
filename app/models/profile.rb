@@ -200,4 +200,22 @@ class Profile
     subscriber_feed_subscriptions.where(:profile_id => profile.id).first ?
         true : false
   end
+  
+  # Updates feeds to reflect that this profile (un)subscribed to/from a feed.
+  #
+  # Args:
+  #   subscribe:: true indicates a subscription, false shows an unsubscription 
+  def publish_subscription(subject, subscribe = true)
+    data = case subject
+    when Profile
+      { :profile_name => subject.name }
+    when Repository
+      { :profile_name => subject.profile.name,
+        :repository_name => subject.name }
+    else
+      raise "Unsupported subject #{subject.class.name}"
+    end
+    verb = subscribe ? 'subscribe' : 'unsubscribe'
+    FeedItem.publish self, verb, subject, [self], data
+  end
 end

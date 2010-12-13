@@ -3,8 +3,8 @@
     <%= link_to_profile feed_item.author %>
   </span>
 <% case feed_item.verb %>
-<% when 'new_repository' %>
-  created repository
+<% when 'new_repository', 'del_repository' %>
+  <%= feed_item.verb == 'new_repository' ? 'created' : 'deleted' %> repository
   <span class="target">
   <% if feed_item.target %>
     <%= link_to_repository feed_item.target %>
@@ -12,11 +12,17 @@
     <%= feed_item.data[:profile_name]%>/<%= feed_item.data[:repository_name] %>  
   <% end %>
   </span>
-<% when 'del_repository' %>
-  deleted repository
+<% when 'subscribe', 'unsubscribe' %>
+  <%= feed_item.verb == 'subscribe' ? 'followed' : 'unfollowed' %>
   <span class="target">
-    <%= feed_item.data[:profile_name]%>/<%= feed_item.data[:repository_name] %>
+  <% if feed_item.target %>
+    <%= link_to_gitty feed_item.target %>
+  <% else %>
+    something that doesn't exist anymore
+  <% end %>
   </span>
+<% else %>
+  <% raise "Unimplemented verb #{feed_item.verb}"%>
 <% end %>
   <span class="time">
     <%= time_ago_in_words(feed_item.created_at, true) %> ago

@@ -109,10 +109,37 @@ class ProfileTest < ActiveSupport::TestCase
   
   test 'recent_subscribed_feed_items' do
     profile = profiles(:dexter)
-    assert_equal [feed_items(:dexter_creates_branch),
-                  feed_items(:dexter_creates_ghost)],
-                 profile.recent_subscribed_feed_items
-    assert_equal [feed_items(:dexter_creates_branch)],
+    items = [:dexter_unfollows_mit, :dexter_follows_mit, :dexter_creates_branch,
+        :dexter_creates_ghost].map { |name| feed_items(name) }
+    assert_equal items, profile.recent_subscribed_feed_items
+    assert_equal [feed_items(:dexter_unfollows_mit)],
                  profile.recent_subscribed_feed_items(1)
+  end
+  
+  test 'publish_subscribe to profile' do
+    profile = profiles(:dexter)
+    target = profiles(:csail)
+    item = nil
+    assert_difference 'FeedItem.count' do
+      item = profile.publish_subscription target, true
+    end
+    assert_equal profile, item.author
+    assert_equal 'subscribe', item.verb
+    assert_equal target, item.target
+    assert_equal 'csail', item.data[:profile_name]
+  end
+  
+  test 'publish_unsubscribe from repository' do
+    profile = profiles(:csail)
+    target = repositories(:dexter_ghost)
+    item = nil
+    assert_difference 'FeedItem.count' do
+      item = profile.publish_subscription target, false
+    end
+    assert_equal profile, item.author
+    assert_equal 'unsubscribe', item.verb
+    assert_equal target, item.target
+    assert_equal 'dexter', item.data[:profile_name]
+    assert_equal 'ghost', item.data[:repository_name]
   end
 end

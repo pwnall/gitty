@@ -6,6 +6,12 @@ class BranchesHelperTest < ActionView::TestCase
     @repository = @branch.repository
   end
   
+  test 'link_to_branch' do
+    golden = '<a href="/dexter">dexter</a>/<a href="/dexter/ghost">ghost</a>/' +
+             '<a href="/dexter/ghost/branch/branch1">branch1</a>'
+    assert_equal golden, link_to_branch(@branch)    
+  end
+  
   test 'branch_switcher with no current branch' do
     render :text => branch_switcher(@repository, nil)
     

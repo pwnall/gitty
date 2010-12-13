@@ -4,11 +4,54 @@ dexter_creates_ghost:
   verb: new_repository
   data: <%= {:profile_name => 'dexter', :repository_name => 'ghost'}.to_yaml.
             inspect %>
-  created_at: <%= (Time.now - 2).to_s(:db) %>
+  created_at: <%= (Time.now - 6).to_s(:db) %>
 
 dexter_creates_branch:
   author: dexter
   target: master (Branch)
-  verb: new_branch
+  verb: subscribe  # TODO(costan): switch to new_branch after implementing
   data: <%= {}.to_yaml.inspect %>
+  created_at: <%= (Time.now - 5).to_s(:db) %>
+
+dexter_follows_mit:
+  author: dexter
+  target: mit (Profile)
+  verb: subscribe
+  data: <%= {:profile_name => 'mit'}.to_yaml.inspect %>
+  created_at: <%= (Time.now - 4).to_s(:db) %>
+
+dexter_unfollows_mit:
+  author: dexter
+  target: mit (Profile)
+  verb: unsubscribe
+  data: <%= {:profile_name => 'mit'}.to_yaml.inspect %>
+  created_at: <%= (Time.now - 3).to_s(:db) %>
+
+costan_follows_dexter:
+  author: costan
+  target: dexter (Profile)
+  verb: subscribe
+  data: <%= {:profile_name => 'dexter'}.to_yaml.inspect %>
+  created_at: <%= (Time.now - 4).to_s(:db) %>
+  
+costan_follows_ghost:
+  author: costan
+  target: dexter_ghost (Repository)
+  verb: subscribe
+  data: <%= {:profile_name => 'dexter', :repository_name => 'ghost'}.to_yaml.
+                inspect %>
+  created_at: <%= (Time.now - 3).to_s(:db) %>
+
+costan_unfollows_dexter:
+  author: costan
+  target: dexter (Profile)
+  verb: unsubscribe
+  data: <%= {:profile_name => 'dexter'}.to_yaml.inspect %>
+  created_at: <%= (Time.now - 2).to_s(:db) %>
+
+costan_follows_dexter_again:
+  author: costan
+  target: dexter (Profile)
+  verb: subscribe
+  data: <%= {:profile_name => 'dexter'}.to_yaml.inspect %>
   created_at: <%= (Time.now - 1).to_s(:db) %>

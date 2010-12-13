@@ -46,6 +46,8 @@ class FeedSubscriptionsController < ApplicationController
   # POST /costan/rails/subscribers.json
   def create
     FeedSubscription.add current_user.profile, @subject
+    current_user.profile.publish_subscription @subject, true
+    
     respond_to do |format|
       format.html { redirect_to_subject }
       format.json { head :ok }
@@ -58,6 +60,8 @@ class FeedSubscriptionsController < ApplicationController
   # DELETE /costan/rails/subscribers.json
   def destroy
     FeedSubscription.remove current_user.profile, @subject
+    current_user.profile.publish_subscription @subject, false
+
     respond_to do |format|
       format.html { redirect_to_subject }
       format.json { head :ok }

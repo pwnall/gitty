@@ -1,4 +1,13 @@
 module BranchesHelper
+  include RepositoriesHelper
+  
+  # Decorated link to a branch.
+  def link_to_branch(branch)
+    link_to_repository(branch.repository) + '/' +
+        link_to(branch.name, profile_repository_branch_path(
+                branch.repository.profile, branch.repository, branch))
+  end
+  
   # A control that lets the user jump to a branch in a repository.
   def branch_switcher(repository, current_branch, label_text = 'Switch branch')
     content_tag 'div', :class => 'dropdown' do

@@ -1,15 +1,49 @@
 dexter_dexter_creates_ghost:
   feed_item: dexter_creates_ghost
   topic: dexter (Profile)
+  created_at: <%= (Time.now - 6).to_s(:db) %>  
 
 ghost_dexter_creates_ghost:
   feed_item: dexter_creates_ghost
   topic: dexter_ghost (Repository)
+  created_at: <%= (Time.now - 6).to_s(:db) %>  
 
 dexter_dexter_creates_branch:
   feed_item: dexter_creates_branch
   topic: dexter (Profile)
+  created_at: <%= (Time.now - 5).to_s(:db) %>  
 
 ghost_dexter_creates_branch:
   feed_item: dexter_creates_branch
   topic: dexter_ghost (Repository)
+  created_at: <%= (Time.now - 5).to_s(:db) %>  
+
+dexter_dexter_follows_mit:
+  feed_item: dexter_follows_mit
+  topic: dexter (Profile)
+  created_at: <%= (Time.now - 4).to_s(:db) %>  
+  
+dexter_dexter_unfollows_mit:
+  feed_item: dexter_unfollows_mit
+  topic: dexter (Profile)
+  created_at: <%= (Time.now - 3).to_s(:db) %>  
+
+costan_costan_follows_dexter:
+  feed_item: costan_follows_dexter
+  topic: costan (Profile)
+  created_at: <%= (Time.now - 4).to_s(:db) %>  
+  
+costan_costan_follows_ghost:
+  feed_item: costan_follows_ghost
+  topic: costan (Profile)
+  created_at: <%= (Time.now - 3).to_s(:db) %>  
+
+costan_costan_unfollows_dexter:
+  feed_item: costan_unfollows_dexter
+  topic: costan (Profile)
+  created_at: <%= (Time.now - 2).to_s(:db) %>  
+
+costan_costan_follows_dexter_again:
+  feed_item: costan_follows_dexter_again
+  topic: costan (Profile)
+  created_at: <%= (Time.now - 1).to_s(:db) %>  

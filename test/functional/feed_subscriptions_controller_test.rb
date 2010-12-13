@@ -27,40 +27,67 @@ class FeedSubscriptionsControllerTest < ActionController::TestCase
   
   test "should create profile subscription" do
     set_session_current_user @reader
-    @repository = repositories(:costan_ghost)
-    assert_difference '@profile.subscribers(true).count' do
-      post :create, :profile_name => @profile.to_param
+    assert_difference 'FeedItem.count' do
+      assert_difference '@profile.subscribers(true).count' do
+        post :create, :profile_name => @profile.to_param
+      end
     end
     assert_redirected_to profile_url(@profile)
+  
     assert @profile.subscribers.include?(@reader.profile), 'Not subscribed'
+    item = FeedItem.last
+    assert_equal 'subscribe', item.verb
+    assert_equal @reader.profile, item.author
+    assert_equal @profile, item.target
   end
 
   test "should create repository subscription" do
     set_session_current_user @reader
     @repository = repositories(:costan_ghost)
-    assert_difference '@repository.subscribers(true).count' do
-      post :create, :repo_name => @repository.to_param,
-                    :profile_name => @repository.profile.to_param
+    assert_difference 'FeedItem.count' do
+      assert_difference '@repository.subscribers(true).count' do
+        post :create, :repo_name => @repository.to_param,
+                      :profile_name => @repository.profile.to_param
+      end
     end
     assert_redirected_to profile_repository_url(@repository.profile,
                                                 @repository)
+
     assert @repository.subscribers.include?(@reader.profile), 'Not subscribed'
+    item = FeedItem.last
+    assert_equal 'subscribe', item.verb
+    assert_equal @reader.profile, item.author
+    assert_equal @repository, item.target
   end
   
   test "should remove profile subscription" do
-    assert_difference '@profile.subscribers(true).count', -1 do
-      delete :destroy, :profile_name => @repository.profile.to_param
+    assert_difference 'FeedItem.count' do
+      assert_difference '@profile.subscribers(true).count', -1 do
+        delete :destroy, :profile_name => @repository.profile.to_param
+      end
     end
     assert_redirected_to profile_url(@profile)
+
+    item = FeedItem.last
+    assert_equal 'unsubscribe', item.verb
+    assert_equal @author.profile, item.author
+    assert_equal @profile, item.target
   end
 
   test "should remove repository subscription" do
-    assert_difference '@repository.subscribers(true).count', -1 do
-      delete :destroy, :repo_name => @repository.to_param,
-                       :profile_name => @repository.profile.to_param
+    assert_difference 'FeedItem.count' do
+      assert_difference '@repository.subscribers(true).count', -1 do
+        delete :destroy, :repo_name => @repository.to_param,
+                         :profile_name => @repository.profile.to_param
+      end
     end
     assert_redirected_to profile_repository_url(@repository.profile,
                                                 @repository)
+
+    item = FeedItem.last
+    assert_equal 'unsubscribe', item.verb
+    assert_equal @author.profile, item.author
+    assert_equal @repository, item.target
   end
   
   test "should deny access to guests" do
@@ -69,15 +96,19 @@ class FeedSubscriptionsControllerTest < ActionController::TestCase
                 :profile_name => @repository.profile.to_param
     assert_response :forbidden
     
-    assert_no_difference '@repository.subscribers.count' do
-      post :create, :repo_name => @repository.to_param,
-                    :profile_name => @repository.profile.to_param
+    assert_no_difference 'FeedItem.count' do
+      assert_no_difference '@repository.subscribers.count' do
+        post :create, :repo_name => @repository.to_param,
+                      :profile_name => @repository.profile.to_param
+      end
     end
     assert_response :forbidden
 
-    assert_no_difference '@repository.subscribers.count' do
-      delete :destroy, :repo_name => @repository.to_param,
-                       :profile_name => @repository.profile.to_param
+    assert_no_difference 'FeedItem.count' do
+      assert_no_difference '@repository.subscribers.count' do
+        delete :destroy, :repo_name => @repository.to_param,
+                         :profile_name => @repository.profile.to_param
+      end
     end
     assert_response :forbidden
   end
