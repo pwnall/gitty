@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101013232422) do
+ActiveRecord::Schema.define(:version => 20101212042214) do
 
   create_table "acl_entries", :force => true do |t|
     t.string   "role",           :null => false
@@ -21,6 +21,9 @@ ActiveRecord::Schema.define(:version => 20101013232422) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
+
+  add_index "acl_entries", ["principal_id", "principal_type", "subject_id", "subject_type"], :name => "index_acl_entries_by_principal_subject", :unique => true
+  add_index "acl_entries", ["subject_id", "subject_type", "principal_id", "principal_type"], :name => "index_acl_entries_by_subject_principal", :unique => true
 
   create_table "blobs", :force => true do |t|
     t.integer "repository_id",               :null => false
@@ -99,6 +102,38 @@ ActiveRecord::Schema.define(:version => 20101013232422) do
 
   add_index "facebook_tokens", ["external_uid"], :name => "index_facebook_tokens_on_external_uid", :unique => true
 
+  create_table "feed_item_topics", :force => true do |t|
+    t.integer  "feed_item_id", :null => false
+    t.integer  "topic_id",     :null => false
+    t.string   "topic_type",   :null => false
+    t.datetime "created_at"
+  end
+
+  add_index "feed_item_topics", ["feed_item_id"], :name => "index_feed_item_topics_on_feed_item_id"
+  add_index "feed_item_topics", ["topic_id", "topic_type", "created_at"], :name => "index_feed_item_topics_on_topic_id_and_topic_type_and_created_at"
+  add_index "feed_item_topics", ["topic_id", "topic_type", "feed_item_id"], :name => "index_feed_item_topics_on_topic_item", :unique => true
+
+  create_table "feed_items", :force => true do |t|
+    t.integer  "author_id",   :null => false
+    t.string   "verb",        :null => false
+    t.integer  "target_id",   :null => false
+    t.string   "target_type", :null => false
+    t.text     "data"
+    t.datetime "created_at"
+  end
+
+  add_index "feed_items", ["author_id"], :name => "index_feed_items_on_author_id"
+
+  create_table "feed_subscriptions", :force => true do |t|
+    t.integer  "profile_id",               :null => false
+    t.integer  "topic_id",                 :null => false
+    t.string   "topic_type", :limit => 16, :null => false
+    t.datetime "created_at"
+  end
+
+  add_index "feed_subscriptions", ["profile_id", "topic_id", "topic_type"], :name => "index_feed_subscriptions_on_profile_topic", :unique => true
+  add_index "feed_subscriptions", ["topic_id", "topic_type", "profile_id"], :name => "index_feed_subscriptions_on_topic_profile", :unique => true
+
   create_table "profiles", :force => true do |t|
     t.string   "name",         :limit => 32,  :null => false
     t.string   "display_name", :limit => 128, :null => false
@@ -111,11 +146,11 @@ ActiveRecord::Schema.define(:version => 20101013232422) do
   create_table "repositories", :force => true do |t|
     t.integer  "profile_id",                                    :null => false
     t.string   "name",        :limit => 64,                     :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
     t.text     "description"
     t.string   "url",         :limit => 256
     t.boolean  "public",                     :default => false, :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "repositories", ["profile_id", "name"], :name => "index_repositories_on_profile_id_and_name", :unique => true

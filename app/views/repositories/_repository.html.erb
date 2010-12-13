@@ -77,6 +77,10 @@
               profile_repository_path(repository.profile, repository) %>
     </li>
     <% end %>
+    <li>
+      <%= link_to 'Feed', feed_profile_repository_path(repository.profile,
+                                                       repository) %>
+    </li>
     <% end %>
     <% if repository.can_edit? current_user %>
     <li>
@@ -88,5 +92,21 @@
                                                            repository) %>
     </li>
     <% end %>
+    <li>
+      <%= link_to pluralize(repository.subscribers.count, 'follower'),
+              subscribers_profile_repository_path(repository.profile,
+                                                  repository) %>      
+    </li>
+    <li>
+      <% if repository.subscribed? current_user.profile %>
+        <%= link_to 'Unfollow',
+                subscribers_profile_repository_path(repository.profile,
+                repository), :method => :delete %>
+      <% else %>
+        <%= link_to 'Follow',
+                subscribers_profile_repository_path(repository.profile,
+                repository), :method => :post %>
+      <% end %>
+    </li>
   </ul>
 </div>

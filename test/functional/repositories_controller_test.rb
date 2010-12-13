@@ -27,11 +27,17 @@ class RepositoriesControllerTest < ActionController::TestCase
     attributes = @repository.attributes.merge :name => 'rails',
         :profile_name => @repository.profile.name
     assert_difference('Repository.count') do
-      post :create, :repository => attributes
+      assert_difference('FeedItem.count') do
+        post :create, :repository => attributes
+      end
     end
 
     assert_redirected_to profile_repository_path(assigns(:repository).profile,
                                                  assigns(:repository))
+    item = FeedItem.last
+    assert_equal 'new_repository', item.verb
+    assert_equal @author.profile, item.author
+    assert_equal assigns(:repository), item.target
   end
 
   test "should show repository" do
@@ -149,11 +155,18 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   test "should destroy repository" do
     assert_difference 'Repository.count', -1 do
-      delete :destroy, :repo_name => @repository.to_param,
-                       :profile_name => @repository.profile.to_param
+      assert_difference 'FeedItem.count' do
+        delete :destroy, :repo_name => @repository.to_param,
+                         :profile_name => @repository.profile.to_param
+      end
     end
 
     assert_redirected_to repositories_url
+
+    item = FeedItem.last
+    assert_equal 'del_repository', item.verb
+    assert_equal @author.profile, item.author
+    assert_equal @repository.name, item.data[:repository_name]    
   end
   
   test "should grant read access to participating user" do
@@ -218,7 +231,11 @@ class RepositoriesControllerTest < ActionController::TestCase
                        :profile_name => @repository.profile.to_param
     end
     assert_response :forbidden
-  end  
+    
+    get :feed, :repo_name => @repository.to_param,
+               :profile_name => @repository.profile.to_param
+    assert_response :forbidden
+  end
   
   test "check_access allows author to push" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
@@ -284,7 +301,12 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_equal false, JSON.parse(response.body)['access']
   end
   
-
+  test "should show feed" do
+    get :feed, :repo_name => @repository.to_param,
+               :profile_name => @repository.profile.to_param
+    assert_response :success
+  end
+  
   test "repository routes" do
     assert_routing({:path => '/_/repositories', :method => :get},
                    {:controller => 'repositories', :action => 'index'})
@@ -300,8 +322,7 @@ class RepositoriesControllerTest < ActionController::TestCase
                        :profile_name => 'costan', :repo_name => 'rails'},
                       {:path => '/_/repositories/costan/rails',
                        :method => :get})
-    assert_routing({:path => '/costan/rails/edit',
-                    :method => :get},
+    assert_routing({:path => '/costan/rails/edit', :method => :get},
                    {:controller => 'repositories', :action => 'edit',
                     :profile_name => 'costan', :repo_name => 'rails'})
     assert_recognizes({:controller => 'repositories', :action => 'edit',
@@ -329,5 +350,9 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_routing({:path => '/_/change_notice.json', :method => :post},
                    {:controller => 'repositories', :action => 'change_notice',
                     :format => 'json'})
+                    
+    assert_routing({:path => '/costan/rails/feed', :method => :get},
+                   {:controller => 'repositories', :action => 'feed',
+                    :profile_name => 'costan', :repo_name => 'rails'})
   end
 end

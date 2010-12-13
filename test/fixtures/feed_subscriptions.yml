@@ -1,0 +1,15 @@
+dexter_ghost:
+  profile: dexter
+  topic: dexter_ghost (Repository)
+
+dexter_dexter:
+  profile: dexter
+  topic: dexter (Profile)
+
+costan_ghost:
+  profile: costan
+  topic: dexter_ghost (Repository)
+
+costan_costan:
+  profile: costan
+  topic: costan (Profile)

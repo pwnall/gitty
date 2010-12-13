@@ -1,0 +1,15 @@
+dexter_dexter_creates_ghost:
+  feed_item: dexter_creates_ghost
+  topic: dexter (Profile)
+
+ghost_dexter_creates_ghost:
+  feed_item: dexter_creates_ghost
+  topic: dexter_ghost (Repository)
+
+dexter_dexter_creates_branch:
+  feed_item: dexter_creates_branch
+  topic: dexter (Profile)
+
+ghost_dexter_creates_branch:
+  feed_item: dexter_creates_branch
+  topic: dexter_ghost (Repository)

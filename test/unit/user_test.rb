@@ -88,6 +88,5 @@ class UserTest < ActiveSupport::TestCase
 
     user = User.new :profile => profiles(:csail)
     assert_nil user.profile
-  end
-  
+  end  
 end

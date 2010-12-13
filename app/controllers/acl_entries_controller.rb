@@ -21,8 +21,6 @@ class AclEntriesController < ApplicationController
   end
   
   # Sets @acl_entry based on URL params.
-  #
-  # Assumes @subject has been set by a previous call to set_subject_from_params.
   def set_acl_entry_from_params
     set_subject_from_params unless @subject
     principal_class = @subject.class.acl_principal_class
@@ -42,7 +40,7 @@ class AclEntriesController < ApplicationController
   end
   
   # GET /acl_entries
-  # GET /acl_entries.xml
+  # GET /acl_entries.json
   def index
     @acl_entry = AclEntry.new :subject => @subject,
        :role => @subject.class.acl_roles.first,
@@ -50,12 +48,12 @@ class AclEntriesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @acl_entries }
+      format.json { render :json => @acl_entries }
     end
   end
 
   # POST /acl_entries
-  # POST /acl_entries.xml
+  # POST /acl_entries.json
   def create
     @acl_entry = AclEntry.new params[:acl_entry]
     @acl_entry.principal_type = @subject.class.acl_principal_class.name
@@ -67,21 +65,21 @@ class AclEntriesController < ApplicationController
           redirect_to acl_entries_path(@subject),
                       :notice => 'Acl entry was successfully created.'
         end
-        format.xml do
-          render :xml => @acl_entry, :status => :created,
+        format.json do
+          render :json => @acl_entry, :status => :created,
                  :location => @acl_entry
         end
       else
         format.html { render :action => :index }
-        format.xml do
-          render :xml => @acl_entry.errors, :status => :unprocessable_entity
+        format.json do
+          render :json => @acl_entry.errors, :status => :unprocessable_entity
         end
       end
     end
   end
 
   # PUT /acl_entries/1
-  # PUT /acl_entries/1.xml
+  # PUT /acl_entries/1.json
   def update
     respond_to do |format|
       if @acl_entry.update_attributes params[:acl_entry]
@@ -90,10 +88,10 @@ class AclEntriesController < ApplicationController
           redirect_to acl_entries_path(@subject),
                       :notice => 'Acl entry was successfully updated.'
         end
-        format.xml  { head :ok }
+        format.json { head :ok }
       else
         format.html { render :action => "edit" }
-        format.xml do
+        format.json do
           render :xml => @acl_entry.errors, :status => :unprocessable_entity
         end
       end
@@ -101,13 +99,13 @@ class AclEntriesController < ApplicationController
   end
 
   # DELETE /acl_entries/1
-  # DELETE /acl_entries/1.xml
+  # DELETE /acl_entries/1.json
   def destroy
     @acl_entry.destroy
 
     respond_to do |format|
       format.html { redirect_to acl_entries_path(@acl_entry.subject) }
-      format.xml  { head :ok }
+      format.json { head :ok }
     end
   end
 end

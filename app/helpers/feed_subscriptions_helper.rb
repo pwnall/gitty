@@ -1,0 +1,2 @@
+module FeedSubscriptionsHelper
+end

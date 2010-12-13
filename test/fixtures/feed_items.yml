@@ -1,0 +1,14 @@
+dexter_creates_ghost:
+  author: dexter
+  target: dexter_ghost (Repository)
+  verb: new_repository
+  data: <%= {:profile_name => 'dexter', :repository_name => 'ghost'}.to_yaml.
+            inspect %>
+  created_at: <%= (Time.now - 2).to_s(:db) %>
+
+dexter_creates_branch:
+  author: dexter
+  target: master (Branch)
+  verb: new_branch
+  data: <%= {}.to_yaml.inspect %>
+  created_at: <%= (Time.now - 1).to_s(:db) %>

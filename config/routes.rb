@@ -11,19 +11,19 @@ Gitty::Application.routes.draw do
     post '/users' => 'users#create'
     get '/users/register' => 'users#new', :as => :new_user
     get '/user/:user_param(.:format)' => 'users#show', :as => :user,
-        :constraints => { :user_param => /[^\/]*/ }
+        :constraints => { :user_param => /[^\/]+/ }
     get '/user/:user_param/edit(.:format)' => 'users#edit', :as => :edit_user,
-        :constraints => { :user_param => /[^\/]*/ }
+        :constraints => { :user_param => /[^\/]+/ }
     put '/user/:user_param(.:format)' => 'users#update',
-        :constraints => { :user_param => /[^\/]*/ }
+        :constraints => { :user_param => /[^\/]+/ }
     delete '/user/:user_param(.:format)' => 'users#destroy',
-           :constraints => { :user_param => /[^\/]*/ }
+           :constraints => { :user_param => /[^\/]+/ }
   end
 
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
-  # Sample of regular route:7
+  # Sample of regular route:
   #   match 'products/:id' => 'catalog#view'
   # Keep in mind you can assign values other than :controller and :action
 
@@ -39,11 +39,11 @@ Gitty::Application.routes.draw do
   
   # Profiles.
   get '/:profile_name(.:format)' => 'profiles#show', :as => :profile,
-      :constraints => { :profile_name => /[^_][^\/]*/ }
+      :constraints => { :profile_name => /[^_][^\/]+/ }
   put '/:profile_name(.:format)' => 'profiles#update',
-      :constraints => { :profile_name => /[^_][^\/]*/ }
+      :constraints => { :profile_name => /[^_][^\/]+/ }
   delete '/:profile_name(.:format)' => 'profiles#destroy',
-         :constraints => { :profile_name => /[^_][^\/]*/ }
+         :constraints => { :profile_name => /[^_][^\/]+/ }
   scope '_' do
     resources :profiles, :only => [:index, :new, :create]
     scope 'profiles' do
@@ -55,7 +55,7 @@ Gitty::Application.routes.draw do
     end
   end
       
-  scope ':profile_name', :constraints => { :profile_name => /[^_][^\/]*/ } do
+  scope ':profile_name', :constraints => { :profile_name => /[^_][^\/]+/ } do
     # Repositories.
     get ':repo_name(.:format)' => 'repositories#show',
         :constraints => { :repo_name => /[^\/]+/ },
@@ -74,12 +74,20 @@ Gitty::Application.routes.draw do
       get ':repo_name(.:format)' => 'repositories#show'
       get ':repo_name/edit(.:format)' => 'repositories#edit'
       put ':repo_name(.:format)' => 'repositories#update'
-      delete ':repo_name(.:format)' => 'repositories#destroy'
+      delete ':repo_name(.:format)' => 'repositories#destroy'      
     end
   end
   
   scope ':profile_name/:repo_name',
-      :constraints => { :profile_name => /[^_\/]*/, :repo_name => /[^\/]+/ } do
+      :constraints => { :profile_name => /[^_\/]+/, :repo_name => /[^\/]+/ } do
+    # Feed.
+    get 'subscribers(.:format)' => 'feed_subscriptions#index',
+        :as => :subscribers_profile_repository
+    post 'subscribers(.:format)' => 'feed_subscriptions#create'
+    delete 'subscribers(.:format)' => 'feed_subscriptions#destroy'
+    get 'feed(.:format)' => 'repositories#feed',
+        :as => :feed_profile_repository    
+
     # Commits.
     get 'commits(/:ref_name)' => 'commits#index',
         :as => :profile_repository_commits,
@@ -119,22 +127,29 @@ Gitty::Application.routes.draw do
     post 'acl_entries' => 'acl_entries#create'
     put 'acl_entries/:principal_name' => 'acl_entries#update',
         :as => :profile_repository_acl_entry,
-        :constraints => { :principal_name => /[^_][^\/]*/ }
+        :constraints => { :principal_name => /[^_][^\/]+/ }
     delete 'acl_entries/:principal_name' => 'acl_entries#destroy',
-        :constraints => { :principal_name => /[^_][^\/]*/ }
+        :constraints => { :principal_name => /[^_][^\/]+/ }
   end
   
-  # Profile ACLs (must follow repository ACLs).
+  # Profile sub-resources. (must follow repository sub-resources)
   scope '_' do
     scope 'profiles/:profile_name',
-          :constraints => { :profile_name => /[^_][^\/]*/ } do
+          :constraints => { :profile_name => /[^_][^\/]+/ } do
+      # ACLs.
       get 'acl_entries' => 'acl_entries#index', :as => :profile_acl_entries
       post 'acl_entries' => 'acl_entries#create'
       put 'acl_entries/:principal_name' => 'acl_entries#update',
           :as => :profile_acl_entry,
-          :constraints => { :principal_name => /[^_][^\/]*/ }
+          :constraints => { :principal_name => /[^_][^\/]+/ }
       delete 'acl_entries/:principal_name' => 'acl_entries#destroy',
-          :constraints => { :principal_name => /[^_][^\/]*/ }
+          :constraints => { :principal_name => /[^_][^\/]+/ }
+
+      # Feed.
+      get 'subscribers(.:format)' => 'feed_subscriptions#index',
+          :as => :subscribers_profile
+      post 'subscribers(.:format)' => 'feed_subscriptions#create'
+      delete 'subscribers(.:format)' => 'feed_subscriptions#destroy'
     end
   end
   

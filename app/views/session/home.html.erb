@@ -1,4 +1,10 @@
 <% if !@profile.new_record? %>
+  <div class="home_panel feed">
+    <h2>Newsfeed</h2>
+    <%= render 'feed_items/list',
+               :feed_items => @profile.recent_subscribed_feed_items %>
+  </div>
+
   <div class="home_panel repositories">
     <h2>Repositories</h2>
     <p class="actions">
@@ -9,7 +15,6 @@
     <h2>Team Repositories</h2>
     <%= render 'repositories/list', :repositories => @profile.user.team_repositories %>
   </div>
-
 
   <div class="home_panel keys">
     <h2>SSH Keys</h2>

@@ -42,7 +42,7 @@ class Repository < ActiveRecord::Base
 
   # Public repositories grant read access to anyone.
   validates :public, :inclusion => [true, false]
-
+    
   def url=(new_url)
     new_url = nil if new_url.blank?
     super new_url
@@ -444,4 +444,52 @@ class Repository
   def self.acl_principal_class
     Profile
   end  
+end
+
+# :nodoc: to be pulled into feed plugin 
+class Repository
+  # Profiles following this repository.
+  has_many :subscribers, :through => :subscriber_feed_subscriptions,
+                         :source => :profile
+
+  # Relation backing "subscribers".
+  has_many :subscriber_feed_subscriptions, :class_name => 'FeedSubscription',
+           :as => :topic, :inverse_of => :topic
+  
+  # Events connected to this repository.
+  has_many :feed_items, :through => :feed_item_topic
+  
+  # Relation backing "feed_items".
+  #
+  # NOTE: The :dependent => :destroy option doesn't remove the FeedItem records,
+  #       it only removes the FeedItemTopic records connecting to them.
+  has_many :feed_item_topic, :as => :topic, :dependent => :destroy,
+                             :inverse_of => :topic
+
+  # Recently created events connected with this repository.
+  def recent_feed_items(limit = 100)
+    feed_items.order('created_at DESC').limit(limit)
+  end
+  
+  # True if the given profile is subscribed to this repository's feeds.
+  def subscribed?(profile)
+    subscriber_feed_subscriptions.where(:profile_id => profile.id).first ?
+        true : false
+  end
+  
+  # Updates feeds to reflect that this repository was created.
+  def publish_creation(author_profile)
+    # Duplicating the profile and repository name because the repository record
+    # can be deleted.
+    FeedItem.publish author_profile, 'new_repository', self, [author_profile,
+        self.profile, self], { :profile_name => profile.name,
+                               :repository_name => self.name }
+  end
+  
+  # Updates feeds to reflect that this repository was destroyed.
+  def publish_deletion(author_profile)
+    FeedItem.publish author_profile, 'del_repository', self, [author_profile,
+        self.profile], { :profile_name => profile.name,
+                         :repository_name => self.name }
+  end
 end

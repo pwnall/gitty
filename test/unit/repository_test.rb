@@ -470,9 +470,36 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal branches(:master), repositories(:dexter_ghost).default_branch    
   end
   
-  
   test 'mass-assignment protection' do
     repository = Repository.new :profile_id => 42
     assert_nil repository.profile_id
-  end  
+  end
+
+  test 'profile creation publishing' do    
+    item = nil
+    repository = repositories(:csail_ghost)
+    assert_difference 'FeedItem.count' do
+      item = repository.publish_creation profiles(:costan)
+    end
+    assert_equal 'new_repository', item.verb
+    assert_equal repository.profile.name, item.data[:profile_name]
+    assert_equal repository.name, item.data[:repository_name]
+    assert_operator profiles(:costan).feed_items, :include?, item, 'author feed'
+    assert_operator repository.feed_items, :include?, item,
+                    'repository feed'
+  end
+  
+  test 'profile removal publishing' do
+    item = nil
+    repository = repositories(:dexter_ghost)
+    repository.destroy
+    assert_difference 'FeedItem.count' do
+      item = repository.publish_deletion profiles(:costan)
+    end
+    assert_equal 'del_repository', item.verb
+    assert_equal repository.profile.name, item.data[:profile_name]
+    assert_equal repository.name, item.data[:repository_name]
+    assert_operator profiles(:costan).feed_items, :include?, item, 'author feed'
+    assert repository.feed_items.empty?
+  end
 end

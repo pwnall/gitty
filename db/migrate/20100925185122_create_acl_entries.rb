@@ -10,9 +10,11 @@ class CreateAclEntries < ActiveRecord::Migration
     end
     
     add_index :acl_entries, [:principal_id, :principal_type, :subject_id,
-        :subject_type], :null => false, :unique => true
+        :subject_type], :null => false, :unique => true,
+        :name => :index_acl_entries_by_principal_subject
     add_index :acl_entries, [:subject_id, :subject_type, :principal_id,
-        :principal_type], :null => false, :unique => true
+        :principal_type], :null => false, :unique => true,
+        :name => :index_acl_entries_by_subject_principal
   end
 
   def self.down

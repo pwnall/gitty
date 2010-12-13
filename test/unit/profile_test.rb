@@ -97,13 +97,22 @@ class ProfileTest < ActiveSupport::TestCase
                  profiles(:dexter).acl_entries.first.principal.class
   end
   
-  test 'team_profile?' do 
+  test 'team_profile?' do
     assert !profiles(:costan).team_profile?
     assert profiles(:csail).team_profile?
   end
   
-  test 'members' do 
+  test 'members' do
     profile = profiles(:csail)
     assert_equal [users(:john), users(:sam)].to_set, profile.members.to_set
+  end
+  
+  test 'recent_subscribed_feed_items' do
+    profile = profiles(:dexter)
+    assert_equal [feed_items(:dexter_creates_branch),
+                  feed_items(:dexter_creates_ghost)],
+                 profile.recent_subscribed_feed_items
+    assert_equal [feed_items(:dexter_creates_branch)],
+                 profile.recent_subscribed_feed_items(1)
   end
 end

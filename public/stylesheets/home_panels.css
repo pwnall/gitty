@@ -2,10 +2,13 @@
   position: relative;
 }
 .home_panel.repositories {
-  width: 600px; 
-  float: left;
+  width: 350px;
+  clear: right; 
+  float: right;
+  margin: 0 0 0 50px;
 }
 .home_panel.keys {
+  clear: right;
   float: right;
   width: 350px;
   margin: 0 0 0 50px;
@@ -16,10 +19,23 @@
   width: 350px;
   margin: 0 0 0 50px;
 }
+.home_panel.feed {
+  clear: left;
+  float: left;
+  width: 600px;
+  margin: 0;
+}
 .home_panel.profiles {
+  clear: right;
   float: right;
   width: 350px;
   margin: 0 0 0 50px;
+}
+.home_panel.subscribers {
+  clear: right;
+  float: right;
+  width: 350px;
+  margin: 0 0 0 50px;  
 }
 .home_panel .actions {
   position: absolute;

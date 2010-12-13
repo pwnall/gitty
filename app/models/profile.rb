@@ -26,7 +26,7 @@ class Profile < ActiveRecord::Base
   
   # For profiles that represent users (not groups).
   has_one :user, :inverse_of => :profile
-
+  
   # The location of the profile's repositories on disk.
   def local_path
     self.class.local_path name
@@ -143,5 +143,61 @@ class Profile
   # Expected class of principals on ACL entries whose subjects are Profiles. 
   def self.acl_principal_class
     User
+  end
+end
+
+# :nodoc: to be pulled into feed plugin
+class Profile
+  # Topics that this profile is subscribed to.
+  def topics(reload = false)
+    feed_subscriptions(reload).map(&:topic)
+  end
+
+  # Relationship backing "topics".
+  has_many :feed_subscriptions, :inverse_of => :profile, :dependent => :destroy
+  
+  # Recently created items for topics that this profile is subscribed to.
+  def recent_subscribed_feed_items(limit = 100)
+    items = topics.map { |topic| topic.recent_feed_items(limit) }.flatten.
+                   uniq.sort_by { |item| item.created_at }
+    return items.reverse if items.length <= limit
+    items[-limit..-1].reverse
+  end
+  
+  # Feed items produced by this profile.
+  #
+  # This relation exists to automatically delete a profile's feed activity when
+  # the profile is removed. Use feed_items to retrieve the profile's feed.
+  has_many :authored_feed_items, :class_name => 'FeedItem', 
+      :foreign_key => :author_id, :dependent => :destroy, :inverse_of => :author
+  
+  
+  # Profiles following this profile.
+  has_many :subscribers, :through => :subscriber_feed_subscriptions,
+                         :source => :profile
+
+  # Relation backing "subscribers".
+  has_many :subscriber_feed_subscriptions, :class_name => 'FeedSubscription',
+           :as => :topic, :inverse_of => :topic
+  
+  # Events connected to this repository.
+  has_many :feed_items, :through => :feed_item_topic
+  
+  # Relation backing "feed_items".
+  #
+  # NOTE: The :dependent => :destroy option doesn't remove the FeedItem records,
+  #       it only removes the FeedItemTopic records connecting to them.  
+  has_many :feed_item_topic, :as => :topic, :dependent => :destroy,
+                             :inverse_of => :topic
+
+  # Recently created events connected with this profile.
+  def recent_feed_items(limit = 100)
+    feed_items.order('created_at DESC').limit(limit)
+  end
+
+  # True if the given profile is subscribed to this profile's feeds.
+  def subscribed?(profile)
+    subscriber_feed_subscriptions.where(:profile_id => profile.id).first ?
+        true : false
   end
 end

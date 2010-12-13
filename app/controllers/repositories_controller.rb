@@ -1,5 +1,6 @@
 class RepositoriesController < ApplicationController
-  before_filter :current_user_can_read_repo, :only => [:show]
+  before_filter :current_user_can_read_repo,
+      :only => [:show, :feed, :subscribers, :subscribe, :unsubscribe]
   before_filter :current_user_can_edit_repo, :only => [:edit, :update, :destroy]
   
   # before_filter that validates the repository's profile
@@ -54,6 +55,7 @@ class RepositoriesController < ApplicationController
 
     respond_to do |format|
       if @repository.save
+        @repository.publish_creation current_user.profile
         format.html do
           redirect_to profile_repository_url(@repository.profile, @repository),
                       :notice => 'Repository was successfully created.'
@@ -90,13 +92,24 @@ class RepositoriesController < ApplicationController
       end
     end
   end
-
+  
+  # GET /costan/rails/feed
+  # GET /costan/rails/feed.json
+  def feed
+    @feed_items = @repository.recent_feed_items
+    respond_to do |format|
+      format.html  # feed.html.erb
+      format.json { render :json => @feed_items }
+    end
+  end
+  
   # DELETE /costan/rails
   # DELETE /costan/rails.xml
   def destroy
     @profile = Profile.where(:name => params[:profile_name]).first
     @repository = @profile.repositories.where(:name => params[:repo_name]).first
     @repository.destroy
+    @repository.publish_deletion current_user.profile
 
     respond_to do |format|
       format.html { redirect_to(repositories_url) }

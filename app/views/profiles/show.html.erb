@@ -1,5 +1,10 @@
 <%= render @profile %>
 
+<div class="home_panel feed">
+  <h3>Feed</h3>
+  <%= render 'feed_items/list', :feed_items => @profile.recent_feed_items %>
+</div>
+
 <div class="home_panel repositories">
   <h3>Repositories</h3>
   <%= render 'repositories/list', :repositories => @profile.repositories %>
@@ -20,4 +25,23 @@
     
     <%= render 'profiles/list', :profiles => @profile.user.team_profiles %>
   <% end %>
+</div>
+
+<div class="home_panel subscribers">
+  <h3>
+    Followers
+  </h3>
+  <% if current_user && current_user.profile %>
+  <p class="actions">
+    <% if @profile.subscribed?(current_user.profile) %>
+      <%= link_to 'Unfollow', subscribers_profile_path(@profile),
+                              :method => :delete, :class => 'button' %>      
+    <% else %>
+      <%= link_to 'Follow', subscribers_profile_path(@profile),
+                            :method => :post, :class => 'button' %>      
+    <% end %>
+  </p>  
+  <% end %>
+  
+  <%= render 'profiles/list', :profiles => @profile.subscribers %>
 </div>

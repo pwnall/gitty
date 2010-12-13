@@ -19,4 +19,3 @@ disconnected:
   email: lurker@gmail.com
   password_salt: 1234
   password_hash: <%= User.hash_password('password', '1234').inspect %>
-    
