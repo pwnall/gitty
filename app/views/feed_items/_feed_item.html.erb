@@ -61,6 +61,32 @@
   <% else %>
   <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
   <% end %>
+<% when 'new_tag', 'move_tag' %>
+  <%= feed_item.verb == 'new_tag' ? 'created' : 'changed' %> tag
+  <% if feed_item.target %>
+    <%= link_to feed_item.target.name, profile_repository_tag_path(
+            feed_item.target.repository.profile, feed_item.target.repository,
+            feed_item.target) %>
+  <% else %>
+    <%= feed_item.data[:tag_name] %>
+  <% end %>
+  at
+  <% if repository = feed_item.target_repository %>
+  <%= link_to_repository feed_item.target_repository %>
+  <% else %>
+  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+  <% end %>
+  
+  <div class="details">
+    <%= truncate(feed_item.data[:message], :length => 70) %>
+  </div>
+<% when 'del_tag' %>
+  deleted tag <%= feed_item.data[:tag_name] %> at
+  <% if repository = feed_item.target_repository %>
+  <%= link_to_repository feed_item.target_repository %>
+  <% else %>
+  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+  <% end %>  
 <% else %>
   <% raise "Unimplemented verb #{feed_item.verb}"%>
 <% end %>

@@ -565,7 +565,7 @@ class Repository
     
     delta.map do |change_type, tag|
       data = data_root.merge :tag_name => tag.name
-      data[:message] = tag.message if change_type != :deleted
+      data[:message] = tag.message[0, 100] if change_type != :deleted
       verb = {:added => 'new_tag', :changed => 'move_tag',
               :deleted => 'del_tag'}[change_type]
       FeedItem.publish author_profile, verb, tag, topics, data
