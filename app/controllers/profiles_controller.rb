@@ -58,6 +58,7 @@ class ProfilesController < ApplicationController
           current_user.profile = @profile
           current_user.save!
         end
+        FeedSubscription.add current_user.profile, @profile
 
         format.html { redirect_to session_path }
         format.xml  { render :xml => @profile, :status => :created, :location => @profile }          

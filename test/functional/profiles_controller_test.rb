@@ -27,6 +27,8 @@ class ProfilesControllerTest < ActionController::TestCase
       post :create, :profile => @profile.attributes.merge(:name => 'newest')
     end
     assert_equal assigns(:profile), user.reload.profile
+    assert_equal [assigns(:profile)], assigns(:profile).subscribers,
+                 'Current user not subscribed to itself'
 
     assert_redirected_to session_path
   end
@@ -40,6 +42,8 @@ class ProfilesControllerTest < ActionController::TestCase
     profile = assigns(:profile)
     assert_not_nil profile
     assert_not_equal profile, user.reload.profile  
+    assert_equal [user.profile], assigns(:profile).subscribers,
+                 'Current user not subscribed to team profile'
     
     assert_redirected_to session_path
   end
