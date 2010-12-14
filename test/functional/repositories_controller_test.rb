@@ -31,6 +31,7 @@ class RepositoriesControllerTest < ActionController::TestCase
         post :create, :repository => attributes
       end
     end
+    assert_equal [@author.profile], assigns(:repository).subscribers
 
     assert_redirected_to profile_repository_path(assigns(:repository).profile,
                                                  assigns(:repository))

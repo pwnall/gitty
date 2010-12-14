@@ -56,6 +56,8 @@ class RepositoriesController < ApplicationController
     respond_to do |format|
       if @repository.save
         @repository.publish_creation current_user.profile
+        FeedSubscription.add current_user.profile, @repository
+        
         format.html do
           redirect_to profile_repository_url(@repository.profile, @repository),
                       :notice => 'Repository was successfully created.'
