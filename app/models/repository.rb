@@ -459,8 +459,11 @@ class Repository
                          :source => :profile
 
   # Relation backing "subscribers".
+  #
+  # NOTE: The :dependent => :destroy option removes the FeedSubscriptions
+  #       connecting subscribers, not the actual subscribers
   has_many :subscriber_feed_subscriptions, :class_name => 'FeedSubscription',
-           :as => :topic, :inverse_of => :topic
+           :as => :topic, :inverse_of => :topic, :dependent => :destroy
   
   # Events connected to this repository.
   has_many :feed_items, :through => :feed_item_topic
@@ -521,7 +524,7 @@ class Repository
   def publish_branch_changes(author_profile, changes)
     topics = [author_profile, self, self.profile]
     data_root = { :profile_name => profile.name,
-                  :repository_name => name }
+                  :repository_name => name, :repository_id => id }
     delta = []
     [:changed, :added, :deleted].each do |change_type|
       changes[:branches][change_type].each do |branch|
@@ -554,7 +557,7 @@ class Repository
   def publish_tag_changes(author_profile, changes)
     topics = [author_profile, self, self.profile]
     data_root = { :profile_name => profile.name,
-                  :repository_name => name }
+                  :repository_name => name, :repository_id => id }
     delta = []
     [:changed, :added, :deleted].each do |change_type|
       changes[:tags][change_type].each { |tag| delta << [change_type, tag] }

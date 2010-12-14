@@ -4,13 +4,41 @@ dexter_creates_ghost:
   verb: new_repository
   data: <%= {:profile_name => 'dexter', :repository_name => 'ghost'}.to_yaml.
             inspect %>
+  created_at: <%= (Time.now - 8).to_s(:db) %>
+
+dexter_deletes_branch2:
+  author: dexter
+  target: branch2 (Branch)  # NOTE: doesn't exist anymore.
+  verb: del_branch
+  data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
+             :repository_id => Fixtures.identify(:dexter_ghost),
+             :branch_name => 'branch2'}.to_yaml.inspect %>
+  created_at: <%= (Time.now - 7).to_s(:db) %>
+
+dexter_creates_branch1:
+  author: dexter
+  target: branch1 (Branch)
+  verb: new_branch
+  data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
+             :repository_id => Fixtures.identify(:dexter_ghost),
+             :branch_name => 'branch1', :commits => [
+    {:gitid => 'bf28647e6740e2970b8e9e3de1484000c4637e58',
+     :message => 'Commit 1.'}
+  ]}.to_yaml.inspect %>
   created_at: <%= (Time.now - 6).to_s(:db) %>
 
-dexter_creates_branch:
+dexter_moves_master:
   author: dexter
   target: master (Branch)
-  verb: subscribe  # TODO(costan): switch to new_branch after implementing
-  data: <%= {}.to_yaml.inspect %>
+  verb: move_branch
+  data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
+             :repository_id => Fixtures.identify(:dexter_ghost),
+             :branch_name => 'master', :commits => [
+    {:gitid => '15f49486892eb05391b6b70fd395fb3908365417',
+     :message => 'Commit 2.'},
+    {:gitid => 'bf28647e6740e2970b8e9e3de1484000c4637e58',
+     :message => 'Commit 1.'}
+  ]}.to_yaml.inspect %>
   created_at: <%= (Time.now - 5).to_s(:db) %>
 
 dexter_follows_mit:

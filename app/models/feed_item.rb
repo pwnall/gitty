@@ -48,4 +48,30 @@ class FeedItem < ActiveRecord::Base
     topics.uniq.each { |topic| item.feed_item_topics.create! :topic => topic }
     item
   end
+  
+  # The repository pointed by the feed commit.
+  def target_repository
+    return @target_repository if instance_variable_defined?(:@target_repository)
+    @target_repository = target_repository!
+  end
+  
+  # The repository pointed by the feed commit.
+  #
+  # This method is uncached.
+  def target_repository!
+    if target
+      # Works for Repositories, Commits, Branches and Tags.
+      return target if target.kind_of? Repository
+      return target.repository if target.respond_to? :repository
+    end
+    
+    # Missing target, but the repository is still there.
+    if repository_id = data[:repository_id]
+      if repository = Repository.find_by_id(repository_id)
+        return repository
+      end
+    end
+    
+    nil
+  end
 end

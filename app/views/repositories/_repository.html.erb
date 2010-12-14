@@ -77,11 +77,11 @@
               profile_repository_path(repository.profile, repository) %>
     </li>
     <% end %>
+    <% end %>
     <li>
       <%= link_to 'Feed', feed_profile_repository_path(repository.profile,
                                                        repository) %>
     </li>
-    <% end %>
     <% if repository.can_edit? current_user %>
     <li>
       <%= link_to 'Sharing',

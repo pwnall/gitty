@@ -109,7 +109,8 @@ class ProfileTest < ActiveSupport::TestCase
   
   test 'recent_subscribed_feed_items' do
     profile = profiles(:dexter)
-    items = [:dexter_unfollows_mit, :dexter_follows_mit, :dexter_creates_branch,
+    items = [:dexter_unfollows_mit, :dexter_follows_mit, :dexter_moves_master,
+        :dexter_creates_branch1, :dexter_deletes_branch2,
         :dexter_creates_ghost].map { |name| feed_items(name) }
     assert_equal items, profile.recent_subscribed_feed_items
     assert_equal [feed_items(:dexter_unfollows_mit)],

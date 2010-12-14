@@ -21,6 +21,46 @@
     something that doesn't exist anymore
   <% end %>
   </span>
+<% when 'new_branch', 'move_branch' %>
+  <%= feed_item.verb == 'new_repository' ? 'created' : 'pushed to' %> branch
+  <% if feed_item.target %>
+    <%= link_to feed_item.target.name, profile_repository_branch_path(
+            feed_item.target.repository.profile, feed_item.target.repository,
+            feed_item.target) %>
+  <% else %>
+    <%= feed_item.data[:branch_name] %>
+  <% end %>
+  at
+  <% if repository = feed_item.target_repository %>
+  <%= link_to_repository feed_item.target_repository %>
+  <% else %>
+  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+  <% end %>
+  
+  <div class="details">
+    <ul class="commits">
+    <% feed_item.data[:commits].each do |commit_data| %>
+      <li>
+        <span class="gitid">
+        <% if repository = feed_item.target_repository %>
+          <%= link_to commit_data[:gitid][0, 7], profile_repository_commit_path(
+                 repository.profile, repository, commit_data[:gitid]) %>
+        <% else %>
+          <%= commit_data[:gitid][0, 7] %>
+        <% end %>
+        </span>
+        <%= truncate(commit_data[:message], :length => 60) %>
+      </li>
+    <% end %>
+    </ul>
+  </div>
+<% when 'del_branch' %>
+  deleted branch <%= feed_item.data[:branch_name] %> at
+  <% if repository = feed_item.target_repository %>
+  <%= link_to_repository feed_item.target_repository %>
+  <% else %>
+  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+  <% end %>
 <% else %>
   <% raise "Unimplemented verb #{feed_item.verb}"%>
 <% end %>

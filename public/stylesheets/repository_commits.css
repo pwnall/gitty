@@ -26,7 +26,7 @@
 .repository_commit .message {
   margin: 0;
   padding: 5px;
-  font-family: "Droid Sans Mono"; 
+  font-family: "Droid Sans Mono", fixed;
 }
 .repository_commit .author, .repository_commit .committer {
   margin: 0;

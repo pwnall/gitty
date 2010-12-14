@@ -1,20 +1,40 @@
 dexter_dexter_creates_ghost:
   feed_item: dexter_creates_ghost
   topic: dexter (Profile)
-  created_at: <%= (Time.now - 6).to_s(:db) %>  
+  created_at: <%= (Time.now - 8).to_s(:db) %>  
 
 ghost_dexter_creates_ghost:
   feed_item: dexter_creates_ghost
   topic: dexter_ghost (Repository)
+  created_at: <%= (Time.now - 8).to_s(:db) %>  
+
+dexter_dexter_deletes_branch2:
+  feed_item: dexter_deletes_branch2
+  topic: dexter (Profile)
+  created_at: <%= (Time.now - 7).to_s(:db) %>  
+
+ghost_dexter_deletes_branch2:
+  feed_item: dexter_deletes_branch2
+  topic: dexter_ghost (Repository)
+  created_at: <%= (Time.now - 7).to_s(:db) %>  
+
+dexter_dexter_moves_master:
+  feed_item: dexter_moves_master
+  topic: dexter (Profile)
   created_at: <%= (Time.now - 6).to_s(:db) %>  
 
-dexter_dexter_creates_branch:
-  feed_item: dexter_creates_branch
+ghost_dexter_creates_branch1:
+  feed_item: dexter_moves_master
+  topic: dexter_ghost (Repository)
+  created_at: <%= (Time.now - 6).to_s(:db) %>  
+
+dexter_dexter_creates_branch1:
+  feed_item: dexter_creates_branch1
   topic: dexter (Profile)
   created_at: <%= (Time.now - 5).to_s(:db) %>  
 
-ghost_dexter_creates_branch:
-  feed_item: dexter_creates_branch
+ghost_dexter_creates_branch1:
+  feed_item: dexter_creates_branch1
   topic: dexter_ghost (Repository)
   created_at: <%= (Time.now - 5).to_s(:db) %>  
 

@@ -8,9 +8,25 @@
   color: #666666;
   display: block;
 }
-.feed_items li {
+.feed_items > li {
   padding: 4px 0 2px 0;
   border: none;
   border-bottom: 1px solid #D6E8B6;  
 }
 
+.feed_items .details {
+  margin: 0;
+  padding: 2px 0 0 1em;
+}
+.feed_items ul.commits {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.feed_items ul.commits .gitid {
+  display: inline-block;
+  font-family: "Droid Sans Mono", fixed;
+  margin: 0;
+  padding: 0;
+}

@@ -52,4 +52,26 @@ class FeedItemTest < ActiveSupport::TestCase
     assert_equal @item.target, item.target
     assert_equal @item.data, item.data
   end
+  
+  test 'target_repository' do
+    assert_equal repositories(:dexter_ghost),
+                 feed_items(:dexter_creates_ghost).target_repository,
+                 'target is a repository'
+    assert_equal repositories(:dexter_ghost),
+                 feed_items(:dexter_deletes_branch2).target_repository,
+                 'dead branch with live repository'
+    assert_equal repositories(:dexter_ghost),
+                 feed_items(:dexter_creates_branch1).target_repository,
+                 'live branch with live repository'
+    assert_equal nil,
+                 feed_items(:dexter_follows_mit).target_repository,
+                 'no repository involved'
+  end
+  
+  test 'target repository with fixture changes' do
+    feed_items(:dexter_deletes_branch2).data[:repository_id] = 0
+    assert_equal nil,
+                 feed_items(:dexter_follows_mit).target_repository,
+                 'dead branch with dead repository'
+  end
 end

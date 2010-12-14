@@ -525,6 +525,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal branches(:master), items[0].target
     assert_equal 'dexter', items[0].data[:profile_name]
     assert_equal 'ghost', items[0].data[:repository_name]
+    assert_equal repo.id, items[0].data[:repository_id]
     assert_equal 'master', items[0].data[:branch_name]
     assert_equal 0, items[0].data[:commits].length
 
@@ -533,6 +534,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal branches(:branch1), items[2].target
     assert_equal 'dexter', items[2].data[:profile_name]
     assert_equal 'ghost', items[2].data[:repository_name]
+    assert_equal repo.id, items[2].data[:repository_id]
     assert_equal 'branch1', items[2].data[:branch_name]
     assert_equal 1, items[2].data[:commits].length
     assert_equal commits(:commit2).gitid, items[2].data[:commits][0][:gitid]
@@ -542,6 +544,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal author, items[3].author
     assert_equal 'dexter', items[3].data[:profile_name]
     assert_equal 'ghost', items[3].data[:repository_name]
+    assert_equal repo.id, items[3].data[:repository_id]
     assert_equal 'ghosty', items[3].data[:branch_name]
   end
   
@@ -570,6 +573,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal tags(:ci_request), items[0].target
     assert_equal 'dexter', items[0].data[:profile_name]
     assert_equal 'ghost', items[0].data[:repository_name]
+    assert_equal repo.id, items[0].data[:repository_id]
     assert_equal 'ci_request', items[0].data[:tag_name]
     assert_equal 'Continuous integration request.', items[0].data[:message]
 
@@ -578,6 +582,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal tags(:v1), items[2].target
     assert_equal 'dexter', items[2].data[:profile_name]
     assert_equal 'ghost', items[2].data[:repository_name]
+    assert_equal repo.id, items[2].data[:repository_id]
     assert_equal 'v1.0', items[2].data[:tag_name]
     assert_equal 'Released version 1.', items[2].data[:message]
 
@@ -586,6 +591,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal ghost_tag, items[3].target
     assert_equal 'dexter', items[3].data[:profile_name]
     assert_equal 'ghost', items[3].data[:repository_name]
+    assert_equal repo.id, items[3].data[:repository_id]
     assert_equal 'ghosty', items[3].data[:tag_name]
   end
 end

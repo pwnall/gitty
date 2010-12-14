@@ -301,6 +301,19 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_equal false, JSON.parse(response.body)['access']
   end
   
+  test "change_notice works for author" do
+    set_session_current_user nil
+    mock_any_repository_path
+    assert_difference 'Tag.count', 1 do
+      assert_difference 'FeedItem.count', 7 do
+        post :change_notice, :format => 'json',
+                             :repo_path => @repository.ssh_path,
+                             :ssh_key_id => @author_key.to_param
+      end
+    end
+    assert_response :success
+  end
+  
   test "should show feed" do
     get :feed, :repo_name => @repository.to_param,
                :profile_name => @repository.profile.to_param
