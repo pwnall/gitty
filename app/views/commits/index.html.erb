@@ -8,9 +8,9 @@
 
 <p class="page_navigation">
 <% if @previous_page %>
-  <%= link_to 'Older Commits', :page => @previous_page %>
+  <%= link_to 'Newer Commits', :page => @previous_page %>
 <% end %>
 <% if @next_page %>
-  <%= link_to 'Newer Commits', :page => @next_page %>
+  <%= link_to 'Older Commits', :page => @next_page %>
 <% end %>
 </p>
