@@ -13,7 +13,7 @@ class SshKey < ActiveRecord::Base
 
   # Updates the fingerprint automatically when the key line changes.  
   def key_line=(new_key_line)
-    new_key_line = new_key_line.strip
+    new_key_line = new_key_line.strip.gsub(/\r|\n/, '')
     self.fprint = self.class.fingerprint new_key_line
     super(new_key_line)
   end

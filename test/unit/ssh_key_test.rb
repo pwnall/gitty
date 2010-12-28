@@ -4,8 +4,8 @@ class SshKeyTest < ActiveSupport::TestCase
   setup :mock_ssh_keys_path
 
   setup do
-    key_path = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'new_key.pub'
-    @key = SshKey.new :name => 'Some name', :key_line => File.read(key_path),
+    @key_path = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'new_key.pub'
+    @key = SshKey.new :name => 'Some name', :key_line => File.read(@key_path),
                       :user => users(:jane)
   end
     
@@ -30,6 +30,13 @@ class SshKeyTest < ActiveSupport::TestCase
     else      
       assert_equal '/home/git-test/repos/.ssh_keys', SshKey.keyfile_path
     end
+  end
+  
+  test 'keyline works around Windows CRLF' do
+    win_keyfile = File.read(@key_path)
+    win_keyfile[100, 0] = "\r\n"
+    win_key = SshKey.new :key_line => win_keyfile
+    assert_equal @key.fprint, win_key.fprint
   end
   
   test 'keyfile_line' do
