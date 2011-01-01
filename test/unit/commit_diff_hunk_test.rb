@@ -140,4 +140,46 @@ END_DATA
     assert_equal [nil, 6, nil, 'Added line 2.'], lines[5]
     assert_equal [5, 8, 'Third base line.', 'Third base line.'], lines[7]
   end
+  
+  test 'patch_lines in file without newline' do
+    # Lengthy setup to simulate on-disk blobs. Should've thought of this when
+    # setting up the mock repository.
+    old_blob = Blob.new
+    old_blob.stubs(:data).returns <<END_DATA
+First base line.
+Dead line 1.
+Third base line.
+END_DATA
+
+    new_blob = Blob.new
+    new_blob.stubs(:data).returns <<END_DATA
+Not in patch 1B.
+Not in patch 2B.
+First base line.
+Added line 1.
+Third base line.
+END_DATA
+    diff = CommitDiff.new :old_blob => old_blob, :new_blob => new_blob
+    @hunk.summary = ' 1-1+1 1\\1'
+    @hunk.diff = diff
+    lines = @hunk.patch_lines
+    
+    assert_equal (1..4).to_a, lines.map { |l| l[0] }.select { |l| l},
+                 'old lines are monotonic'
+    assert_equal (3..6).to_a, lines.map { |l| l[1] }.select { |l| l},
+                 'new lines are monotonic'
+  
+    lines.each do |line|
+      assert_equal line[0].nil?, line[2].nil?,
+                   'old line number and contents are consistent'
+      assert_equal line[1].nil?, line[3].nil?,
+                   'new line number and contents are consistent'
+    end
+    
+    assert_equal [2, nil, 'Dead line 1.', nil], lines[1]
+    assert_equal [nil, 4, nil, 'Added line 1.'], lines[2]
+    assert_equal [3, 5, 'Third base line.', 'Third base line.'], lines[3]
+    assert_equal [4, 6, '\\ No newline at end of file',
+                  '\\ No newline at end of file'], lines[4]
+  end
 end

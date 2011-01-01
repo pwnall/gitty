@@ -64,13 +64,16 @@ class CommitDiffHunk < ActiveRecord::Base
         when ?-
           line = [old_line, nil, nil, nil]
           old_line += 1
+        when ?\\
+          newline_text = '\\ No newline at end of file'
+          line = [old_line, new_line, newline_text, newline_text]
         else
           line = [old_line, new_line, nil, nil]
           old_line += 1
           new_line += 1
         end
-        line[2] = line[0] && old_lines[line[0] - 1]
-        line[3] = line[1] && new_lines[line[1] - 1]
+        line[2] ||= line[0] && old_lines[line[0] - 1]
+        line[3] ||= line[1] && new_lines[line[1] - 1]
         lines << line
       end
     end
