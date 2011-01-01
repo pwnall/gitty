@@ -74,7 +74,7 @@ class CommitDiffHunk < ActiveRecord::Base
         lines << line
       end
     end
-    lines
+    @patch_lines = lines
   end
   
   # The diff hunks that make up a diff.
