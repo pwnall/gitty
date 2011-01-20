@@ -23,9 +23,15 @@ class BlobsController < ApplicationController
     if commit
       @blob_reference = commit
     else
-      branch = @repository.branches.where(:name => params[:commit_gid]).first
-      @blob_reference = branch
-      commit = branch.commit
+      @branch = @repository.branches.where(:name => params[:commit_gid]).first
+      if @branch
+        @blob_reference = @branch
+        commit = @branch.commit
+      else
+        @tag = @repository.tags.where(:name => params[:commit_gid]).first
+        @blob_reference = @tag
+        commit = @tag.commit
+      end
     end
     @blob_path = params[:path] || '/'
     @blob = commit.walk_path @blob_path

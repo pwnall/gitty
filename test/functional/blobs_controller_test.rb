@@ -5,6 +5,7 @@ class BlobsControllerTest < ActionController::TestCase
 
   setup do
     @branch = branches(:master)
+    @tag = tags(:v1)
     @commit = @branch.commit
     @blob = blobs(:d1_d2_a)
     @session_user = @branch.repository.profile.user
@@ -24,11 +25,22 @@ class BlobsControllerTest < ActionController::TestCase
 
   test "should show blob with branch name" do
     get :show, :commit_gid => @branch.to_param,
-               :repo_name => @commit.repository.to_param,
-               :profile_name => @commit.repository.profile.to_param,
+               :repo_name => @branch.repository.to_param,
+               :profile_name => @branch.repository.profile.to_param,
                :path => 'd1/d2/a'
     assert_response :success
     assert_equal @branch, assigns(:blob_reference)
+    assert_equal 'd1/d2/a', assigns(:blob_path)
+    assert_equal blobs(:d1_d2_a), assigns(:blob)
+  end
+
+  test "should show blob with tag name" do
+    get :show, :commit_gid => @tag.to_param,
+               :repo_name => @tag.repository.to_param,
+               :profile_name => @tag.repository.profile.to_param,
+               :path => 'd1/d2/a'
+    assert_response :success
+    assert_equal @tag, assigns(:blob_reference)
     assert_equal 'd1/d2/a', assigns(:blob_path)
     assert_equal blobs(:d1_d2_a), assigns(:blob)
   end
