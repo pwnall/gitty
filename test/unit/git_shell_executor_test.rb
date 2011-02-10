@@ -1,5 +1,7 @@
 require 'test_helper'
 
+require 'net/http'
+
 class GitShellExecutorTest < ActiveSupport::TestCase
   # Raised by the mock error method.
   class ShellExitError < RuntimeError; end

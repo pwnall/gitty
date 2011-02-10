@@ -1,4 +1,5 @@
 require 'test_helper'
+require 'net/http'
 
 class GitPushTest < ActionDispatch::IntegrationTest
   fixtures :all
@@ -43,11 +44,13 @@ END_SHELL
     @fixture_repo_path = Rails.root.join 'test', 'fixtures', 'repo.git'
 
     # Wait until the Rails server has booted.
+    deadline = Time.now + 5.seconds
     loop do
       begin
         Net::HTTP.get URI.parse(ConfigVar['app_uri'])
         break
-      rescue
+      rescue Exception => e
+        raise if Time.now >= deadline
         sleep 0.1
       end
     end
