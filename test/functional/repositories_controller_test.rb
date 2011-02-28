@@ -47,6 +47,13 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_response :success
   end
   
+  test "should show public repository without logged in user" do
+    set_session_current_user nil
+    get :show, :repo_name => repositories(:public_ghost).to_param,
+               :profile_name => repositories(:public_ghost).profile.to_param
+    assert_response :success
+  end
+
   test "should show git directions to author for empty repository" do
     repository = repositories(:costan_ghost)
     set_session_current_user users(:john)

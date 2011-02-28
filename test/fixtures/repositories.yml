@@ -18,3 +18,8 @@ dexter_ghost:
   description: "Tests need to mock the backing git repo for this repository."
   url: "http://gho.st"
   public: false
+
+public_ghost:
+  name: ghost
+  profile: rms
+  public: true

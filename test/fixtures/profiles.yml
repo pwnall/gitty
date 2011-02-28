@@ -15,3 +15,7 @@ csail:
 mit:
   name: mit
   display_name: MIT
+
+rms:
+  name: rms
+  display_name: Richard Stallman

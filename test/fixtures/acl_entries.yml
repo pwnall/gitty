@@ -29,6 +29,12 @@ john_costan:
   principal: john (User)
   subject: costan (Profile)
   role: edit
+
+# Should be added by AR hook after_save.
+rms_rms:
+  principal: rms (User)
+  subject: rms (Profile)
+  role: edit
   
 # Should be added by AR hook after_save.
 costan_costan_ghost:
@@ -40,4 +46,10 @@ costan_costan_ghost:
 dexter_dexter_ghost:
   principal: dexter (Profile)
   subject: dexter_ghost (Repository)
+  role: edit
+
+# Should be added by AR hool after_save.
+rms_public_ghost:
+  principal: rms (Profile)
+  subject: public_ghost (Repository)
   role: edit
