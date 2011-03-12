@@ -4,6 +4,7 @@ class AddGravatarEmailToProfile < ActiveRecord::Migration
 
     User.all.each do |user|
       user.profile.display_email = user.email
+      user.profile.save!
     end
   end
   
