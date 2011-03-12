@@ -1,41 +1,46 @@
 <li>
-  <span class="author">
-    <%= link_to_profile feed_item.author %>
-  </span>
+  <div class="headline">
+    <span class="author">
+      <%= feed_author_image feed_item.author %>
+      <%= link_to_profile feed_item.author %>
+    </span>
 <% case feed_item.verb %>
 <% when 'new_repository', 'del_repository' %>
-  <%= feed_item.verb == 'new_repository' ? 'created' : 'deleted' %> repository
-  <span class="target">
-  <% if feed_item.target %>
-    <%= link_to_repository feed_item.target %>
-  <% else %>
-    <%= feed_item.data[:profile_name]%>/<%= feed_item.data[:repository_name] %>  
-  <% end %>
-  </span>
+    <%= feed_item.verb == 'new_repository' ? 'created' : 'deleted' %> repository
+    <span class="target">
+    <% if feed_item.target %>
+      <%= link_to_repository feed_item.target %>
+    <% else %>
+      <%= feed_item.data[:profile_name]%>/<%= feed_item.data[:repository_name] %>  
+    <% end %>
+    </span>
+  </div>
 <% when 'subscribe', 'unsubscribe' %>
-  <%= feed_item.verb == 'subscribe' ? 'followed' : 'unfollowed' %>
-  <span class="target">
-  <% if feed_item.target %>
-    <%= link_to_gitty feed_item.target %>
-  <% else %>
-    something that doesn't exist anymore
-  <% end %>
-  </span>
+    <%= feed_item.verb == 'subscribe' ? 'followed' : 'unfollowed' %>
+    <span class="target">
+    <% if feed_item.target %>
+      <%= link_to_gitty feed_item.target %>
+    <% else %>
+      something that doesn't exist anymore
+    <% end %>
+    </span>
+  </div>
 <% when 'new_branch', 'move_branch' %>
-  <%= feed_item.verb == 'new_repository' ? 'created' : 'pushed to' %> branch
-  <% if feed_item.target %>
-    <%= link_to feed_item.target.name, profile_repository_branch_path(
-            feed_item.target.repository.profile, feed_item.target.repository,
-            feed_item.target) %>
-  <% else %>
-    <%= feed_item.data[:branch_name] %>
-  <% end %>
-  at
-  <% if repository = feed_item.target_repository %>
-  <%= link_to_repository feed_item.target_repository %>
-  <% else %>
-  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
-  <% end %>
+    <%= feed_item.verb == 'new_repository' ? 'created' : 'pushed to' %> branch
+    <% if feed_item.target %>
+      <%= link_to feed_item.target.name, profile_repository_branch_path(
+              feed_item.target.repository.profile, feed_item.target.repository,
+              feed_item.target) %>
+    <% else %>
+      <%= feed_item.data[:branch_name] %>
+    <% end %>
+    at
+    <% if repository = feed_item.target_repository %>
+    <%= link_to_repository feed_item.target_repository %>
+    <% else %>
+    <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+    <% end %>
+  </div>
   
   <div class="details">
     <ul class="commits">
@@ -55,38 +60,41 @@
     </ul>
   </div>
 <% when 'del_branch' %>
-  deleted branch <%= feed_item.data[:branch_name] %> at
-  <% if repository = feed_item.target_repository %>
-  <%= link_to_repository feed_item.target_repository %>
-  <% else %>
-  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
-  <% end %>
+    deleted branch <%= feed_item.data[:branch_name] %> at
+    <% if repository = feed_item.target_repository %>
+    <%= link_to_repository feed_item.target_repository %>
+    <% else %>
+    <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+    <% end %>
+  </div>
 <% when 'new_tag', 'move_tag' %>
-  <%= feed_item.verb == 'new_tag' ? 'created' : 'changed' %> tag
-  <% if feed_item.target %>
-    <%= link_to feed_item.target.name, profile_repository_tag_path(
-            feed_item.target.repository.profile, feed_item.target.repository,
-            feed_item.target) %>
-  <% else %>
-    <%= feed_item.data[:tag_name] %>
-  <% end %>
-  at
-  <% if repository = feed_item.target_repository %>
-  <%= link_to_repository feed_item.target_repository %>
-  <% else %>
-  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
-  <% end %>
+    <%= feed_item.verb == 'new_tag' ? 'created' : 'changed' %> tag
+    <% if feed_item.target %>
+      <%= link_to feed_item.target.name, profile_repository_tag_path(
+              feed_item.target.repository.profile, feed_item.target.repository,
+              feed_item.target) %>
+    <% else %>
+      <%= feed_item.data[:tag_name] %>
+    <% end %>
+    at
+    <% if repository = feed_item.target_repository %>
+    <%= link_to_repository feed_item.target_repository %>
+    <% else %>
+    <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+    <% end %>
+  </div>
   
   <div class="details">
     <%= truncate(feed_item.data[:message], :length => 70) %>
   </div>
 <% when 'del_tag' %>
-  deleted tag <%= feed_item.data[:tag_name] %> at
-  <% if repository = feed_item.target_repository %>
-  <%= link_to_repository feed_item.target_repository %>
-  <% else %>
-  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
-  <% end %>  
+    deleted tag <%= feed_item.data[:tag_name] %> at
+    <% if repository = feed_item.target_repository %>
+    <%= link_to_repository feed_item.target_repository %>
+    <% else %>
+    <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+    <% end %>  
+  </div>
 <% else %>
   <% raise "Unimplemented verb #{feed_item.verb}"%>
 <% end %>

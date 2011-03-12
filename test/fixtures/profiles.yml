@@ -1,10 +1,12 @@
 costan:
   name: costan
   display_name: Victor Costan
+  display_email: john@gmail.com
 
 dexter:
   name: dexter
   display_name: Dexter
+  display_email: jane@gmail.com
 
 # Team profile.
 csail:
@@ -19,3 +21,4 @@ mit:
 rms:
   name: rms
   display_name: Richard Stallman
+  display_email: rms@mit.edu

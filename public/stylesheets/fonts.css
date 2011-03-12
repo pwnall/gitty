@@ -6,6 +6,12 @@
   src: local('Cantarell'), url('../fonts/cantarell.ttf') format('truetype');
 }
 @font-face {
+  font-family: 'Cantarell';
+  font-style: normal;
+  font-weight: bold;
+  src: local('Cantarell Bold'), url('../fonts/cantarell_bold.ttf') format('truetype');
+}
+@font-face {
   font-family: 'Droid Sans Mono';
   font-style: normal;
   font-weight: normal;

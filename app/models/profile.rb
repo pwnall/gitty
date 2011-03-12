@@ -230,3 +230,9 @@ class Profile
     FeedItem.publish self, verb, subject, [self], data
   end
 end
+
+# :nodoc: Gravatar integration
+class Profile
+  include Gravtastic
+  gravtastic :display_email
+end
