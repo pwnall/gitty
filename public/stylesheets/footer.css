@@ -1,4 +1,4 @@
-#footer {
+footer {
   margin: 1em 0 0 0;
   padding: 5px 5px 1em 5px;
   border-top: 5px solid #9BA884;
@@ -6,27 +6,27 @@
   color: #FFFFFF;
   text-align: center;
 }
-#footer a {
+footer a {
   color: #FFFFFF;
   text-decoration: none;
 }
-#footer a:hover {
+footer a:hover {
   text-decoration: underline;
 }
-#footer p {
+footer p {
   margin: 0;
   padding: 0; 
 }
-#footer ul {
+footer ul {
   margin: 0;
   padding: 0;
   list-style: none;
 }
-#footer ul li {
+footer ul li {
   display: inline-block;
   padding: 0 1em;  
 }
-#footer .signature {
+footer .signature {
   margin: 0;
   padding: 2em 0 0 0;
   font-size: 0.9em;

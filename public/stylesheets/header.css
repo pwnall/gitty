@@ -1,34 +1,38 @@
-#header {
+header {
   position: relative;
   background-color: #E7F5D0;
   border: 1px solid #D6E8B6;
   margin: 0 0 1em 0;
   padding: 0;
 }
-#header h1 {
+header h1 {
   color: #516952;
   margin: 0;
   padding: 0 5px 0 5px;
 }
-
-#header .welcome_bar, #header .user_bar {
+header ol {
   position: absolute;
   right: 0;
   bottom: 0;
   font-size: 1.6em;
-  list-style: none;
   overflow: hidden;
   margin: 0;
   padding: 0 5px 0 0;
+  list-style: none;
 }
-#header li {
-  float: left;
+header li {
+  display: inline-block;
   margin: 0;
   padding: 0 0 0 1em;
 }
-#header a {
+header img {
+  display: inline-block;
+  vertical-align: bottom;
+  margin: 0 2px 1px 0;
+}
+header a {
   text-decoration: none;
 }
-#header a:hover {
+header a:hover {
   background: none;
 }

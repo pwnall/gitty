@@ -86,3 +86,9 @@ class User
     AclEntry.set self, profile, :edit if profile
   end
 end
+
+# :nodoc: Gravatar integration
+class User
+  include Gravtastic
+  gravtastic :email
+end

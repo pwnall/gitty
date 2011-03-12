@@ -1,17 +1,16 @@
-<div id="header">
+<header>
   <h1><%= link_to 'Gitty', root_url %></h1>
   
   <% if current_user %>
-  <ol class="user_bar">
-    <% if current_user.profile %>
+  <ol>
     <li>
+      <%= header_user_image current_user %>
+      <% if current_user.profile %>
       <%= link_to current_user.profile.name, current_user.profile %>
-    </li>
-    <% else %>
-    <li>
+      <% else %>
       <%= current_user.email %>
+      <% end %>
     </li>
-    <% end %>
     
     <li>
       <%= link_to 'Account', edit_user_path(current_user) %>
@@ -24,7 +23,7 @@
     </li>
   </ol>
   <% else %>
-  <ul class="welcome_bar">
+  <ol>
     <li>
       <%= link_to 'Home', root_path %>
     </li>
@@ -33,7 +32,7 @@
     </li>
     <li>
       <%= link_to 'Log in', new_session_path %>
-    </li>    
-  </ul>
+    </li>
+  </ol>
   <% end %>
-</div>
+</header>
