@@ -7,6 +7,7 @@
   padding: 2px 0 0 0;
   color: #666666;
   display: block;
+  clear: left;
 }
 .feed_items > li {
   padding: 4px 0 2px 0;
@@ -14,9 +15,17 @@
   border-bottom: 1px solid #D6E8B6;  
 }
 
+.feed_items .headline {
+  font-weight: bold;
+}
+.feed_items .author img {
+  float: left;
+  margin: 0 5px 2px 0;
+}
+
 .feed_items .details {
   margin: 0;
-  padding: 2px 0 0 1em;
+  padding: 2px 0 0 48px;
 }
 .feed_items ul.commits {
   list-style: none;
