@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101212042214) do
+ActiveRecord::Schema.define(:version => 20110301233849) do
 
   create_table "acl_entries", :force => true do |t|
     t.string   "role",           :null => false
@@ -135,10 +135,11 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
   add_index "feed_subscriptions", ["topic_id", "topic_type", "profile_id"], :name => "index_feed_subscriptions_on_topic_profile", :unique => true
 
   create_table "profiles", :force => true do |t|
-    t.string   "name",         :limit => 32,  :null => false
-    t.string   "display_name", :limit => 128, :null => false
+    t.string   "name",          :limit => 32,  :null => false
+    t.string   "display_name",  :limit => 128, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "display_email", :limit => 128
   end
 
   add_index "profiles", ["name"], :name => "index_profiles_on_name", :unique => true

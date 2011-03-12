@@ -13,11 +13,17 @@
 
   <div class="field">
     <%= f.label :name %><br />
-    <%= f.text_field :name %>
+    <%= f.text_field :name, :placeholder => 'unix_name' %>
   </div>
   <div class="field">
     <%= f.label :display_name %><br />
-    <%= f.text_field :display_name %>
+    <%= f.text_field :display_name, :placeholder => 'Your Full Name' %>
+  </div>
+  <div class="field">
+    <%= f.label :display_email, 'Display email' %>
+    <br />
+    <%= f.email_field :display_email,
+                      :placeholder => 'your_gravatar@something.com' %>
   </div>
   <div class="actions">
     <%= f.submit %>

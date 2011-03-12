@@ -10,7 +10,16 @@ class SessionControllerTest < ActionController::TestCase
     get :show
     
     assert_equal @user, assigns(:user)
+    assert_equal @user.profile, assigns(:profile)
     assert_select 'a', 'Log out'
+  end
+  
+  test "user home page for user without profile" do
+    user = users(:disconnected)
+    set_session_current_user user
+    get :show
+    
+    assert_equal user.email, assigns(:profile).display_email
   end
   
   test "application welcome page" do

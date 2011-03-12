@@ -24,6 +24,11 @@ class Profile < ActiveRecord::Base
   # The profile's long name.
   validates :display_name, :length => 1..256, :presence => true
   
+  # The e-mail showed on the profile and on Gravatar.
+  validates :display_email, :length => { :in => 1..256, :allow_nil => true },
+      :format => { :with => /^[A-Za-z0-9.+_]+@[^@]*\.(\w+)$/,
+                   :allow_nil => true }
+  
   # For profiles that represent users (not groups).
   has_one :user, :inverse_of => :profile
   
@@ -54,7 +59,13 @@ class Profile < ActiveRecord::Base
   #   name:: the repository's name
   def self.local_path(name)
     File.join UserHomeDir.for(ConfigVar['git_user']), 'repos', name
-  end  
+  end
+  
+  # :nodoc: normalize blank e-mails to nil
+  def display_email=(new_email)
+    new_email = nil if new_email.blank?
+    super new_email
+  end
 end
 
 # :nodoc: keep on-disk user directories synchronized

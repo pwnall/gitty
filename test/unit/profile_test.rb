@@ -5,8 +5,9 @@ class ProfileTest < ActiveSupport::TestCase
   
   setup do
     @profile = Profile.new :name => 'awesome',
-                           :display_name => 'Awesome Profile'
-  end  
+                           :display_name => 'Awesome Profile',
+                           :display_email => 'profile@gmail.com'
+  end
   
   test 'local_path' do
     mock_profile_paths_undo
@@ -37,6 +38,23 @@ class ProfileTest < ActiveSupport::TestCase
   test 'display name has to be non-nil' do
     @profile.display_name = nil
     assert !@profile.valid?
+  end
+  
+  test 'display e-mail can be nil' do
+    @profile.display_email = nil
+    assert @profile.valid?
+  end
+  
+  test 'no messed up e-mail addresses' do
+    ['pro file@gmail.com', 'profile@x@gmail.com'].each do |email|
+      @profile.display_email = email
+      assert !@profile.valid?
+    end
+  end
+  
+  test 'blank e-mail addresses become nil' do
+    @profile.display_email = ''
+    assert @profile.display_email.nil?
   end
   
   test 'model-directory lifetime sync' do
