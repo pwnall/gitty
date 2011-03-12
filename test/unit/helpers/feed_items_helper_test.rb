@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class FeedItemsHelperTest < ActionView::TestCase
-  test 'gravatar profile image' do
+  test 'feed_author_image renders gravatar' do
     author = feed_items(:dexter_creates_ghost).author
     result = feed_author_image author
     
