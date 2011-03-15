@@ -9,7 +9,7 @@ class AddCommitData < ActiveRecord::Migration
         if commit
           commit_data[:author] = commit.author_email
         else
-          commit_data[:author] = author.display_email
+          commit_data[:author] = item.author.display_email
         end
       end
       item.data = item.data
