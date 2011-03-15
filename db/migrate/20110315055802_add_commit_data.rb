@@ -13,7 +13,7 @@ class AddCommitData < ActiveRecord::Migration
         end
       end
       item.data = item.data
-      item.save!
+      item.save!(false)
     end
   end
 
@@ -24,7 +24,7 @@ class AddCommitData < ActiveRecord::Migration
         commit_data.delete :author
       end
       item.data = item.data
-      item.save!
+      item.save!(false)
     end
   end
 end
