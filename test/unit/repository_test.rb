@@ -578,6 +578,9 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal repo.id, items[0].data[:repository_id]
     assert_equal 'ci_request', items[0].data[:tag_name]
     assert_equal 'Continuous integration request.', items[0].data[:message]
+    assert_equal commits(:commit2).gitid, items[0].data[:commit][:gitid]
+    assert_equal commits(:commit2).message, items[0].data[:commit][:message]
+    assert_equal commits(:commit2).author_email, items[0].data[:commit][:author]
 
     assert_equal 'new_tag', items[2].verb
     assert_equal author, items[2].author
@@ -587,6 +590,9 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal repo.id, items[2].data[:repository_id]
     assert_equal 'v1.0', items[2].data[:tag_name]
     assert_equal 'Released version 1.', items[2].data[:message]
+    assert_equal commits(:commit1).gitid, items[2].data[:commit][:gitid]
+    assert_equal commits(:commit1).message, items[2].data[:commit][:message]
+    assert_equal commits(:commit1).author_email, items[2].data[:commit][:author]
 
     assert_equal 'del_tag', items[3].verb
     assert_equal author, items[3].author

@@ -23,7 +23,7 @@ dexter_creates_branch1:
              :repository_id => Fixtures.identify(:dexter_ghost),
              :branch_name => 'branch1', :commits => [
     {:gitid => 'bf28647e6740e2970b8e9e3de1484000c4637e58',
-     :message => 'Commit 1.'}
+     :message => 'Commit 1.', :author => 'costan@gmail.com'}
   ]}.to_yaml.inspect %>
   created_at: <%= (Time.now - 9).to_s(:db) %>
 
@@ -35,9 +35,9 @@ dexter_moves_master:
              :repository_id => Fixtures.identify(:dexter_ghost),
              :branch_name => 'master', :commits => [
     {:gitid => '15f49486892eb05391b6b70fd395fb3908365417',
-     :message => 'Commit 2.'},
+     :message => 'Commit 2.', :author => 'costan@gmail.com'},
     {:gitid => 'bf28647e6740e2970b8e9e3de1484000c4637e58',
-     :message => 'Commit 1.'}
+     :message => 'Commit 1.', :author => 'costan@gmail.com'}
   ]}.to_yaml.inspect %>
   created_at: <%= (Time.now - 8).to_s(:db) %>
 
@@ -58,7 +58,7 @@ dexter_creates_v1:
              :repository_id => Fixtures.identify(:dexter_ghost),
              :branch_name => 'branch1', :commit => {
     :gitid => 'bf28647e6740e2970b8e9e3de1484000c4637e58',
-    :message => 'Commit 1.'
+    :message => 'Commit 1.', :author => 'costan@gmail.com'
   }}.to_yaml.inspect %>
   created_at: <%= (Time.now - 6).to_s(:db) %>
 
@@ -70,7 +70,7 @@ dexter_moves_ci_request:
              :repository_id => Fixtures.identify(:dexter_ghost),
              :tag_name => 'unicorns', :commit => {
     :gitid => '15f49486892eb05391b6b70fd395fb3908365417',
-    :message => 'Commit 2.'
+    :message => 'Commit 2.', :author => 'costan@gmail.com'
   }}.to_yaml.inspect %>
   created_at: <%= (Time.now - 5).to_s(:db) %>
 

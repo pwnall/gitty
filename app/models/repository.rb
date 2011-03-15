@@ -319,7 +319,7 @@ class Repository
       tree.save!
       
       tree_entries = TreeEntry.from_git_tree git_tree, self, tree
-      tree_entries.each &:save!
+      tree_entries.each(&:save!)
     end
     new_commits = Set.new
     new_git_commits.each do |git_commit|
@@ -328,7 +328,7 @@ class Repository
       new_commits << commit
 
       commit_parents = CommitParent.from_git_commit git_commit, self, commit
-      commit_parents.each &:save!
+      commit_parents.each(&:save!)
       
       commit_diffs = CommitDiff.from_git_commit git_commit, commit
       commit_diffs.each do |diff, hunks|
@@ -566,7 +566,14 @@ class Repository
     
     delta.map do |change_type, tag|
       data = data_root.merge :tag_name => tag.name
-      data[:message] = tag.message[0, 100] if change_type != :deleted
+      if change_type != :deleted
+        data[:message] = tag.message[0, 100]
+        data[:commit] = { :gitid => tag.commit.gitid,
+          :message => tag.commit.message[0, 100],
+          :author => tag.commit.author_email
+        }
+      end
+      
       verb = {:added => 'new_tag', :changed => 'move_tag',
               :deleted => 'del_tag'}[change_type]
       FeedItem.publish author_profile, verb, tag, topics, data
