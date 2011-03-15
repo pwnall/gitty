@@ -32,6 +32,11 @@
   margin: 0;
   padding: 5px;
 }
+.repository_commit .author img, .repository_commit .committer img {
+  display: inline-block;
+  vertical-align: bottom;
+  border-radius: 2px;
+}
 .repository_commit .author:after, .repository_commit .committer:after {
   color: #666666;
 }

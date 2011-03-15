@@ -27,6 +27,7 @@
       <%= commit.message %>
     </p>
     <p class="author">
+      <%= commit_author_image commit %>
       <%= commit.author_name %> &lt;<%= commit.author_email %>&gt;
     </p>
     <% if commit.author_name != commit.committer_name || commit.author_email != commit.committer_email %>

@@ -108,3 +108,9 @@ class Commit::Enumerator
     [commit.committed_at.to_f, commit.gitid]
   end
 end
+
+# Gravatar integration
+class Commit
+  include Gravtastic
+  gravtastic :author_email
+end

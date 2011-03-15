@@ -539,6 +539,8 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal 1, items[2].data[:commits].length
     assert_equal commits(:commit2).gitid, items[2].data[:commits][0][:gitid]
     assert_equal commits(:commit2).message, items[2].data[:commits][0][:message]
+    assert_equal commits(:commit2).author_email,
+                 items[2].data[:commits][0][:author]
 
     assert_equal 'del_branch', items[3].verb
     assert_equal author, items[3].author

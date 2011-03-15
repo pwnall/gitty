@@ -46,6 +46,7 @@
     <ul class="commits">
     <% feed_item.data[:commits].each do |commit_data| %>
       <li>
+        <%= image_tag Gravtastic.gravatar_url(commit_data[:author], :rating => 'PG', :secure => false, :filetype => :png, :size => '20'), :style => 'width: 20px; height: 20px;' %>
         <span class="gitid">
         <% if repository = feed_item.target_repository %>
           <%= link_to commit_data[:gitid][0, 7], profile_repository_commit_path(

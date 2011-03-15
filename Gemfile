@@ -19,7 +19,8 @@ gem 'mysql2'
 # Bundle the extra gems:
 gem 'authpwn_rails'
 gem 'configvars_rails'
-gem 'gravtastic'
+gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
+                  :ref => '862b7170338bacbba40061c5765599e954706b76'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
 gem 'net-ssh', :require => 'net/ssh'

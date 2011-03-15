@@ -538,7 +538,8 @@ class Repository
         commits = branch.commit.walk_parents(0, 16).
             select { |commit| changes[:commits].include? commit }[0, 3]
         data[:commits] = commits.map do |commit|
-          { :gitid => commit.gitid, :message => commit.message[0, 100] }
+          { :gitid => commit.gitid, :message => commit.message[0, 100],
+            :author => commit.author_email }
         end
       end
       verb = {:added => 'new_branch', :changed => 'move_branch',

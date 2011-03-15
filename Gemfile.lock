@@ -1,4 +1,11 @@
 GIT
+  remote: git://github.com/pwnall/gravtastic.git
+  revision: 862b7170338bacbba40061c5765599e954706b76
+  ref: 862b7170338bacbba40061c5765599e954706b76
+  specs:
+    gravtastic (3.1.0)
+
+GIT
   remote: git://github.com/pwnall/grit.git
   revision: feea8aed2543efa74674c2d4f448496e8d9e7488
   branch: hunks
@@ -72,7 +79,6 @@ GEM
       fbgraph (>= 0.0.5)
       json (>= 1.4.2)
       oauth2 (>= 0.0.8)
-    gravtastic (3.1.0)
     hashie (1.0.0)
     i18n (0.5.0)
     json (1.5.1)
@@ -129,7 +135,7 @@ PLATFORMS
 DEPENDENCIES
   authpwn_rails
   configvars_rails
-  gravtastic
+  gravtastic!
   grit!
   json
   mocha

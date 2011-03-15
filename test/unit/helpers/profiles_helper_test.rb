@@ -17,12 +17,4 @@ class ProfilesHelperTest < ActionView::TestCase
     assert_match Digest::MD5.hexdigest(@profile.display_email), result,
         'image tag does not contain profile e-mail hash'
   end
-
-  test 'header_profile_image renders gravatar' do
-    result = header_profile_image @profile
-    
-    assert_match(/<img .*src=".*gravatar\.com.*"/, result)
-    assert_match Digest::MD5.hexdigest(@profile.display_email), result,
-        'image tag does not contain profile e-mail hash'
-  end
 end
