@@ -18,6 +18,10 @@ replacing the first argument in the command above, then changing the
 configuration variable git_user by going to
     http://gitty_server/_/config_vars
 
+You should probably visit the configuration variables page anyway, to change the
+admin password.
+    http://gitty_server/_/config_vars
+
 == Note on Patches/Pull Requests
  
 * Fork the project.
