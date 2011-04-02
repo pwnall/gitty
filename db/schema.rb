@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110315055802) do
+ActiveRecord::Schema.define(:version => 20110401233543) do
 
   create_table "acl_entries", :force => true do |t|
     t.string   "role",           :null => false
@@ -137,9 +137,9 @@ ActiveRecord::Schema.define(:version => 20110315055802) do
   create_table "profiles", :force => true do |t|
     t.string   "name",          :limit => 32,  :null => false
     t.string   "display_name",  :limit => 128, :null => false
+    t.string   "display_email", :limit => 128
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "display_email", :limit => 128
   end
 
   add_index "profiles", ["name"], :name => "index_profiles_on_name", :unique => true
@@ -197,7 +197,8 @@ ActiveRecord::Schema.define(:version => 20110315055802) do
   add_index "trees", ["repository_id", "gitid"], :name => "index_trees_on_repository_id_and_gitid", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "email",         :limit => 64, :null => false
+    t.string   "email",         :limit => 128, :null => false
+    t.string   "email_hash",    :limit => 64,  :null => false
     t.string   "password_salt", :limit => 16
     t.string   "password_hash", :limit => 64
     t.datetime "created_at"
@@ -206,6 +207,7 @@ ActiveRecord::Schema.define(:version => 20110315055802) do
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
+  add_index "users", ["email_hash"], :name => "index_users_on_email_hash", :unique => true
   add_index "users", ["profile_id"], :name => "index_users_on_profile_id", :unique => true
 
 end

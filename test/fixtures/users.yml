@@ -1,27 +1,32 @@
 jane:
   email: jane@gmail.com
+  email_hash: <%= Digest::SHA2.hexdigest('jane@gmail.com') %>
   password_salt: 5678
   password_hash: <%= User.hash_password('pa55w0rd', '5678').inspect %>
   profile: dexter
 
 john:
   email: john@gmail.com
+  email_hash: <%= Digest::SHA2.hexdigest('john@gmail.com') %>
   password_salt: 1234
   password_hash: <%= User.hash_password('password', '1234').inspect %>
   profile: costan
 
 sam:
   email: sam@gmail.com
+  email_hash: <%= Digest::SHA2.hexdigest('sam@gmail.com') %>
   password_salt: 1234
   password_hash: <%= User.hash_password('password', '1234').inspect %>
     
 disconnected:
   email: lurker@gmail.com
+  email_hash: <%= Digest::SHA2.hexdigest('lurker@gmail.com') %>
   password_salt: 1234
   password_hash: <%= User.hash_password('password', '1234').inspect %>
 
 rms:
   email: rms@gmail.com
+  email_hash: <%= Digest::SHA2.hexdigest('rms@gmail.com') %>
   password_salt: 1234
   password_hash: <%= User.hash_password('password', '1234').inspect %>
   

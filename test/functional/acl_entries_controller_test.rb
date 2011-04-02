@@ -13,7 +13,7 @@ class AclEntriesControllerTest < ActionController::TestCase
   end
 
   test "should get index for repository" do
-    get :index, :profile_name => @repository.profile.to_param,
+    get :index, :profile_name => @repository.profile.name,
                 :repo_name => @repository.to_param
 
     assert_response :success
@@ -34,7 +34,7 @@ class AclEntriesControllerTest < ActionController::TestCase
       :role => 'commit'
     }
     assert_difference 'AclEntry.count' do
-      post :create, :profile_name => @repository.profile.to_param,
+      post :create, :profile_name => @repository.profile.name,
                     :repo_name => @repository.to_param, :acl_entry => attributes
     end
 
@@ -44,7 +44,7 @@ class AclEntriesControllerTest < ActionController::TestCase
   test "should create acl_entry for profile" do
     set_session_current_user @profile_acl_entry.principal
     attributes = {
-      :principal_name => users(:jane).to_param,
+      :principal_name => users(:jane).email,
       :role => 'charge'
     }
     assert_difference 'AclEntry.count' do
@@ -55,7 +55,7 @@ class AclEntriesControllerTest < ActionController::TestCase
   end
 
   test "should update acl_entry for repository" do
-    put :update, :principal_name => @repo_acl_entry.principal.to_param,
+    put :update, :principal_name => @repo_acl_entry.principal.name,
                  :profile_name => @repository.profile.to_param,
                  :repo_name => @repository.to_param,
                  :acl_entry => { :role => 'read' }
@@ -65,7 +65,7 @@ class AclEntriesControllerTest < ActionController::TestCase
 
   test "should update acl_entry for profile" do
     set_session_current_user @profile_acl_entry.principal
-    put :update, :principal_name => @profile_acl_entry.principal.to_param,
+    put :update, :principal_name => @profile_acl_entry.principal.name,
                  :profile_name => @profile.to_param,
                  :acl_entry => { :role => 'read' }
     assert_redirected_to acl_entries_path(@profile)
@@ -74,8 +74,8 @@ class AclEntriesControllerTest < ActionController::TestCase
 
   test "should destroy acl_entry for repository" do
     assert_difference 'AclEntry.count', -1 do
-      delete :destroy, :principal_name => @repo_acl_entry.principal.to_param,
-                       :profile_name => @repository.profile.to_param,
+      delete :destroy, :principal_name => @repo_acl_entry.principal.name,
+                       :profile_name => @repository.profile.name,
                        :repo_name => @repository.to_param
     end
 
@@ -85,7 +85,7 @@ class AclEntriesControllerTest < ActionController::TestCase
   test "should destroy acl_entry for profile" do
     set_session_current_user @profile_acl_entry.principal
     assert_difference 'AclEntry.count', -1 do
-      delete :destroy, :principal_name => @profile_acl_entry.principal.to_param,
+      delete :destroy, :principal_name => @profile_acl_entry.principal.email,
                        :profile_name => @profile.to_param
     end
 
@@ -109,14 +109,14 @@ class AclEntriesControllerTest < ActionController::TestCase
     end
     assert_response :forbidden
 
-    put :update, :principal_name => @repo_acl_entry.principal.to_param,
+    put :update, :principal_name => @repo_acl_entry.principal.name,
                  :profile_name => @repository.profile.to_param,
                  :repo_name => @repository.to_param,
                  :acl_entry => { :role => 'read' }
     assert_response :forbidden
 
     assert_no_difference 'AclEntry.count' do
-      delete :destroy, :principal_name => @repo_acl_entry.principal.to_param,
+      delete :destroy, :principal_name => @repo_acl_entry.principal.name,
                        :profile_name => @repository.profile.to_param,
                        :repo_name => @repository.to_param
     end
@@ -139,13 +139,13 @@ class AclEntriesControllerTest < ActionController::TestCase
     end
     assert_response :forbidden
 
-    put :update, :principal_name => @profile_acl_entry.principal.to_param,
+    put :update, :principal_name => @profile_acl_entry.principal.name,
                  :profile_name => @profile.to_param,
                  :acl_entry => { :role => 'read' }
     assert_response :forbidden
 
     assert_no_difference 'AclEntry.count' do
-      delete :destroy, :principal_name => @profile_acl_entry.principal.to_param,
+      delete :destroy, :principal_name => @profile_acl_entry.principal.name,
                        :profile_name => @profile.to_param
     end
     assert_response :forbidden

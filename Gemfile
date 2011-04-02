@@ -17,8 +17,8 @@ gem 'mysql2'
 # gem 'ruby-debug'
 
 # Bundle the extra gems:
-gem 'authpwn_rails'
-gem 'configvars_rails'
+gem 'authpwn_rails', '>= 0.8.0'
+gem 'configvars_rails', '>= 0.4.3'
 gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
                   :ref => '862b7170338bacbba40061c5765599e954706b76'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
