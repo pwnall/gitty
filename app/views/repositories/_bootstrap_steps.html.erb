@@ -21,7 +21,7 @@ touch README
 git add README
 git commit -m 'first commit'
 git remote add origin <%= @repository.ssh_uri %>
-git push origin master  
+git push -u origin master
 </pre>
 
 <h3>Existing Git Repository?</h3>
@@ -29,7 +29,7 @@ git push origin master
 <pre>
 cd existing_git_repo
 git remote add origin <%= @repository.ssh_uri %>
-git push origin master  
+git push -u origin master
 </pre>
 
 <h3>When you're done</h3>
