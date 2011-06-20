@@ -7,12 +7,13 @@ GIT
 
 GIT
   remote: git://github.com/pwnall/grit.git
-  revision: feea8aed2543efa74674c2d4f448496e8d9e7488
+  revision: daab90dda658a5f9ad6210590c83ffb18d312439
   branch: hunks
   specs:
-    grit (2.3.0)
+    grit (2.4.1)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
+      posix-spawn (~> 0.3.6)
 
 GEM
   remote: http://rubygems.org/
@@ -99,6 +100,7 @@ GEM
       faraday (~> 0.6.1)
       multi_json (>= 0.0.5)
     polyglot (0.3.1)
+    posix-spawn (0.3.6)
     rack (1.2.3)
     rack-mount (0.6.14)
       rack (>= 1.0.0)
