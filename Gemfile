@@ -30,7 +30,7 @@ gem 'therubyracer'
 gem 'authpwn_rails', '>= 0.8.0'
 gem 'configvars_rails', '>= 0.4.3'
 gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
-                  :ref => '862b7170338bacbba40061c5765599e954706b76'
+                  :ref => 'fb046066881ae5d92046b98b2ff499b3964f2a84'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
 gem 'net-ssh', :require => 'net/ssh'

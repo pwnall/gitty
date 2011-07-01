@@ -1,7 +1,7 @@
 GIT
   remote: git://github.com/pwnall/gravtastic.git
-  revision: 862b7170338bacbba40061c5765599e954706b76
-  ref: 862b7170338bacbba40061c5765599e954706b76
+  revision: fb046066881ae5d92046b98b2ff499b3964f2a84
+  ref: fb046066881ae5d92046b98b2ff499b3964f2a84
   specs:
     gravtastic (3.1.0)
 
