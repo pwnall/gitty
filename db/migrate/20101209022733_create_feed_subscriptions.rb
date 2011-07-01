@@ -1,5 +1,5 @@
 class CreateFeedSubscriptions < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :feed_subscriptions do |t|
       t.integer :profile_id, :null => false
       t.integer :topic_id, :null => false
@@ -15,9 +15,5 @@ class CreateFeedSubscriptions < ActiveRecord::Migration
     add_index :feed_subscriptions, [:topic_id, :topic_type, :profile_id],
         :unique => true, :null => false,
         :name => :index_feed_subscriptions_on_topic_profile
-  end
-
-  def self.down
-    drop_table :feed_subscriptions
   end
 end

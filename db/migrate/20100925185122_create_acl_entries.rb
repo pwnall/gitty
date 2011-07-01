@@ -1,5 +1,5 @@
 class CreateAclEntries < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :acl_entries do |t|
       t.string :role, :length => 16, :null => false
       t.integer :subject_id, :null => false
@@ -15,9 +15,5 @@ class CreateAclEntries < ActiveRecord::Migration
     add_index :acl_entries, [:subject_id, :subject_type, :principal_id,
         :principal_type], :null => false, :unique => true,
         :name => :index_acl_entries_by_subject_principal
-  end
-
-  def self.down
-    drop_table :acl_entries
   end
 end

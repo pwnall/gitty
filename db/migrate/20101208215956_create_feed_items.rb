@@ -1,5 +1,5 @@
 class CreateFeedItems < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :feed_items do |t|
       t.integer :author_id, :null => false
       t.string :verb, :null => false, :length => 16
@@ -11,9 +11,5 @@ class CreateFeedItems < ActiveRecord::Migration
     end
     # Delete all the feed items of a profile.
     add_index :feed_items, :author_id, :unique => false, :null => false
-  end
-
-  def self.down
-    drop_table :feed_items
   end
 end

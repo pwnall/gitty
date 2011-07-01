@@ -1,5 +1,5 @@
 class CreateBranches < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :branches do |t|
       t.string :name, :limit => 128, :null => false
       t.integer :repository_id, :null => false
@@ -7,9 +7,5 @@ class CreateBranches < ActiveRecord::Migration
     end
     add_index :branches, [:repository_id, :name], :unique => true,
               :null => false
-  end
-
-  def self.down
-    drop_table :branches
   end
 end

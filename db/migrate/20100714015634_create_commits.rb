@@ -1,5 +1,5 @@
 class CreateCommits < ActiveRecord::Migration
-  def self.up
+  def change
     create_table :commits do |t|
       t.integer :repository_id, :null => false
       t.string :gitid, :limit => 64, :null => false
@@ -16,9 +16,5 @@ class CreateCommits < ActiveRecord::Migration
     end
     add_index :commits, [:repository_id, :gitid], :unique => true,
               :null => false
-  end
-
-  def self.down
-    drop_table :commits
   end
 end

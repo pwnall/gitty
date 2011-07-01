@@ -79,15 +79,15 @@ class BlobsControllerTest < ActionController::TestCase
   end  
   
   test "blob routes" do
-    assert_routing({:path => '/costan/rails/blob/master/docs/README',
+    assert_routing({:path => '/costan/rails/blob/master/docs/README.md',
                     :method => :get},
                    {:controller => 'blobs', :action => 'show',
                     :profile_name => 'costan', :repo_name => 'rails',
-                    :commit_gid => 'master', :path => 'docs/README'})
-    assert_routing({:path => '/costan/rails/raw/master/docs/README',
+                    :commit_gid => 'master', :path => 'docs/README.md'})
+    assert_routing({:path => '/costan/rails/raw/master/docs/README.md',
                     :method => :get},
                    {:controller => 'blobs', :action => 'raw',
                     :profile_name => 'costan', :repo_name => 'rails',
-                    :commit_gid => 'master', :path => 'docs/README'})
+                    :commit_gid => 'master', :path => 'docs/README.md'})
   end  
 end

@@ -11,7 +11,7 @@ dexter_deletes_branch2:
   target: branch2 (Branch)  # NOTE: doesn't exist anymore.
   verb: del_branch
   data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
-             :repository_id => Fixtures.identify(:dexter_ghost),
+             :repository_id => ActiveRecord::Fixtures.identify(:dexter_ghost),
              :branch_name => 'branch2'}.to_yaml.inspect %>
   created_at: <%= (Time.now - 10).to_s(:db) %>
 
@@ -20,7 +20,7 @@ dexter_creates_branch1:
   target: branch1 (Branch)
   verb: new_branch
   data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
-             :repository_id => Fixtures.identify(:dexter_ghost),
+             :repository_id => ActiveRecord::Fixtures.identify(:dexter_ghost),
              :branch_name => 'branch1', :commits => [
     {:gitid => 'bf28647e6740e2970b8e9e3de1484000c4637e58',
      :message => 'Commit 1.', :author => 'costan@gmail.com'}
@@ -32,7 +32,7 @@ dexter_moves_master:
   target: master (Branch)
   verb: move_branch
   data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
-             :repository_id => Fixtures.identify(:dexter_ghost),
+             :repository_id => ActiveRecord::Fixtures.identify(:dexter_ghost),
              :branch_name => 'master', :commits => [
     {:gitid => '15f49486892eb05391b6b70fd395fb3908365417',
      :message => 'Commit 2.', :author => 'costan@gmail.com'},
@@ -46,7 +46,7 @@ dexter_deletes_v2:
   target: v2 (Tag)  # NOTE: doesn't exist anymore.
   verb: del_tag
   data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
-             :repository_id => Fixtures.identify(:dexter_ghost),
+             :repository_id => ActiveRecord::Fixtures.identify(:dexter_ghost),
              :tag_name => 'v2'}.to_yaml.inspect %>
   created_at: <%= (Time.now - 7).to_s(:db) %>
 
@@ -55,7 +55,7 @@ dexter_creates_v1:
   target: v1 (Tag)
   verb: new_tag
   data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
-             :repository_id => Fixtures.identify(:dexter_ghost),
+             :repository_id => ActiveRecord::Fixtures.identify(:dexter_ghost),
              :branch_name => 'branch1', :commit => {
     :gitid => 'bf28647e6740e2970b8e9e3de1484000c4637e58',
     :message => 'Commit 1.', :author => 'costan@gmail.com'
@@ -67,7 +67,7 @@ dexter_moves_ci_request:
   target: ci_request (Tag)
   verb: move_tag
   data: <%= {:profile_name => 'dexter', :repository_name => 'ghost',
-             :repository_id => Fixtures.identify(:dexter_ghost),
+             :repository_id => ActiveRecord::Fixtures.identify(:dexter_ghost),
              :tag_name => 'unicorns', :commit => {
     :gitid => '15f49486892eb05391b6b70fd395fb3908365417',
     :message => 'Commit 2.', :author => 'costan@gmail.com'

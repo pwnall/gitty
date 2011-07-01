@@ -113,10 +113,12 @@ Gitty::Application.routes.draw do
 
     # Blobs.
     scope 'blob/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
-      get '*path' => 'blobs#show', :as => :profile_repository_blob
+      get '*path' => 'blobs#show', :as => :profile_repository_blob,
+                                   :format => false
     end
     scope 'raw/:commit_gid', :constraints => { :commit_gid => /[^\/]+/ } do
-      get '*path' => 'blobs#raw', :as => :raw_profile_repository_blob
+      get '*path' => 'blobs#raw', :as => :raw_profile_repository_blob,
+                                  :format => false
     end
     
     # Admin.

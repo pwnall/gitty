@@ -5,7 +5,17 @@ gem 'rails', '>= 3.0.0'
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git',
 #              :branch => '3-0-stable'
-gem 'mysql2', '~> 0.2.6'
+gem 'mysql2', '>= 0.3.6'
+
+# Asset template engines
+gem 'json'
+gem 'sass-rails', "~> 3.1.0.rc"
+gem 'coffee-script'
+gem 'uglifier'
+
+gem 'jquery-rails', '>= 1.0.0'
+
+gem 'therubyracer'
 
 # Use unicorn as the web server
 # gem 'unicorn'
