@@ -21,6 +21,10 @@ configuration variable git_user by going to
 You should probably visit the configuration variables page anyway, to change the
 admin password.
     http://gitty_server/_/config_vars
+    
+== Assets
+
+favicon from The Matrix icon pack by Dave Brasgalla
 
 == Note on Patches/Pull Requests
  
