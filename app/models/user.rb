@@ -1,6 +1,6 @@
 # An user account.
 class User < ActiveRecord::Base
-  pwnauth_user_model
+  include AuthpwnRails::UserModel
 
   # True if the given user can edit this user account.
   def can_edit?(user)

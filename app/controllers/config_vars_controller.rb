@@ -1,6 +1,6 @@
 # Viewing and changing configuration variables.
 class ConfigVarsController < ApplicationController
-  config_vars_controller
+  include ConfigvarsRails::Controller
 
   config_vars_auth
 end
