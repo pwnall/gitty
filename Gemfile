@@ -34,7 +34,8 @@ gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
 gem 'net-ssh', :require => 'net/ssh'
-gem 'rbtree'
+gem 'rbtree', :platform => :mri
+gem 'rbtree-pure', :require => 'rbtree', :platforms => [:jruby, :rbx]
 gem 'topological_sort'
 
 # gem 'bj'
