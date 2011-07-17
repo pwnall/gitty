@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: git://github.com/pwnall/grit.git
-  revision: daab90dda658a5f9ad6210590c83ffb18d312439
+  revision: b91ca84af2f58bf686db2539d856b93da27a3d2e
   branch: hunks
   specs:
     grit (2.4.1)
@@ -114,7 +114,7 @@ GEM
       multi_json (>= 0.0.5)
     polyglot (0.3.1)
     posix-spawn (0.3.6)
-    rack (1.3.0)
+    rack (1.3.1)
     rack-cache (1.0.2)
       rack (>= 0.4)
     rack-mount (0.8.1)
