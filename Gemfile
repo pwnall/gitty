@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 3.0.0'
+gem 'rails', '>= 3.1.0.rc6'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git',
@@ -27,8 +27,8 @@ gem 'therubyracer'
 # gem 'ruby-debug'
 
 # Bundle the extra gems:
-gem 'authpwn_rails', '>= 0.8.0'
-gem 'configvars_rails', '>= 0.4.3'
+gem 'authpwn_rails', '>= 0.9.2'
+gem 'configvars_rails', '>= 0.5.1'
 gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
                   :ref => 'fb046066881ae5d92046b98b2ff499b3964f2a84'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
