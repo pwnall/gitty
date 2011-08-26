@@ -76,7 +76,9 @@ class GitShellExecutorTest < ActiveSupport::TestCase
               returns('{"access": true}').once
     @executor.expects(:exec_git).with('git-upload-archive', @repo_dir).
               returns(true).once
-        
+    File.expects(:umask).once.with(0002).returns(0666)
+    File.expects(:umask).once.with(0666).returns(0002)
+
     @executor.run [@key_id, @server, 'git-upload-archive', @repo_path]
   end
 
@@ -87,6 +89,8 @@ class GitShellExecutorTest < ActiveSupport::TestCase
               returns('{"access": true}').once
     @executor.expects(:exec_git).with('git-upload-archive', @repo_dir).
               returns(false).once
+    File.expects(:umask).once.with(0002).returns(0666)
+    File.expects(:umask).once.with(0666).returns(0002)
 
     assert_raise GitExitError do        
       @executor.run [@key_id, @server, 'git-upload-archive', @repo_path]
@@ -104,6 +108,8 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     @executor.expects(:app_request).
         with({'repo_path' => @repo_path, 'ssh_key_id' => @key_id}, @backend,
              app_req).returns('{"success": true}').once
+    File.expects(:umask).once.with(0002).returns(0666)
+    File.expects(:umask).once.with(0666).returns(0002)
     @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]
   end
 
@@ -118,6 +124,8 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     @executor.expects(:app_request).
         with({'repo_path' => @repo_path, 'ssh_key_id' => @key_id},
              @backend, app_req).returns('{"success": false}').times(3)
+    File.expects(:umask).once.with(0002).returns(0666)
+    File.expects(:umask).once.with(0666).returns(0002)
     assert_raise BackendExitError do
       @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]
     end    
