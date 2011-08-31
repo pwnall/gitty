@@ -4,7 +4,7 @@ class GitShellExecutor
   def run(args)
     read_args args
     check_access @repository, @ssh_key_id, @commit_access
-    success = exec_git(@command, "repos/" + @repository)
+    success = exec_git_with_umask @command, "repos/" + @repository, 0002
     error 'Git operation failed.' unless success
     notify_server @repository, @ssh_key_id if @commit_access
   end
@@ -89,6 +89,18 @@ class GitShellExecutor
   # Runs a git-shell command.
   #
   # Returns true if the command executed successfully, false otherwise.
+  def exec_git_with_umask(command, repository, umask)
+    old_umask = File.umask 0002
+    begin
+      exec_git command, repository
+    ensure
+      File.umask old_umask
+    end
+  end
+  
+  # Runs a git-shell command.
+  #
+  # Returns true if the command executed successfully, false otherwise.
   def exec_git(command, repository)
     unless child_pid = Process.fork
       # In child.
@@ -104,5 +116,5 @@ class GitShellExecutor
         return status.exitstatus == 0 if pid == child_pid
       end
     end
-  end  
+  end
 end

@@ -68,16 +68,19 @@ END_SHELL
     Kernel.system teardown_script, ConfigVar['git_user'], Etc.getlogin
   end
 
-  test "initial repository push" do    
+  test "initial repository push and delete" do
     Dir.chdir @temp_dir do      
       assert Kernel.system('git init'), 'Failed to initialize repository'
       assert Kernel.system("git remote add origin #{@win_repository.ssh_uri}"),
              'Failed to add remote'
       add_commit_push
     end
+    @win_repository.destroy
+    assert !File.exist?(@win_repository.local_path),
+           'Failed to remove repository'
   end
-  
-  test "repository clone and push" do
+
+  test "repository clone push and delete" do
     FileUtils.rm_r @win_repository.local_path
     FileUtils.cp_r @fixture_repo_path, @win_repository.local_path
     FileUtils.chmod_R 0770, @win_repository.local_path    
@@ -98,6 +101,9 @@ END_SHELL
           @win_repository.tags.where(:name => 'integration').first.message
           'Pushed tags not assimilated'
     end
+    @win_repository.destroy
+    assert !File.exist?(@win_repository.local_path),
+           'Failed to remove repository'
   end
 
   def add_commit_push
