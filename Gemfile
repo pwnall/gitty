@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 3.1.0.rc6'
+gem 'rails', '>= 3.1.0'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git',
@@ -9,7 +9,7 @@ gem 'mysql2', '>= 0.3.6'
 
 # Asset template engines
 gem 'json'
-gem 'sass-rails', "~> 3.1.0.rc"
+gem 'sass-rails', ">= 3.1.0"
 gem 'coffee-script'
 gem 'uglifier'
 
