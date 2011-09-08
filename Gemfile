@@ -7,15 +7,17 @@ gem 'rails', '>= 3.1.0'
 #              :branch => '3-0-stable'
 gem 'mysql2', '>= 0.3.6'
 
-# Asset template engines
-gem 'json'
-gem 'sass-rails', ">= 3.1.0"
-gem 'coffee-script'
-gem 'uglifier'
+# Gems used only for assets and not required
+# in production environments by default.
+group :assets do
+  gem 'sass-rails', '~> 3.1.0'
+  gem 'coffee-rails', '~> 3.1.0'
+  gem 'uglifier'
+  
+  gem 'therubyracer'
+end
 
 gem 'jquery-rails', '>= 1.0.0'
-
-gem 'therubyracer'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -30,7 +32,7 @@ gem 'therubyracer'
 gem 'authpwn_rails', '>= 0.9.2'
 gem 'configvars_rails', '>= 0.5.1'
 gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
-                  :ref => 'fb046066881ae5d92046b98b2ff499b3964f2a84'
+                  :ref => '4a98c9784fb096352f5d8f9e333fb94b10fdeb18'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
 gem 'net-ssh', :require => 'net/ssh'
