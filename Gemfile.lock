@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: git://github.com/pwnall/grit.git
-  revision: b91ca84af2f58bf686db2539d856b93da27a3d2e
+  revision: 83b3339fd8175f6a25d9c61f11c50a5b744a9d52
   branch: hunks
   specs:
     grit (2.4.1)
@@ -96,7 +96,7 @@ GEM
     hashie (1.1.0)
     hike (1.2.1)
     i18n (0.6.0)
-    jquery-rails (1.0.13)
+    jquery-rails (1.0.14)
       railties (~> 3.0)
       thor (~> 0.14)
     json (1.5.4)
