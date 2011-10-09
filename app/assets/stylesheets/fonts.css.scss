@@ -3,25 +3,29 @@
   font-family: 'Cantarell';
   font-style: normal;
   font-weight: normal;
-  src: local('Cantarell'), url('../fonts/cantarell.ttf') format('truetype');
+  src: local('Cantarell'),
+       font-url('cantarell.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Cantarell';
   font-style: normal;
   font-weight: bold;
-  src: local('Cantarell Bold'), url('../fonts/cantarell_bold.ttf') format('truetype');
+  src: local('Cantarell Bold'),
+       font-url('cantarell_bold.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Droid Sans Mono';
   font-style: normal;
   font-weight: normal;
-  src: local('Droid Sans Mono'), url('../fonts/droid_sans_mono.ttf') format('truetype');
+  src: local('Droid Sans Mono'),
+       font-url('droid_sans_mono.ttf') format('truetype');
 }
 @font-face {
   font-family: 'Molengo';
   font-style: normal;
   font-weight: normal;
-  src: local('Molengo'), url('../fonts/molengo.ttf') format('truetype');
+  src: local('Molengo'),
+       font-url('molengo.ttf') format('truetype');
 }
 
 body {
