@@ -41,7 +41,6 @@ if RUBY_PLATFORM =~ /darwin/
   [
     [],
     ['UserShell', '/bin/bash'],
-    ['RealName', "User for Gitty's Git repos"],
     ['UniqueID', git_user_id.to_s],
     ['PrimaryGroupID', web_group_id.to_s],
     ['NFSHomeDirectory', "/Users/#{git_user}"],
@@ -57,7 +56,7 @@ if RUBY_PLATFORM =~ /darwin/
 else
   # Linux.
   new_user_command = ['useradd', '--gid', web_group, '--no-create-home',
-      '--no-user-group', '--comment', "User for Gitty's Git repos", git_user]
+      '--no-user-group', git_user]
   unless Kernel.system(*new_user_command)
     puts "Failed to create user #{git_user}"
     exit
