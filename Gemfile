@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 3.1.1'
+gem 'rails', '>= 3.1.2'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git',
@@ -10,14 +10,14 @@ gem 'mysql2', '>= 0.3.6'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', '>= 3.1.4'
+  gem 'sass-rails', '>= 3.1.5'
   gem 'coffee-rails', '>= 3.1.1'
   gem 'uglifier'
   
   gem 'therubyracer'
 end
 
-gem 'jquery-rails', '>= 1.0.0'
+gem 'jquery-rails', '>= 1.0.14'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -28,7 +28,7 @@ gem 'jquery-rails', '>= 1.0.0'
 # To use debugger
 # gem 'ruby-debug'
 
-gem 'authpwn_rails', '>= 0.9.2'
+gem 'authpwn_rails', '>= 0.9.6'
 gem 'configvars_rails', '>= 0.5.1'
 gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
                   :ref => '4a98c9784fb096352f5d8f9e333fb94b10fdeb18'
