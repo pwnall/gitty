@@ -1,6 +1,6 @@
 # Manages logging in and out of the application.
 class SessionController < ApplicationController
-  include AuthpwnRails::SessionController
+  include Authpwn::SessionController
   
   # Sets up the 'session/welcome' view. No user is logged in.
   def welcome

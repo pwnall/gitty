@@ -3,7 +3,7 @@ class CreateCredentials < ActiveRecord::Migration
     create_table :credentials do |t|
       t.references :user, :null => false
       t.string :type, :limit => 32, :null => false
-      t.string :name, :limit => 256, :null => true
+      t.string :name, :limit => 128, :null => true
       
       t.boolean :verified, :null => false, :default => false
       

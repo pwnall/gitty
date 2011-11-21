@@ -11,7 +11,7 @@
 </p>
 <% end %>
 
-<%= form_tag :url => session_path do %>
+<%= form_tag session_path do %>
   <div class="field">
     <%= label_tag :email, 'Email Address' %><br />
     <%= email_field_tag :email, @email %>

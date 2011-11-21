@@ -1,3 +1,4 @@
+# encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -94,13 +95,16 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
 
   add_index "config_vars", ["name"], :name => "index_config_vars_on_name", :unique => true
 
-  create_table "facebook_tokens", :force => true do |t|
-    t.integer "user_id",                     :null => false
-    t.string  "external_uid", :limit => 32,  :null => false
-    t.string  "access_token", :limit => 128, :null => false
+  create_table "credentials", :force => true do |t|
+    t.integer "user_id",                                    :null => false
+    t.string  "type",     :limit => 32,                     :null => false
+    t.string  "name",     :limit => 128
+    t.boolean "verified",                :default => false, :null => false
+    t.binary  "key"
   end
 
-  add_index "facebook_tokens", ["external_uid"], :name => "index_facebook_tokens_on_external_uid", :unique => true
+  add_index "credentials", ["type", "name"], :name => "index_credentials_on_type_and_name", :unique => true
+  add_index "credentials", ["user_id", "type"], :name => "index_credentials_on_user_id_and_type"
 
   create_table "feed_item_topics", :force => true do |t|
     t.integer  "feed_item_id", :null => false
@@ -197,17 +201,13 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
   add_index "trees", ["repository_id", "gitid"], :name => "index_trees_on_repository_id_and_gitid", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "email",         :limit => 128, :null => false
-    t.string   "email_hash",    :limit => 64,  :null => false
-    t.string   "password_salt", :limit => 16
-    t.string   "password_hash", :limit => 64
+    t.string   "exuid",      :limit => 32, :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "profile_id"
   end
 
-  add_index "users", ["email"], :name => "index_users_on_email", :unique => true
-  add_index "users", ["email_hash"], :name => "index_users_on_email_hash", :unique => true
+  add_index "users", ["exuid"], :name => "index_users_on_exuid", :unique => true
   add_index "users", ["profile_id"], :name => "index_users_on_profile_id", :unique => true
 
 end

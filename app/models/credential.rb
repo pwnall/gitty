@@ -5,9 +5,6 @@ class Credential < ActiveRecord::Base
   # Add your extensions to the Credential class here.
 end
 
-# Load built-in credential types, such as Email and Password.
-require 'authpwn_rails/credentials.rb'
-
 # namespace for all Credential subclasses
 module Credentials
 
