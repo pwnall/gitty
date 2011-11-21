@@ -11,19 +11,19 @@
 </p>
 <% end %>
 
-<%= form_for User.new, :url => session_path do |f| %>
+<%= form_tag :url => session_path do %>
   <div class="field">
-    <%= f.label :email, 'Email Address' %><br />
-    <%= f.email_field :email %>
+    <%= label_tag :email, 'Email Address' %><br />
+    <%= email_field_tag :email, @email %>
   </div>
   
   <div class="field">
-    <%= f.label :password %><br />
-    <%= f.password_field :password %>
+    <%= label_tag :password %><br />
+    <%= password_field_tag :password %>
   </div>
   
   <div class="actions">
-    <%= f.submit 'Log in' %>
+    <%= submit_tag 'Log in' %>
     
     <% if @redirect_url %>
     <%= hidden_field_tag :redirect_url, @redirect_url %>

@@ -1,11 +1,11 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 3.1.2'
+gem 'rails', '>= 3.1.3'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git',
 #              :branch => '3-0-stable'
-gem 'mysql2', '>= 0.3.6'
+gem 'mysql2', '>= 0.3.10'
 
 # Gems used only for assets and not required
 # in production environments by default.
@@ -28,7 +28,7 @@ gem 'jquery-rails', '>= 1.0.14'
 # To use debugger
 # gem 'ruby-debug'
 
-gem 'authpwn_rails', '>= 0.9.6'
+gem 'authpwn_rails', '>= 0.10.0'
 gem 'configvars_rails', '>= 0.5.1'
 gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
                   :ref => '4a98c9784fb096352f5d8f9e333fb94b10fdeb18'
