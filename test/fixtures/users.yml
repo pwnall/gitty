@@ -1,8 +1,10 @@
 jane:
   exuid: 12345
+  profile: dexter
 
 john:
   exuid: 56789
+  profile: costan
 
 sam:
   exuid: 59995
@@ -12,3 +14,4 @@ disconnected:
 
 rms:
   exuid: 13333
+  profile: rms
