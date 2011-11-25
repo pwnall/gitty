@@ -52,6 +52,8 @@ class UsersController < ApplicationController
   # GET /users/new.xml
   def new
     @user = User.new
+    @user.credentials << Credentials::Email.new
+    @user.credentials << Credentials::Password.new
 
     respond_to do |format|
       format.json  { render :json => @user }
