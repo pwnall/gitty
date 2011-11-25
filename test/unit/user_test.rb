@@ -2,7 +2,8 @@ require 'test_helper'
 
 class UserTest < ActiveSupport::TestCase
   setup do
-    @user = User.new
+    @user = User.new :email => 'someone@gmail.com', :password => 'awesome',
+                     :password_confirmation => 'awesome'
   end
   
   test 'setup' do
@@ -11,7 +12,6 @@ class UserTest < ActiveSupport::TestCase
   
   test 'name' do
     assert_equal 'john@gmail.com', users(:john).name
-    assert_nil @user.name
   end
   
   test 'find_by_name' do

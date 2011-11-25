@@ -28,7 +28,7 @@ gem 'jquery-rails', '>= 1.0.14'
 # To use debugger
 # gem 'ruby-debug'
 
-gem 'authpwn_rails', '>= 0.10.1', :path => '../authpwn_rails'
+gem 'authpwn_rails', '>= 0.10.2', :path => '../authpwn_rails'
 gem 'configvars_rails', '>= 0.5.1'
 gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
                   :ref => '4a98c9784fb096352f5d8f9e333fb94b10fdeb18'

@@ -12,15 +12,10 @@
   <% end %>
 
   <% if @user.new_record? %>
-  <%= fields_for :credentials do |ff| %>
-    <% if ff.object.instance_of? Credentials::Email %>
-    <div class="field">
-      <%= ff.label :email, 'Email Address' %>
-      <%= ff.email_field :email, :placeholder => 'you@something.com' %>
-      <%= ff.hidden_field :type %>
-    </div>
-    <% end %>
-  <% end %>
+  <div class="field">
+    <%= f.label :email, 'Email Address' %>
+    <%= f.email_field :email, :placeholder => 'you@something.com' %>
+  </div>
   <% end %>
   
   <% unless @user.new_record? %>
@@ -29,6 +24,7 @@
     <%= password_field_tag :old_password %>
   </div>  
   <% end %>
+
   <div class="field">
     <%= f.label :password %>
     <%= f.password_field :password %>

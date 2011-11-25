@@ -1,7 +1,14 @@
 # An user account.
 class User < ActiveRecord::Base
   include Authpwn::UserModel
-
+  
+  # Virtual email attribute, with validation.
+  include Authpwn::UserExtensions::EmailField
+  # Virtual password attribute, with confirmation validation.
+  include Authpwn::UserExtensions::PasswordField
+  
+  # Add your extensions to the User class here.
+  
   # True if the given user can edit this user account.
   def can_edit?(user)
     self == user
@@ -17,11 +24,8 @@ class User < ActiveRecord::Base
     false
   end
   
-  # Add your extensions to the User class here.
-
   # The profile representing this user.
   belongs_to :profile, :inverse_of => :user
-  attr_protected :profile, :profile_id
   
   # The repositories created by this user.
   has_many :repositories, :through => :profile
