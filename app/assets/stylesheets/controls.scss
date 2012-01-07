@@ -11,7 +11,7 @@ a, a:hover, a:visited {
 }
 
 /* Form buttons. */
-input[type=submit], input[type=button], a.button {
+button, input[type=submit], input[type=button], a.button {
   margin: 0;
   padding: 1px 6px; 
   border-radius: 4px;
@@ -27,18 +27,16 @@ input[type=submit], input[type=button], a.button {
   font-size: 1.1em;
   font-weight: bold;
   display: inline-block;
-}
-input[type=submit]:hover, input[type=button]:hover, a.button:hover {
-  color: #E2F5C0;
-}
-input[type=submit]:active, input[type=button]:active, a.button:active {
-  background-color: #9BA884;
-  box-shadow: inset 0px 2px 2px #606852;
-  -moz-box-shadow: inset 0px 2px 2px #606852;
-  -webkit-box-shadow: inset 0px 2px 2px #606852;
-}
-a.button {
-  text-decoration: none;
+  
+  &:hover {
+    color: #E2F5C0;
+  }
+  &:active {
+    background-color: #9BA884;
+    box-shadow: inset 0px 2px 2px #606852;
+    -moz-box-shadow: inset 0px 2px 2px #606852;
+    -webkit-box-shadow: inset 0px 2px 2px #606852;
+  }
 }
 
 /* Text fields. */
@@ -54,23 +52,22 @@ input[type=text], input[type=email], input[type=password], textarea {
   -webkit-box-shadow: inset 0px 2px 2px #E2F5C0;
   background-color: #FFFFFF;
   color: #000000;
+  
+  &:hover {
+    border: 1px solid #BECEA2;
+  }
+  &:focus {
+    color: #331400;
+  }
 }
-input[type=text]:hover, input[type=email]:hover, input[type=password]:hover,
-textarea:hover {
-  border: 1px solid #BECEA2;
-}
-input[type=text]:focus, input[type=email]:focus, input[type=password]:focus,
-textarea:focus {
-  color: #331400;
-}
-div.field_with_errors input[type=text],
-    div.field_with_errors input[type=password],
-    div.field_with_errors textarea {
-  border: 1px solid #FF0000;
-  box-shadow: inset 0px 1px 2px #FF8888;
-  -moz-box-shadow: inset 0px 1px 2px #FF8888;
-  -webkit-box-shadow: inset 0px 1px 2px #FF8888;
-  background-color: #FFEEEE;
+div.field_with_errors {
+ input[type=text], input[type=password], textarea {
+    border: 1px solid #FF0000;
+    box-shadow: inset 0px 1px 2px #FF8888;
+    -moz-box-shadow: inset 0px 1px 2px #FF8888;
+    -webkit-box-shadow: inset 0px 1px 2px #FF8888;
+    background-color: #FFEEEE;
+  }
 }
 
 input[type=radio], input[type=checkbox] {
@@ -80,13 +77,14 @@ input[type=radio], input[type=checkbox] {
   -webkit-box-shadow: inset 0px 1px 2px #F4DCCC;
   background-color: #FFFFFF;  
 }
-div.field_with_errors input[type=radio],
-    div.field_with_errors input[type=checkbox] {
-  border: 1px solid #FF0000;      
-  box-shadow: inset 0px 1px 2px #FF8888;
-  -moz-box-shadow: inset 0px 1px 2px #FF8888;
-  -webkit-box-shadow: inset 0px 1px 2px #FF8888;
-  background-color: #FFEEEE;
+div.field_with_errors {
+  input[type=radio], input[type=checkbox] {
+    border: 1px solid #FF0000;      
+    box-shadow: inset 0px 1px 2px #FF8888;
+    -moz-box-shadow: inset 0px 1px 2px #FF8888;
+    -webkit-box-shadow: inset 0px 1px 2px #FF8888;
+    background-color: #FFEEEE;
+  }
 }
 
 /* Prevent error fields from messing up the layout. */

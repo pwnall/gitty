@@ -19,8 +19,8 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
     t.string   "subject_type",   :null => false
     t.integer  "principal_id",   :null => false
     t.string   "principal_type", :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",     :null => false
+    t.datetime "updated_at",     :null => false
   end
 
   add_index "acl_entries", ["principal_id", "principal_type", "subject_id", "subject_type"], :name => "index_acl_entries_by_principal_subject", :unique => true
@@ -142,8 +142,8 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
     t.string   "name",          :limit => 32,  :null => false
     t.string   "display_name",  :limit => 128, :null => false
     t.string   "display_email", :limit => 128
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "profiles", ["name"], :name => "index_profiles_on_name", :unique => true
@@ -154,8 +154,8 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
     t.text     "description"
     t.string   "url",         :limit => 256
     t.boolean  "public",                     :default => false, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
   end
 
   add_index "repositories", ["profile_id", "name"], :name => "index_repositories_on_profile_id_and_name", :unique => true
@@ -165,8 +165,8 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
     t.integer  "user_id",                   :null => false
     t.string   "name",       :limit => 128, :null => false
     t.text     "key_line",                  :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
   end
 
   add_index "ssh_keys", ["fprint"], :name => "index_ssh_keys_on_fprint", :unique => true
@@ -202,8 +202,8 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
 
   create_table "users", :force => true do |t|
     t.string   "exuid",      :limit => 32, :null => false
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at",               :null => false
+    t.datetime "updated_at",               :null => false
     t.integer  "profile_id"
   end
 

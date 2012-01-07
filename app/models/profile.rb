@@ -86,7 +86,7 @@ class Profile
       # Happens in unit testing, when the git user isn't created yet.
       raise unless Rails.env.test?
     rescue Errno::EPERM
-      # Not root, not allowed to chown.    
+      # Not root, not allowed to chown.
     end    
     local_path
   end
