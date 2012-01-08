@@ -9,7 +9,7 @@ class SessionMailer < ActionMailer::Base
   # The sender e-mail address for a password reset e-mail.
   def reset_password_from(token, root_url)
     # You must replace the e-mail address below.
-    "#{root_url} staff <admin@site.com>"
+    "#{root_url} staff <costan@mit.edu>"
   end
 
   # Add your extensions to the SessionMailer class here.  
