@@ -61,10 +61,6 @@ class UsersController < ApplicationController
     end
   end
 
-  # GET /users/1/edit
-  def edit
-  end
-
   # POST /users
   # POST /users.xml
   def create
@@ -78,20 +74,6 @@ class UsersController < ApplicationController
       else
         format.json  { render :json => @user.errors, :status => :unprocessable_entity }
         format.html { render :action => :new }
-      end
-    end
-  end
-
-  # PUT /users/1
-  # PUT /users/1.xml
-  def update
-    respond_to do |format|
-      if @user.update_attributes(params[:user])
-        format.html { redirect_to(@user, :notice => 'User was successfully updated.') }
-        format.xml  { head :ok }
-      else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @user.errors, :status => :unprocessable_entity }
       end
     end
   end
