@@ -1,0 +1,11 @@
+Dear <%= @token.email %>,
+
+
+You are receiving this e-mail because someone (hopefully you) registered an
+account at <%= @host %> using your e-mail address.
+
+Please go to the address below to confirm your e-mail address.
+<%= link_to 'here', token_session_url(@token, :host => @host) %>
+
+If you haven't registered an account, please ignore this e-mail. Someone most
+likely mistyped their e-mail.

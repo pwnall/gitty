@@ -1,3 +1,7 @@
+admin_email:
+  name: admin_email
+  value: admin@gitty.org
+
 app_uri:
   name: app_uri
   value: "http://localhost:3800/"
