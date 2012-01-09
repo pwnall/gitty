@@ -19,7 +19,7 @@ configuration variable git_user by going to
     http://gitty_server/_/config_vars
 
 You should probably visit the configuration variables page anyway, to change the
-admin password.
+admin password and the address used to send e-mails.
     http://gitty_server/_/config_vars
     
 == Assets
