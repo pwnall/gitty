@@ -38,14 +38,23 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "should create user" do
+    ActionMailer::Base.deliveries = []
     attributes = { :email => 'john2@gmail.com', :password => 'passw0rd',
                    :password_confirmation => 'passw0rd'}
-    assert_difference('User.count') do
-      post :create, :user => attributes
+    assert_difference 'User.count' do
+      assert_difference 'Credentials::Token.count', 1,
+                        'E-mail verification token' do
+        post :create, :user => attributes
+      end
     end
 
-    assert_equal assigns(:user), session_current_user
-    assert_redirected_to session_path
+    assert_nil session_current_user,
+               "A new user should not be logged in without e-mail verification"
+    assert !assigns(:user).email_credential.verified?,
+           "A new user's e-mail should not be verified"
+    assert !ActionMailer::Base.deliveries.empty?,
+           "E-mail verification e-mail not sent"
+    assert_redirected_to new_session_path
   end
 
   test "should show user" do

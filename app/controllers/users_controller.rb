@@ -52,8 +52,6 @@ class UsersController < ApplicationController
   # GET /users/new.xml
   def new
     @user = User.new
-    @user.credentials << Credentials::Email.new
-    @user.credentials << Credentials::Password.new
 
     respond_to do |format|
       format.json  { render :json => @user }
@@ -68,11 +66,21 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       if @user.save
-        self.current_user = @user
-        format.json  { render :json => @user, :status => :created, :location => @user }
-        format.html { redirect_to session_path }
+        token = Tokens::EmailVerification.random_for @user.email_credential
+        SessionMailer.email_verification_email(token, request.host_with_port).
+                      deliver
+                      
+        format.html do
+          redirect_to new_session_url,
+              :notice => 'Please check your e-mail to verify your account.'
+        end
+        format.json do
+          render :json => @user, :status => :created, :location => @user
+        end
       else
-        format.json  { render :json => @user.errors, :status => :unprocessable_entity }
+        format.json do
+          render :json => @user.errors, :status => :unprocessable_entity
+        end
         format.html { render :action => :new }
       end
     end

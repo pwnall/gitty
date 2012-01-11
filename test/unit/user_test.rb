@@ -29,6 +29,13 @@ class UserTest < ActiveSupport::TestCase
     assert_equal [profiles(:dexter)], profiles(:dexter).user.chargeable_profiles
   end
   
+  test 'auth_bounce_reason' do
+    assert_equal :blocked,
+        users(:john).auth_bounce_reason(credentials(:john_email))
+    assert_equal nil,
+        users(:jane).auth_bounce_reason(credentials(:jane_email))
+  end
+  
   test 'profiles' do
     @user.save!
     assert_equal [], @user.profiles

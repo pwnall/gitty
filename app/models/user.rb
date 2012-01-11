@@ -67,6 +67,12 @@ class User < ActiveRecord::Base
   def team_repositories
     team_profiles.map(&:repositories).flatten
   end
+  
+  # Don't log in users with un-verified e-mails.
+  def auth_bounce_reason(credential)
+    (credential.is_a?(Credentials::Email) && !credential.verified?) ?
+        :blocked : nil  
+  end  
 end
 
 
