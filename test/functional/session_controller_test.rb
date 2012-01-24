@@ -14,7 +14,7 @@ class SessionControllerTest < ActionController::TestCase
     
     assert_equal @user, assigns(:user)
     assert_equal @user.profile, assigns(:profile)
-    assert_select 'a', 'Log out'
+    assert_select 'a[href="/_/session"][data-method="delete"]', 'Log out'
   end
   
   test "user home page for user without profile" do
