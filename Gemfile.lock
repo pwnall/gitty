@@ -169,7 +169,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  authpwn_rails (>= 0.10.6)
+  authpwn_rails (>= 0.10.7)
   coffee-rails (>= 3.2.1)
   configvars_rails (>= 0.5.2)
   gravtastic!
