@@ -20,8 +20,10 @@ class SshKey < ActiveRecord::Base
 
   # A key's fingerprint uniquely identifies the key.  
   def self.fingerprint(key_line)
-    key_blob = key_line.split(' ')[1].unpack('m*').first
-    Net::SSH::Buffer.new(key_blob).read_key.fingerprint
+    return nil unless hex_key_blob = key_line.split(' ')[1]
+    key_blob = hex_key_blob.unpack('m*').first
+    return nil unless ssh_key = Net::SSH::Buffer.new(key_blob).read_key
+    ssh_key.fingerprint
   end
 end
 

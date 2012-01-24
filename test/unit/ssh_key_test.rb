@@ -22,6 +22,22 @@ class SshKeyTest < ActiveSupport::TestCase
     @key.key_line = ssh_keys(:rsa).key_line
     assert !@key.valid?
   end
+  
+  test 'fingerprint' do
+    rsa_fprint = SshKey.fingerprint ssh_keys(:rsa).key_line
+    dsa_fprint = SshKey.fingerprint ssh_keys(:dsa).key_line
+    invalid_fprint = SshKey.fingerprint 'invalid keyline'
+    noise_fprint = SshKey.fingerprint '#$%@!#$!@#$!@# #$@!#%!@#$%!@# #@$!@#$!@'
+    null_fprint = SshKey.fingerprint ''
+    
+    assert_not_equal rsa_fprint, dsa_fprint, 'RSA != DSA'
+    assert_not_equal rsa_fprint, invalid_fprint, 'RSA != invalid keyline'
+    assert_not_equal rsa_fprint, noise_fprint, 'RSA != line noise keyline'
+    assert_not_equal rsa_fprint, null_fprint, 'RSA != empty keyline'
+    assert_not_equal dsa_fprint, invalid_fprint, 'RSA != invalid keyline'
+    assert_not_equal dsa_fprint, noise_fprint, 'DSA != line noise keyline'
+    assert_not_equal dsa_fprint, null_fprint, 'RSA != empty keyline'
+  end
 
   test 'original keyfile_path' do
     mock_ssh_keys_path_undo
