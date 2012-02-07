@@ -67,8 +67,7 @@ class UsersController < ApplicationController
     respond_to do |format|
       if @user.save
         token = Tokens::EmailVerification.random_for @user.email_credential
-        SessionMailer.email_verification_email(token, request.host_with_port).
-                      deliver
+        SessionMailer.email_verification_email(token, root_url).deliver
                       
         format.html do
           redirect_to new_session_url,

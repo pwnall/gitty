@@ -12,7 +12,8 @@ class GitPushTest < ActionDispatch::IntegrationTest
 
     # NOTE: starting Rails first, so it has time to boot.
     @webapp_pid_file = @temp_dir.join 'webapp.pid'
-    Kernel.system 'thin', 'start', '--daemonize', '--environment', 'test',
+    Kernel.system 'bundle', 'exec', 'thin', 'start', '--daemonize',
+                  '--environment', 'test',
                   '--port', ConfigVar['app_uri'].split(':').last[0...-1],
                   '--pid', @webapp_pid_file.to_s,
                   '--log', @temp_dir.join('thin.log').to_s

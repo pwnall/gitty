@@ -5,7 +5,7 @@ class BlobsController < ApplicationController
   def show
     process_params
     respond_to do |format|
-      format.html # show.html.erb
+      format.html  # show.html.erb
     end
   end
   
