@@ -91,10 +91,12 @@ class UserTest < ActiveSupport::TestCase
   end
   
   test 'mass-assignment protection' do
-    user = User.new :profile_id => 42
-    assert_nil user.profile_id
-
-    user = User.new :profile => profiles(:csail)
-    assert_nil user.profile
+    {
+      :profile_id => 42, :profile => profiles(:csail),
+    }.each do |attr, value|
+      assert_raise ActiveModel::MassAssignmentSecurity::Error, attr.inspect do
+        user = User.new attr => value
+      end
+    end
   end  
 end

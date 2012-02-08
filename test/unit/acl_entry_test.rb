@@ -4,9 +4,9 @@ class AclEntryTest < ActiveSupport::TestCase
   setup do
     @john = users(:john)
     @jane = users(:jane)
-    @acl_entry = AclEntry.new :principal => @jane, 
-                              :subject => profiles(:csail),
-                              :role => :participate
+    @acl_entry = AclEntry.new :role => :participate
+    @acl_entry.principal = @jane 
+    @acl_entry.subject = profiles(:csail)                              
   end
   
   test 'setup' do
@@ -59,7 +59,8 @@ class AclEntryTest < ActiveSupport::TestCase
   end
     
   test 'set principal_name before principal_type on new record' do
-    entry = AclEntry.new :principal_name => @jane.name
+    entry = AclEntry.new 
+    entry.principal_name = @jane.name
     entry.principal_type = @jane.class.name
     assert_equal @jane.id, entry.principal_id
     assert_equal @jane, entry.principal
@@ -108,12 +109,13 @@ class AclEntryTest < ActiveSupport::TestCase
   end
   
   test 'mass-assignment protection' do
-    entry = AclEntry.new :principal_id => 37, :principal_type => 'Profile',
-                         :subject_id => 42, :subject_type => 'Repository',
-                         :role => 'read'
-    assert_nil entry.principal_id
-    assert_nil entry.principal_type
-    assert_nil entry.subject_id
-    assert_nil entry.subject_type
+    {
+      :principal_id => 37, :principal_type => 'Profile',
+      :subject_id => 42, :subject_type => 'Repository'
+    }.each do |attr, value|
+      assert_raise ActiveModel::MassAssignmentSecurity::Error, attr.inspect do
+        entry = AclEntry.new attr => value
+      end
+    end
   end
 end

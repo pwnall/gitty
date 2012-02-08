@@ -42,9 +42,9 @@ class AclEntriesController < ApplicationController
   # GET /acl_entries
   # GET /acl_entries.json
   def index
-    @acl_entry = AclEntry.new :subject => @subject,
-       :role => @subject.class.acl_roles.first,
-       :principal_type => @subject.class.acl_principal_class.name
+    @acl_entry = AclEntry.new :role => @subject.class.acl_roles.first
+    @acl_entry.subject = @subject
+    @acl_entry.principal_type = @subject.class.acl_principal_class.name
 
     respond_to do |format|
       format.html # index.html.erb

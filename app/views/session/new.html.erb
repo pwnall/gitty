@@ -1,6 +1,8 @@
 <h2>Log in</h2>
 
-<% if flash[:notice] %>
+<% if flash[:alert] %>
+<p class="alert"><%= flash[:alert] %></p>
+<% elsif flash[:notice] %>
 <p class="notice"><%= flash[:notice] %></p>
 <% end %>
 

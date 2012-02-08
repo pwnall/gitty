@@ -4,9 +4,9 @@ class RepositoryTest < ActiveSupport::TestCase
   setup :mock_profile_paths
 
   setup do
-    @repo = Repository.new :name => 'awesome', :profile => profiles(:dexter),
-                           :description => 'yeah', :url => 'http://something',
-                           :public => false
+    @repo = Repository.new :name => 'awesome', :public => false,
+                           :description => 'yeah', :url => 'http://something'
+    @repo.profile = profiles(:dexter)
   end
     
   test 'setup' do
@@ -471,8 +471,13 @@ class RepositoryTest < ActiveSupport::TestCase
   end
   
   test 'mass-assignment protection' do
-    repository = Repository.new :profile_id => 42
-    assert_nil repository.profile_id
+    {
+      :profile_id => 42
+    }.each do |attr, value|
+      assert_raise ActiveModel::MassAssignmentSecurity::Error, attr.inspect do
+        repository = Repository.new attr => value
+      end
+    end
   end
 
   test 'profile creation publishing' do    

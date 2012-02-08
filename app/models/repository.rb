@@ -3,7 +3,6 @@ class Repository < ActiveRecord::Base
   # The profile representing the repository's author.
   belongs_to :profile, :inverse_of => :repositories
   validates :profile, :presence => true
-  attr_protected :profile_id
   
   # Virtual attribute, backed by profile_id.
   def profile_name
@@ -14,6 +13,7 @@ class Repository < ActiveRecord::Base
         Profile.where(:name => new_profile_name).first    
     @profile_name = profile && profile.name
   end
+  attr_accessible :profile_name
   
   # Branch information cached from the on-disk repository.
   has_many :branches, :dependent => :destroy, :inverse_of => :repository
@@ -34,14 +34,17 @@ class Repository < ActiveRecord::Base
   validates :name, :length => 1..64, :format => /\A\w([\w.-]*\w)?\Z/,
                    :presence => true,
                    :uniqueness => { :scope => :profile_id }
+  attr_accessible :name
 
   # Usually a blog post introducing the repository's contents, or a development site.
   validates :url, :length => { :in => 1..256, :allow_nil => true },
                   :format => { :with => /\Ahttps?:\/\//, :allow_nil => true,
                                :message => 'must be a http or https URL' }
+  attr_accessible :url
 
   # Public repositories grant read access to anyone.
   validates :public, :inclusion => [true, false]
+  attr_accessible :public
     
   def url=(new_url)
     new_url = nil if new_url.blank?
@@ -54,6 +57,7 @@ class Repository < ActiveRecord::Base
     new_description = nil if new_description.blank?
     super new_description
   end
+  attr_accessible :description
 
   # The repository's location on disk.
   def local_path

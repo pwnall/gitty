@@ -23,10 +23,12 @@ class GitPushTest < ActionDispatch::IntegrationTest
     Kernel.system 'sudo', setup_script, ConfigVar['git_user'], Etc.getlogin
     SshKey.write_keyfile
   
-    @win_repository = Repository.create! :name => 'rwin',
-                                         :profile => profiles(:dexter)
-    @fail_repository = Repository.create! :name => 'rfail',
-                                         :profile => profiles(:dexter)
+    @win_repository = Repository.new :name => 'rwin'
+    @win_repository.profile = profiles(:dexter)
+    @win_repository.save!
+    @fail_repository = Repository.new :name => 'rfail'
+    @fail_repository.profile = profiles(:dexter)
+    @fail_repository.save!
 
     @keyfile = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'id_dsa'
     File.chmod 0600, @keyfile  # NOTE: ssh 0.9.8o gets bitchy otherwise

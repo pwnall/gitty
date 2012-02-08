@@ -24,8 +24,9 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
 
   test "should create repository" do
-    attributes = @repository.attributes.merge :name => 'rails',
-        :profile_name => @repository.profile.name
+    attributes = @repository.attributes.with_indifferent_access.
+        except!(:id, :profile_id, :created_at, :updated_at).
+        merge :name => 'rails', :profile_name => @repository.profile.name
     assert_difference('Repository.count') do
       assert_difference('FeedItem.count') do
         post :create, :repository => attributes
@@ -81,8 +82,9 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
 
   test "should update repository" do
-    attributes =
-        @repository.attributes.merge :profile_name => @repository.profile.name
+    attributes = @repository.attributes.with_indifferent_access.
+        except!(:id, :profile_id, :created_at, :updated_at).
+        merge :profile_name => @repository.profile.name
 
     put :update, :repository => attributes,
         :repo_name => @repository.to_param,
@@ -95,8 +97,9 @@ class RepositoriesControllerTest < ActionController::TestCase
   test "should rename repository" do
     old_local_path = @repository.local_path
     FileUtils.mkdir_p old_local_path
-    attributes = @repository.attributes.merge(
-        :profile_name => @repository.profile.name, :name => 'randomness')
+    attributes = @repository.attributes.with_indifferent_access.
+        except!(:id, :profile_id, :created_at, :updated_at).
+        merge :profile_name => @repository.profile.name, :name => 'randomness'
 
     put :update, :repository => attributes,
         :repo_name => @repository.to_param,
@@ -119,7 +122,9 @@ class RepositoriesControllerTest < ActionController::TestCase
     profile = profiles(:mit)
     AclEntry.set @author, profile, :charge   
     
-    attributes = @repository.attributes.merge :profile_name => profile.to_param
+    attributes = @repository.attributes.with_indifferent_access.
+        except!(:id, :profile_id, :created_at, :updated_at).
+        merge :profile_name => profile.to_param
     put :update, :repository => attributes,
         :repo_name => @repository.to_param,
         :profile_name => @repository.profile.to_param
@@ -138,7 +143,9 @@ class RepositoriesControllerTest < ActionController::TestCase
   test "should reject repository move to profile without charge bits" do
     profile = profiles(:mit)
     
-    attributes = @repository.attributes.merge :profile_name => profile.to_param
+    attributes = @repository.attributes.with_indifferent_access.
+        except!(:id, :profile_id, :created_at, :updated_at).
+        merge :profile_name => profile.to_param
     put :update, :repository => attributes,
         :repo_name => @repository.to_param,
         :profile_name => @repository.profile.to_param
@@ -147,8 +154,9 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
   
   test "should use old repository url on rejected rename" do
-    attributes = @repository.attributes.merge(
-        :profile_name => @repository.profile.name, :name => '-broken')
+    attributes = @repository.attributes.with_indifferent_access.
+        except!(:id, :profile_id, :created_at, :updated_at).
+        merge :profile_name => @repository.profile.name, :name => '-broken'
 
     put :update, :repository => attributes,
         :repo_name => @repository.to_param,
