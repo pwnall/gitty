@@ -1,6 +1,6 @@
 before_script:
   - "sudo script/git_user/setup git $USER"
-  - "mysql -e 'create database myapp_test;'"
+  - "mysql -e 'create database gitty_test;'"
 rvm:
   - 1.9.2
   - 1.9.3
