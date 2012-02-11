@@ -34,7 +34,8 @@ class GitPushTest < ActionDispatch::IntegrationTest
     File.chmod 0600, @keyfile  # NOTE: ssh 0.9.8o gets bitchy otherwise
     ssh_wrapper = @temp_dir.join('git-ssh.sh').to_s
     File.open ssh_wrapper, 'w' do |f|
-      options = '-o PasswordAuthentication=no -o PubkeyAuthentication=yes'
+      options = '-o PasswordAuthentication=no -o PubkeyAuthentication=yes ' +
+                '-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
       f.write <<END_SHELL
 #!/bin/sh
 exec ssh -i "#{@keyfile}" #{options} "$@"
