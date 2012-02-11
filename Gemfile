@@ -30,8 +30,7 @@ gem 'jquery-rails', '>= 2.0.0'
 
 gem 'authpwn_rails', '>= 0.10.9'
 gem 'configvars_rails', '>= 0.5.2'
-gem 'gravtastic', :git => 'git://github.com/pwnall/gravtastic.git',
-                  :ref => '4a98c9784fb096352f5d8f9e333fb94b10fdeb18'
+gem 'gravatar-ultimate', '>= 1.0.3'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
 gem 'net-ssh', :require => 'net/ssh'
