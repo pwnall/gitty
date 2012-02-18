@@ -1,10 +1,10 @@
-# gitty
+# Gitty Overview 
 
-Web front-end for hosting Git repositories.
+Gitty is an open-source reduced-functionality Github clone.
 
-This is a reduced-functionality clone of Github. But have access to the source
-code, so you can add that feature that you always wished GitHub would have! You
-can also install it behind your firewall for free.
+On the bright side, you have full access to the source code, so you can add that
+feature that you always wished GitHub would have! (Please send a pull request
+if you do!) You can also install it behind your firewall for free.
 
 
 ## Dependencies
