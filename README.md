@@ -9,20 +9,20 @@ if you do!) You can also install it behind your firewall for free.
 
 ## Dependencies
 
-Gitty relies on git and openssh.
+Gitty relies on git, openssh, and MySQL.
 
 On Fedora:
 
 ```bash
-sudo yum install -y git openssh-server
-sudo systemctl enable sshd.service
-sudo systemctl start sshd.service
+sudo yum install -y git openssh-server mysql-devel mysql-server
+sudo systemctl enable mysqld.service sshd.service
+sudo systemctl start mysqld.service sshd.service
 ```
     
 On Ubuntu:
 
 ```bash
-sudo apt-get install -y git openssh-server
+sudo apt-get install -y git libmysqlclient-dev libssl-dev mysql-client mysql-server openssh-server
 ```
     
 On OSX, go to System Preferences > Sharing, check the Remote Login option.
