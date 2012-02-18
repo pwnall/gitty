@@ -111,6 +111,7 @@ GEM
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
+    railroady (1.0.6)
     rails (3.2.1)
       actionmailer (= 3.2.1)
       actionpack (= 3.2.1)
@@ -170,14 +171,15 @@ DEPENDENCIES
   grit!
   jquery-rails (>= 2.0.0)
   json
-  mocha
+  mocha (>= 0.10.4)
   mysql2 (>= 0.3.11)
-  net-ssh
+  net-ssh (>= 2.3.0)
+  railroady (>= 0.4.5)
   rails (>= 3.2.1)
-  rbtree
-  rbtree-pure
+  rbtree (>= 0.3.0)
+  rbtree-pure (>= 0.1.1)
   sass-rails (>= 3.2.3)
   therubyracer (>= 0.9.9)
-  thin
-  topological_sort
+  thin (>= 1.3.1)
+  topological_sort (>= 0.1.1)
   uglifier

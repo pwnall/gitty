@@ -4,3 +4,8 @@ db/*.sqlite3
 log/*.log
 tmp/**/*
 *.rbc
+
+doc/controllers_brief.svg
+doc/controllers_complete.svg
+doc/models_brief.svg
+doc/models_complete.svg

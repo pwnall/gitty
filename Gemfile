@@ -33,18 +33,20 @@ gem 'configvars_rails', '>= 0.5.2'
 gem 'gravatar-ultimate', '>= 1.0.3'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
-gem 'net-ssh', :require => 'net/ssh'
-gem 'rbtree', :platform => :mri
-gem 'rbtree-pure', :require => 'rbtree', :platforms => [:jruby, :rbx]
-gem 'topological_sort'
+gem 'net-ssh', '>= 2.3.0', :require => 'net/ssh'
+gem 'rbtree', '>= 0.3.0', :platform => :mri
+gem 'rbtree-pure', '>= 0.1.1', :require => 'rbtree',
+                               :platforms => [:jruby, :rbx]
+gem 'topological_sort', '>= 0.1.1'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development, :test do
-  gem 'thin'
+  gem 'railroady', '>= 0.4.5'
+  gem 'thin', '>= 1.3.1'
 end
 
 group :test do
-  gem 'mocha'
+  gem 'mocha', '>= 0.10.4'
 end
