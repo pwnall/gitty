@@ -70,6 +70,9 @@ code.
 bundle exec rake diagram:all
 ```
 
+The documentation for the ActiveRecord models assumes knowledge of the 
+[git object model](http://book.git-scm.com/1_the_git_object_model.html).
+
 
 ## Note on Patches/Pull Requests
  

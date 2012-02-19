@@ -2,7 +2,9 @@
 .sass-cache
 db/*.sqlite3
 log/*.log
-tmp/**/*
+tmp
+
+*~
 *.rbc
 
 doc/controllers_brief.svg
