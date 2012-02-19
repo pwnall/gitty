@@ -132,6 +132,7 @@ GEM
     rbtree-pure (0.1.1)
     rdoc (3.12)
       json (~> 1.4)
+    redcarpet (2.1.0)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     sass (3.1.15)
