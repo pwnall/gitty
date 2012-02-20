@@ -9,7 +9,7 @@
 </p>
 
 <pre class="contents">
-<%= blob.data %>
+<%= GitHub::Markup.render(blob_path, blob.data).safe_html %>
 </pre>
 
 </div>

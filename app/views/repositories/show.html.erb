@@ -4,9 +4,9 @@
 <%= render @repository.default_branch %>
 
 <% if readme = @repository.default_branch.commit.tree.entries.
-                           where(:name => 'README').first %>
+                           where('name LIKE "readme%"').first %>
 <h3>README</h3>
-<%= render readme.child %>
+<%= render readme.child, :blob_path => readme.name %>
 <% else %>
 <p>No README file found. You should add one.</p>
 <% end %>

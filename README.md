@@ -60,7 +60,7 @@ admin password and the address used to send e-mails.
 http://gitty_server/_/config_vars
 ```
 
-    
+
 ## Development
 
 Model and controller diagrams might help you wrap your head around the source
