@@ -103,3 +103,8 @@ FileUtils.chown_R git_user, web_group, git_home
 
 # NOTE: if the file is chowned after chmodding, the setuid bit is lost
 FileUtils.chmod 04750, install_keys
+
+# SELinux needs a home directory fixup.
+if `which restorecon 2>&1`[0] == ?/
+  Kernel.system "restorecon -R #{git_home}"
+end
