@@ -42,7 +42,7 @@ gem 'redcarpet', '>= 2.1.0'
 gem 'topological_sort', '>= 0.1.1'
 
 # Github-markup doesn't declare its dependencies, so we have to.
-gem 'github-markup', '>= 0.7.1'
+gem 'github-markup', '>= 0.7.1', :require => 'github/markup'
 gem 'redcarpet', '>= 2.1.0'
 gem 'rdoc', '>= 3.12'
 gem 'org-ruby', '>= 0.6.0', :platform => :mri_18
