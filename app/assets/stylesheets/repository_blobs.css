@@ -30,5 +30,9 @@
 }
 .repository_blob .contents {
   margin: 0;
-  padding: 10px 5px 5px 5px;
+  padding: 0;
+}
+.repository_blob .contents pre {
+  margin: 0;
+  padding: 0.5em 1em 0.5em 1em;
 }

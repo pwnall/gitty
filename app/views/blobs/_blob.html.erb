@@ -8,8 +8,8 @@
   </span>
 </p>
 
-<pre class="contents">
-<%= GitHub::Markup.render(blob_path, blob.data).html_safe %>
-</pre>
+<section class="contents">
+<%= marked_up_blob blob, blob_path %>
+</section>
 
 </div>
