@@ -33,21 +33,12 @@ gem 'configvars_rails', '>= 0.5.2'
 gem 'gravatar-ultimate', '>= 1.0.3'
 gem 'grit', :git => 'git://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
+gem 'markdpwn', '>= 0.1.2'
 gem 'net-ssh', '>= 2.3.0', :require => 'net/ssh'
-gem 'pygments.rb', '>= 0.2.4'
 gem 'rbtree', '>= 0.3.0', :platform => :mri
 gem 'rbtree-pure', '>= 0.1.1', :require => 'rbtree',
                                :platforms => [:jruby, :rbx]
-gem 'redcarpet', '>= 2.1.0'
 gem 'topological_sort', '>= 0.1.1'
-
-# Github-markup doesn't declare its dependencies, so we have to.
-gem 'github-markup', '>= 0.7.1', :require => 'github/markup'
-gem 'redcarpet', '>= 2.1.0'
-gem 'rdoc', '>= 3.12'
-gem 'org-ruby', '>= 0.6.0', :platform => :mri_18
-gem 'creole', '>= 0.4.2'
-gem 'wikicloth', '>= 0.7.1'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

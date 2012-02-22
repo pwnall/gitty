@@ -45,17 +45,15 @@ $pre-bg: $base03 !default;
 $pre-border: darken($base02, 5) !default;
 $pre-color: $base1 !default;
 
-pre {
-  background: $pre-bg;  color: $pre-color;
-}
-
 
 // Code highlighting for solarized.
 
-.highlight {
+div.markdpwn-parsed-code {
+  padding: 0.5em 0.5em;
   line-height: 1.45em;
   background: $pre-bg;
   color: $pre-color;
+  white-space: pre;
   span { color: $pre-color; }
   span { font-style: normal; font-weight: normal; }
 
