@@ -2,23 +2,45 @@ costan:
   name: costan
   display_name: Victor Costan
   display_email: john@gmail.com
+  blog: http://www.awesomeblog.com
+  company: Awesome, Inc.
+  city: Bestplaceonearth, USA
+  language: Ruby
+  about: I'm a little teapot, short and stout. Here is my handle, here is my 
+      spout.
 
 dexter:
   name: dexter
   display_name: Dexter
   display_email: jane@gmail.com
+  blog: http://www.otherawesomeblog.com
+  company: Cool, Inc.
+  city: Anytown, USA
+  language: Ruby
+  about: I'm a little teapot, short and stout. Here is my handle, here is my 
+      spout.
 
 # Team profile.
 csail:
   name: csail 
   display_name: Computer Science and AI Lab
+  company: MIT
+  city: Cambridge, MA
 
 # Team profile.
 mit:
   name: mit
   display_name: MIT
+  company: MIT
+  city: Cambridge, MA
 
 rms:
   name: rms
   display_name: Richard Stallman
   display_email: rms@mit.edu
+  blog: http://www.gnu.org
+  company: Free Software Foundation
+  city: Boston, MA
+  language: Open source ones
+  about: I'm a little teapot, short and stout. Here is my handle, here is my 
+      spout.

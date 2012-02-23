@@ -17,4 +17,11 @@ class ProfilesHelperTest < ActionView::TestCase
     assert_match Digest::MD5.hexdigest(@profile.display_email), result,
         'image tag does not contain profile e-mail hash'
   end
+      
+  test 'profile about label' do
+    profile = profiles(:costan)
+    assert profile_about_label(profile) == 'Bio'
+    profile = profiles(:csail)
+    assert profile_about_label(profile) == 'About'
+  end
 end

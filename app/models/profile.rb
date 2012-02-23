@@ -22,12 +22,28 @@ class Profile < ActiveRecord::Base
                    :uniqueness => true
   
   # The profile's long name.
-  validates :display_name, :length => 1..256, :presence => true
+  validates :display_name, :length => 1..128, :presence => true
   
   # The e-mail showed on the profile and on Gravatar.
-  validates :display_email, :length => { :in => 1..256, :allow_nil => true },
+  validates :display_email, :length => { :in => 1..128, :allow_nil => true },
       :format => { :with => /^[A-Za-z0-9.+_]+@[^@]*\.(\w+)$/,
                    :allow_nil => true }
+  
+  # The user's website or blog.
+  validates :blog, :length => { :in => 1..128, :allow_nil => true }, 
+      :format => { with: /^(http|https):\/\//, :allow_nil => true}
+      
+  # The user's company.
+  validates :company, :length => { :in => 1..128, :allow_nil => true }
+  
+  # The user's city.
+  validates :city, :length => { :in => 1..128, :allow_nil => true }
+  
+  # The user's language.
+  validates :language, :length => { :in => 1..64, :allow_nil => true }
+  
+  # The user's about page.
+  validates :about, :length => { :in => 1..8.kilobytes, :allow_nil => true }
   
   # For profiles that represent users (not groups).
   has_one :user, :inverse_of => :profile
@@ -65,6 +81,40 @@ class Profile < ActiveRecord::Base
   def display_email=(new_email)
     new_email = nil if new_email.blank?
     super new_email
+  end
+  
+  # :nodoc: normalize blank blogs to nil, add 'http://' to blogs without it
+  def blog=(new_blog)
+    if new_blog.blank?
+      new_blog = nil
+    elsif !(new_blog =~ /:\/\//)
+      new_blog = 'http://' + new_blog
+    end
+    super new_blog
+  end
+  
+  # :nodoc: normalize blank companies to nil
+  def company=(new_company)
+    new_company = nil if new_company.blank?
+    super new_company
+  end
+  
+  # :nodoc: normalize blank cities to nil
+  def city=(new_city)
+    new_city = nil if new_city.blank?
+    super new_city
+  end
+  
+  # :nodoc: normalize blank languages to nil
+  def language=(new_language)
+    new_language = nil if new_language.blank?
+    super new_language
+  end
+  
+  # :nodoc: normalize blank about pages to nil
+  def about=(new_about)
+    new_about = nil if new_about.blank?
+    super new_about
   end
 end
 

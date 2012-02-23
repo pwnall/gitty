@@ -41,7 +41,7 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /profiles/costan/edit
+  # GET /_/profiles/costan/edit
   def edit
   end
 

@@ -7,3 +7,22 @@
     </span>
   </p>
 </h2>
+<dl class="metadata">
+  <dt>Email:</dt>
+    <dd><%= profile.display_email %></dd>
+  <dt>Blog:</dt>
+    <dd><%= profile.blog %></dd>
+  <dt>Company:</dt>
+    <dd><%= profile.company %></dd>
+  <dt>City:</dt>
+    <dd><%= profile.city %></dd>      
+  <dt>Favorite Coding Language:</dt>
+    <dd><%= profile.language %></dd>
+  <dt><%= profile_about_label(profile) %>:</dt>
+    <dd><%= profile.about %></dd>
+  <dt>Date joined:</dt>
+    <dd><%= profile.created_at.strftime("%b %e, %Y") %></dd>
+</dl>
+<% if profile.can_edit?(current_user) %>
+  <%= link_to 'Edit Profile', edit_profile_path %>
+<% end %>
