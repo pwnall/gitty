@@ -25,6 +25,26 @@
     <%= f.email_field :display_email,
                       :placeholder => 'your_gravatar@something.com' %>
   </div>
+  <div class="field">
+    <%= f.label :blog %><br />
+    <%= f.text_field :blog, :placeholder => 'http://blogger.com/you' %>
+  </div>
+  <div class="field">
+    <%= f.label :company %><br />
+    <%= f.text_field :company, :placeholder => 'Awesome, Inc.' %>
+  </div>
+  <div class="field">
+    <%= f.label :city %><br />
+    <%= f.text_field :city, :placeholder => 'Anytown, USA' %>
+  </div>
+   <div class="field">
+    <%= f.label :language, 'Favorite Programming Language' %><br />
+    <%= f.text_field :language, :placeholder => 'C++' %>
+  </div>
+  <div class="field">
+    <%= f.label :about %><br />
+    <%= f.text_area :about, rows: 4 %>
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

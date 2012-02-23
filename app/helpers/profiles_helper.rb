@@ -11,4 +11,16 @@ module ProfilesHelper
     image_tag url, :alt => "gravatar for #{profile.name}",
                    :style => 'width: 40px; height: 40px;'
   end
+  
+  # Determine which label to use for :about field
+  #
+  # "About" is used for teams, and "Bio" is used for individuals
+  def profile_about_label(profile)
+    if profile.team_profile?
+      label = "About"
+    else
+      label = "Bio"
+    end
+    label
+  end
 end

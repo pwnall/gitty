@@ -6,7 +6,12 @@ class ProfileTest < ActiveSupport::TestCase
   setup do
     @profile = Profile.new :name => 'awesome',
                            :display_name => 'Awesome Profile',
-                           :display_email => 'profile@gmail.com'
+                           :display_email => 'profile@gmail.com',
+                           :blog => 'http://www.awesomeblog.com/me',
+                           :company => 'Cool Inc.',
+                           :city => 'Anytown, USA',
+                           :language => 'Favorite Coding Language',
+                           :about => 'I\'m a little teapot short and stout.'
   end
   
   test 'local_path' do
@@ -40,8 +45,33 @@ class ProfileTest < ActiveSupport::TestCase
     assert !@profile.valid?
   end
   
-  test 'display e-mail can be nil' do
-    @profile.display_email = nil
+   test 'display e-mail can be nil' do
+     @profile.display_email = nil
+     assert @profile.valid?
+   end
+  
+  test 'blog can be nil' do
+    @profile.blog = nil
+    assert @profile.valid?
+  end
+  
+  test 'company can be nil' do
+    @profile.company = nil
+    assert @profile.valid?
+  end
+  
+  test 'city can be nil' do
+    @profile.city = nil
+    assert @profile.valid?
+  end
+  
+  test 'favorite language can be nil' do
+    @profile.language = nil
+    assert @profile.valid?
+  end
+  
+  test 'about page can be nil' do
+    @profile.about = nil
     assert @profile.valid?
   end
   
@@ -55,6 +85,44 @@ class ProfileTest < ActiveSupport::TestCase
   test 'blank e-mail addresses become nil' do
     @profile.display_email = ''
     assert @profile.display_email.nil?
+  end
+  
+  test 'blank blogs become nil' do
+    @profile.blog = ''
+    assert @profile.blog.nil?
+  end
+  
+  test 'blank companies become nil' do
+    @profile.company = ''
+    assert @profile.company.nil?
+  end
+  
+  test 'blank cities become nil' do
+    @profile.city = ''
+    assert @profile.city.nil?
+  end
+  
+  test 'blank languages become nil' do
+    @profile.language = ''
+    assert @profile.language.nil?
+  end
+  
+  test 'blank about pages become nil' do
+    @profile.about = ''
+    assert @profile.about.nil?
+  end
+  
+  test 'no messed up blog addresses' do
+    ['htp://web.lol.coooom', 'javascript://alert()'].each do |blog|
+      @profile.blog = blog
+      assert !@profile.valid?, "Blog #{blog} failed"
+    end
+    
+    ['blogwohttp.com', 'www.noerror.com'].each do |blog|
+      @profile.blog = blog
+      assert @profile.blog == "http://#{blog}", 
+          "Blog http://#{blog} != #{@profile.blog}"
+    end
   end
   
   test 'model-directory lifetime sync' do
