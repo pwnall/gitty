@@ -7,12 +7,38 @@ class ProfilesControllerTest < ActionController::TestCase
     @profile = profiles(:costan)
     @session_user = profiles(:costan).user
     set_session_current_user @session_user
+    admin = users(:jane)
+
+    User.class_eval do
+      (class <<self; self; end).class_eval do      
+        alias_method :real_can_list_users?, :can_list_users?
+        define_method :can_list_users? do |user|
+          user == admin
+        end
+      end
+    end
+  end
+
+  teardown do
+    User.class_eval do
+      (class <<self; self; end).class_eval do
+        undef can_list_users?
+        alias_method :can_list_users?, :real_can_list_users?
+        undef real_can_list_users?
+      end
+    end    
   end
 
   test "should get index" do
+    set_session_current_user users(:jane)
     get :index
     assert_response :success
     assert_not_nil assigns(:profiles)
+  end
+
+  test "random users should not be able to list accounts" do
+    get :index
+    assert_response :forbidden
   end
 
   test "should get new" do

@@ -8,8 +8,15 @@ class ProfilesController < ApplicationController
   before_filter :current_user_can_edit_profile,
       :except => [:new, :create, :index, :show]
   
-  # GET /profiles
-  # GET /profiles.xml
+  # before_filter that validates the current user's ability to list accounts  
+  def current_user_can_list_profiles
+    bounce_user unless User.can_list_users? current_user
+  end
+  private :current_user_can_list_profiles
+  before_filter :current_user_can_list_profiles, :only => [:index]
+  
+  # GET /_/profiles
+  # GET /_/profiles.xml
   def index
     @profiles = Profile.all
 
@@ -19,8 +26,8 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /profiles/costan
-  # GET /profiles/costan.xml
+  # GET /costan
+  # GET /costan.xml
   def show
     @profile = Profile.where(:name => params[:profile_name]).first
 
@@ -30,8 +37,8 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # GET /profiles/new
-  # GET /profiles/new.xml
+  # GET /_/profiles/new
+  # GET /_/profiles/new.xml
   def new
     @profile = Profile.new
 
@@ -45,8 +52,8 @@ class ProfilesController < ApplicationController
   def edit
   end
 
-  # POST /profiles
-  # POST /profiles.xml
+  # POST /_/profiles
+  # POST /_/profiles.xml
   def create
     @profile = Profile.new(params[:profile])
 
@@ -69,8 +76,8 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # PUT /profiles/costan
-  # PUT /profiles/costan.xml
+  # PUT /costan
+  # PUT /costan.xml
   def update
     respond_to do |format|
       if @profile.update_attributes(params[:profile])
@@ -84,8 +91,8 @@ class ProfilesController < ApplicationController
     end
   end
 
-  # DELETE /profiles/costan
-  # DELETE /profiles/costan.xml
+  # DELETE /costan
+  # DELETE /costan.xml
   def destroy
     @profile.destroy
 
