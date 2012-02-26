@@ -51,6 +51,8 @@ class ProfilesControllerTest < ActionController::TestCase
   test "should show profile" do
     get :show, :profile_name => @profile.to_param
     assert_response :success
+    
+    assert_select %Q|a[href*="#{edit_profile_path(@profile)}"]|
   end
   
   test "should show a user profile's teams" do 
@@ -63,6 +65,14 @@ class ProfilesControllerTest < ActionController::TestCase
       assert_select 'li:nth-child(1)', 'csail'
       assert_select 'li:nth-child(2)', 'mit'
     end
+  end
+
+  test "should not show the edit profile link when nobody is logged in" do 
+    set_session_current_user nil
+    get :show, :profile_name => @profile.to_param
+    assert_response :success
+    assert_equal @profile, assigns(:profile)
+    assert_select %Q|a[href*="#{edit_profile_path(@profile)}"]|, 0
   end
 
   test "should get edit" do

@@ -12,11 +12,12 @@ class GitPushTest < ActionDispatch::IntegrationTest
 
     # NOTE: starting Rails first, so it has time to boot.
     @webapp_pid_file = @temp_dir.join 'webapp.pid'
+    @webapp_log_file = @temp_dir.join 'thin.log'
     Kernel.system 'bundle', 'exec', 'thin', 'start', '--daemonize',
                   '--environment', 'test',
                   '--port', ConfigVar['app_uri'].split(':').last[0...-1],
                   '--pid', @webapp_pid_file.to_s,
-                  '--log', @temp_dir.join('thin.log').to_s
+                  '--log', @webapp_log_file.to_s
 
     @user_scripts_path = Rails.root.join 'script', 'git_user'
     setup_script = @user_scripts_path.join('setup').to_s
@@ -54,7 +55,10 @@ END_SHELL
         Net::HTTP.get URI.parse(ConfigVar['app_uri'])
         break
       rescue Exception => e
-        raise if Time.now >= deadline
+        if Time.now >= deadline
+          log = File.read @webapp_log_file
+          raise "Web server failed to start! Log:\n#{log}\n"
+        end
         sleep 0.1
       end
     end
