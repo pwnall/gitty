@@ -5,22 +5,30 @@
   <style type="text/css">
     body { background-color: #fff; color: #666; text-align: center; font-family: arial, sans-serif; }
     div.dialog {
-      width: 25em;
-      padding: 0 4em;
-      margin: 4em auto 0 auto;
-      border: 1px solid #ccc;
-      border-right-color: #999;
-      border-bottom-color: #999;
+      padding: 0;
+      margin: 1em auto 0 auto;
     }
     h1 { font-size: 100%; color: #f00; line-height: 1.5em; }
+    img {
+      width: 1011px;
+      height: 648px;
+      display: inline-block;
+      padding: 2em 0 1em 0;
+    }
   </style>
 </head>
 
 <body>
-  <!-- This file lives in public/500.html -->
   <div class="dialog">
     <h1>We're sorry, but something went wrong.</h1>
-    <p>We've been notified about this issue and we'll take a look at it shortly.</p>
+    <figure>
+      <img src="/_static_images/500.png" style="width: 674px; height: 432px;" alt="" />
+      <figcaption>
+        Please file a bug on the
+        <a href="https://github.com/pwnall/gitty/issues">issue tracker</a>
+        and we'll take a look at it shortly.
+      </figcaption>
+    </figure>
   </div>
 </body>
 </html>
