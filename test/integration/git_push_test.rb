@@ -49,7 +49,7 @@ END_SHELL
     @fixture_repo_path = Rails.root.join 'test', 'fixtures', 'repo.git'
 
     # Wait until the Rails server has booted.
-    deadline = Time.now + 10.seconds
+    deadline = Time.now + 30.seconds
     loop do
       begin
         Net::HTTP.get URI.parse(ConfigVar['app_uri'])
