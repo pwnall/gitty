@@ -6,6 +6,7 @@ gem 'rails', '>= 3.2.2.rc1'
 # gem 'rails', :git => 'git://github.com/rails/rails.git',
 #              :branch => '3-0-stable'
 gem 'mysql2', '>= 0.3.11'
+gem 'sqlite3', '>= 1.3.5'
 
 # Gems used only for assets and not required
 # in production environments by default.

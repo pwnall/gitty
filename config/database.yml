@@ -10,6 +10,11 @@ dev_mysql: &dev_mysql
   username: root
   password: 
 
+dev_sqlite: &dev_sqlite
+  adapter: sqlite3
+  database: db/development.sqlite3
+  timeout: 5000
+
 test_pgsql: &test_pgsql
   adapter: postgresql
   database: gitty_test
@@ -21,6 +26,11 @@ test_mysql: &test_mysql
   database: gitty_test
   username: root
   password:
+
+test_sqlite: &test_sqlite
+  adapter: sqlite3
+  database: db/test.sqlite3
+  timeout: 5000
   
 # use *dev_pgsql or *dev_mysql, depending on which db engine you want
 development:
