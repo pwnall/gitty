@@ -27,6 +27,9 @@ sudo apt-get install -y git libmysqlclient-dev libssl-dev mysql-client mysql-ser
     
 On OSX, go to System Preferences > Sharing, check the Remote Login option.
 
+Gitty uses [markdpwn](https://github.com/pwnall/markdpwn) for source code
+highlighting, which has its own dependencies.
+
 
 ## Installation
 
