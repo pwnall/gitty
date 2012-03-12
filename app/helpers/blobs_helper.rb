@@ -15,7 +15,11 @@ module BlobsHelper
   
   # HTML representation of a blob contents.
   def marked_up_blob(blob, blob_path)
-    Markdpwn.markup(blob.data, :file_name => blob_path,
-                               :mime_type => blob.mime_type).html_safe
+    if ConfigVar['markdpwn'] == 'enabled'
+      Markdpwn.markup(blob.data, :file_name => blob_path,
+                                 :mime_type => blob.mime_type).html_safe
+    else
+      content_tag :div, html_escape(blob.data), :class => 'markdpwn-off-code'
+    end
   end
 end

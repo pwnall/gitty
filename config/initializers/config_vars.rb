@@ -14,3 +14,4 @@ end
 ConfigVars.string 'git_user', 'git'
 ConfigVars.string('ssh_host') { Socket.gethostname }
 ConfigVars.string('admin_email') { 'admin@' + Socket.gethostname }
+ConfigVars.string 'markdpwn', 'enabled'
