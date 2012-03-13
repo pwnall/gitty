@@ -82,6 +82,14 @@ class ProfileTest < ActiveSupport::TestCase
     end
   end
   
+  test 'email addresses with certain characters ok' do
+    ['profile-dev@gmail.com', 'profile_dev@gmail.com', 
+          'profile.dev@gmail.com'].each do |email|
+      @profile.display_email = email
+      assert @profile.valid?
+    end
+  end
+  
   test 'blank e-mail addresses become nil' do
     @profile.display_email = ''
     assert @profile.display_email.nil?
