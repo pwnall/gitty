@@ -57,9 +57,9 @@ configuration variable git_user by going to
 ```bash
 http://gitty_server/_/config_vars
 ```
-
-You should probably visit the configuration variables page anyway, to change the
-admin password and the address used to send e-mails.
+The admin username and password are config and vars, respectively. You should 
+probably visit the configuration variables page anyway, to change the admin
+login and the address used to send e-mails.
 
 ```bash
 http://gitty_server/_/config_vars

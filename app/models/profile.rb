@@ -26,7 +26,7 @@ class Profile < ActiveRecord::Base
   
   # The e-mail showed on the profile and on Gravatar.
   validates :display_email, :length => { :in => 1..128, :allow_nil => true },
-      :format => { :with => /^[A-Za-z0-9.+_]+@[^@]*\.(\w+)$/,
+      :format => { :with => /^[A-Za-z0-9.+_-]+@[^@]*\.(\w+)$/,
                    :allow_nil => true }
   
   # The user's website or blog.
