@@ -12,6 +12,7 @@
 # It's strongly recommended to check this file into your version control system.
 
 ActiveRecord::Schema.define(:version => 20120304034951) do
+
   create_table "acl_entries", :force => true do |t|
     t.string   "role",           :null => false
     t.integer  "subject_id",     :null => false
