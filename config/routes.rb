@@ -1,4 +1,5 @@
 Gitty::Application.routes.draw do
+
   scope '_' do
     authpwn_session
     config_vars
@@ -109,7 +110,20 @@ Gitty::Application.routes.draw do
       get '*path' => 'blobs#raw', :as => :raw_profile_repository_blob,
                                   :format => false
     end
-    
+
+    # Issues
+    resources :issues, :only => [:create, :new]
+    get 'issues' => 'issues#index', :as => :profile_repository_issues
+    #get 'issues/new' => 'issues#new', :as => :new_profile_repository_issue
+    #new_profile_repository_issue_path(
+                             #params[:profile_name],
+                             #params[:repo_name]), :action => 'new' %>
+    get 'issues/:id' => 'issues#show', :as => :profile_repository_issue
+    get 'issues/:id/edit(.:format)' => 'issues#edit', 
+        :as => :edit_profile_repository_issue
+    put 'issues/:id' => 'issues#update'
+    delete 'issues/:id' => 'issues#destroy'
+        
     # Admin.
     get 'edit' => 'repositories#edit', :as => :edit_profile_repository
     
