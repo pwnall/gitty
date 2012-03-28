@@ -57,6 +57,27 @@ class UsersControllerTest < ActionController::TestCase
     assert_redirected_to new_session_path
   end
 
+  test "should create user when email checking is disabled" do
+    ConfigVar['signup.email_check'] = 'disabled'
+    ActionMailer::Base.deliveries = []
+    attributes = { :email => 'john2@gmail.com', :password => 'passw0rd',
+                   :password_confirmation => 'passw0rd'}
+    assert_difference 'User.count' do
+      assert_no_difference 'Credentials::Token.count',
+                           'No e-mail verification token' do
+        post :create, :user => attributes
+      end
+    end
+
+    assert_equal session_current_user, assigns(:user),
+           'The new user should be logged on'
+    assert assigns(:user).email_credential.verified?,
+           "The new user's e-mail should be verified"
+    assert ActionMailer::Base.deliveries.empty?,
+           "No verification e-mail"
+    assert_redirected_to root_url
+  end
+
   test "should show user" do
     set_session_current_user users(:john)
     get :show, :user_param => @user.to_param

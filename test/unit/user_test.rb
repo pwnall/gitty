@@ -14,6 +14,20 @@ class UserTest < ActiveSupport::TestCase
     assert_equal 'john@gmail.com', users(:john).name
   end
   
+  test 'admin set to false by default' do
+    assert_equal false, @user.admin?
+  end
+
+  test 'admin=true is valid' do
+    @user.admin = true
+    assert @user.valid?
+  end
+  
+  test 'admin cannot be nil' do
+    @user.admin = nil
+    assert !@user.valid?
+  end  
+  
   test 'find_by_name' do
     assert_equal users(:john), User.find_by_name(users(:john).name), 'by email'
     assert_equal users(:john), User.find_by_name(users(:john).profile.name),

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101212042214) do
+ActiveRecord::Schema.define(:version => 20120328051521) do
 
   create_table "acl_entries", :force => true do |t|
     t.string   "role",           :null => false
@@ -206,10 +206,11 @@ ActiveRecord::Schema.define(:version => 20101212042214) do
   add_index "trees", ["repository_id", "gitid"], :name => "index_trees_on_repository_id_and_gitid", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "exuid",      :limit => 32, :null => false
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
+    t.string   "exuid",      :limit => 32,                    :null => false
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
     t.integer  "profile_id"
+    t.boolean  "admin",                    :default => false, :null => false
   end
 
   add_index "users", ["exuid"], :name => "index_users_on_exuid", :unique => true
