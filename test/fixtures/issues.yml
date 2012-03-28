@@ -1,0 +1,15 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  profile_id: 1
+  repository_id: 1
+  open: false
+  title: MyString
+  description: MyText
+
+two:
+  profile_id: 1
+  repository_id: 1
+  open: false
+  title: MyString
+  description: MyText

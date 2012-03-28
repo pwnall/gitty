@@ -1,0 +1,39 @@
+<table>
+  <tr>
+    <th>Profile</th>
+    <th>Repository</th>
+    <th>Open</th>
+    <th>Title</th>
+    <th>Description</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+<% Rails.logger.debug "*****Issues: #{issues}"%>
+<% issues.each do |issue| %>
+  <% if issue.open %>
+    <tr>
+      <td><%= issue.profile_id %></td>
+      <td><%= issue.repository_id %></td>
+      <td><%= issue.open %></td>
+      <td><%= issue.title %></td>
+      <td><%= issue.description %></td>
+      <td><%= link_to 'Show', profile_repository_issue_path(
+                                    params[:profile_name],
+                                    params[:repo_name], issue) %></td>
+      <% Rails.logger.debug "*****Issue Class: #{issue.class}"%>
+      <% Rails.logger.debug "*****Issue Nil: #{issue.nil?}"%>
+      <% if issue.can_edit? current_user %>
+      <td><%= link_to 'Edit', profile_repository_issue_path(
+                                    params[:profile_name],
+                                    params[:repo_name], issue) %></td>
+      <td><%= link_to 'Destroy', profile_repository_issue_path(
+                                    params[:profile_name],
+                                    params[:repo_name], issue), 
+                                    confirm: 'Are you sure?', 
+                                    method: :delete %></td>
+      <% end %>
+    </tr>
+  <% end %>
+<% end %>
+</table>
