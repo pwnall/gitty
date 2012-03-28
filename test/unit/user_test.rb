@@ -26,7 +26,26 @@ class UserTest < ActiveSupport::TestCase
   test 'admin cannot be nil' do
     @user.admin = nil
     assert !@user.valid?
-  end  
+  end
+  
+  test 'can_read?' do
+    assert users(:john).can_read?(users(:john)), 'same user'
+    assert !users(:john).can_read?(users(:jane)), 'different users'
+    assert !users(:john).can_read?(nil), 'no user signed in'
+  end
+
+  test 'can_edit?' do
+    assert users(:john).can_edit?(users(:john)), 'same user'
+    assert !users(:john).can_edit?(users(:jane)), 'different users'
+    assert !users(:john).can_edit?(nil), 'no user signed in'
+  end
+
+  test 'can_list_users?' do
+    users(:jane).admin = true
+    assert Users.can_list_users?(users(:jane)), 'admin'
+    assert !Users.can_list_users?(users(:john)), 'non-admin'
+    assert !Users.can_list_users?(users(:john)), 'no user signed in'
+  end
   
   test 'find_by_name' do
     assert_equal users(:john), User.find_by_name(users(:john).name), 'by email'

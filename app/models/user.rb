@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
   
   # True if the given user can list the user account database.
   def self.can_list_users?(user)
-    user.admin?
+    user && user.admin?
   end
   
   # Flag set for site administrators.
