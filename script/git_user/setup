@@ -3,6 +3,7 @@
 
 require 'etc'
 require 'fileutils'
+require 'pathname'
 
 
 # Parameter processing.
@@ -107,4 +108,23 @@ FileUtils.chmod 04750, install_keys
 # SELinux needs a home directory fixup.
 if `which restorecon 2>&1`[0] == ?/
   Kernel.system "restorecon -R #{git_home}"
+end
+
+# Fedora makes homedirs 700, so the git user can't read the app directory.
+Pathname.new(File.dirname(__FILE__)).descend do |dir|
+  dir_stat = dir.stat
+  next if dir_stat.mode & 0005 == 0005  # o+rx
+  if dir_stat.mode & 0050 == 0050 && dir_stat.gid == web_group_id
+    next  # g+rx and group matches
+  end
+  
+  # git can't read this directory, so we must change its permissions.
+  if dir_stat.gid == web_group_id  
+    # The directory's group matches, so fix group permissions
+    dir.chmod dir.stat.mode | 0050
+    next
+  end
+  
+  # Last resort: fix "other" permissions
+  dir.chmod dir.stat.mode | 0005
 end
