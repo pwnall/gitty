@@ -12,8 +12,9 @@ class Profile < ActiveRecord::Base
                                  :dependent => :destroy,
                                  :inverse_of => :principal
                                  
-  # Issues
-  has_many :issues, :inverse_of => :profile, :dependent => :destroy
+  # The issues opened by the user behind this profile.
+  has_many :issues, :inverse_of => :author, :foreign_key => 'author_id',
+                    :dependent => :destroy
   
   # The ACL entries shown in the ACL editing UI.
   def acl_entries
