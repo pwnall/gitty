@@ -51,4 +51,22 @@ class IssueTest < ActiveSupport::TestCase
     @issue.open = false
     assert @issue.valid?
   end
+  
+  test 'users can edit their own issues' do
+    assert @issue.can_edit?(users(:jane))
+  end
+  
+  test "users can edit their repositories' issues" do
+    assert @issue.can_edit?(users(:john))
+  end
+
+  test "users can't edit random issues" do
+    assert !@issue.can_edit?(users(:rms))
+  end
+  
+  test "non logged-in users can't edit issues" do
+    assert !@issue.can_edit?(nil)
+  end
+
+  # TODO(christy13): publishing tests
 end

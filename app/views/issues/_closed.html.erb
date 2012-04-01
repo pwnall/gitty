@@ -13,8 +13,8 @@
 <% issues.each do |issue| %>
   <% if !issue.open %>
     <tr>
-      <td><%= issue.profile_id %></td>
-      <td><%= issue.repository_id %></td>
+      <td><%= issue.author.name %></td>
+      <td><%= issue.repository.name %></td>
       <td><%= issue.open %></td>
       <td><%= issue.title %></td>
       <td><%= issue.description %></td>

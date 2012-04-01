@@ -2,8 +2,7 @@
 
 <%= render 'form' %>
 
-<%= link_to 'Show', profile_repository_issue_path(params[:repo_name], 
-                                                  params[:profile_name],
-                                                  @issue) %> |
-<%= link_to 'Back', profile_repository_issues_path(params[:repo_name], 
-                                                   params[:profile_name]) %>
+<%= link_to 'Show', profile_repository_issue_path(@issue.repository.profile, 
+                                                  @issue.repository, @issue) %> |
+<%= link_to 'Back', profile_repository_issues_path(@issue.repository.profile, 
+                                                   @issue.repository) %>
