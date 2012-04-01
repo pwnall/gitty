@@ -26,7 +26,11 @@ class IssuesController < ApplicationController
   # GET /issues/new
   # GET /issues/new.json
   def new
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+
     @issue = Issue.new
+    @issue.repository = @repository
 
     respond_to do |format|
       format.html # new.html.erb
@@ -42,27 +46,18 @@ class IssuesController < ApplicationController
   # POST /issues
   # POST /issues.json
   def create
+    @author = current_user.profile
     @profile = Profile.where(:name => params[:profile_name]).first
     @repository = @profile.repositories.where(:name => params[:repo_name]).first
-    # @issue = @profile.issues.build(params[:issue])
-    # @issue.repository_id = @repository
-    # Rails.logger.debug "Issue: #{@issue.inspect}"
-    # @repository.issues << @issue
-    # @issue = Issue.new(params[:issue])
-    @issue = Issue.new(params[:issue])
-    Rails.logger.debug "Profile: #{@profile.inspect}"
-    Rails.logger.debug "Issue: #{@issue.inspect}"
+    
+    @issue = Issue.new params[:issue]
     @issue.repository = @repository
-    @issue.profile = @profile
-    @profile.issues << @issue
-    @repository.issues << @issue
-    Rails.logger.debug "Issue: #{@issue.inspect}"
-    # Rails.logger.debug "Profile, repo: #{@profile.inspect}, #{@repository.inspect}"
+    @issue.author = @author
 
     respond_to do |format|
       if @issue.save
-        @issue.publish_creation @profile
-        FeedSubscription.add @profile, @issue
+        @issue.publish_creation
+        FeedSubscription.add @author, @issue
         
         format.html { redirect_to profile_repository_issues_path(@profile, 
             @repository),

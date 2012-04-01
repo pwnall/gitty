@@ -21,12 +21,10 @@ end
 
 # :nodoc: access control
 class Issue
-  # TODO(christy13): Verify this is the logic desired
-  def can_edit?(author_profile)
-    @repository.can_edit?(author_profile) or @profile == author_profile
+  def can_edit?(user)
+    repository.can_edit?(user) || (user && user.profile == author)
   end
 end
-
 
 # :nodoc: activity feed integration
 class Issue  
@@ -52,20 +50,22 @@ class Issue
                              :inverse_of => :topic
 
   # Updates feeds to reflect that this issue was created.
-  def publish_creation(author_profile)
+  def publish_creation
     # Duplicating the profile and issue title because the issue record
     # can be deleted.
-    FeedItem.publish author_profile, 'new_issue', self, [author_profile,
-        self.profile, self], { :profile_name => profile.name,
-                               :repo_name => self.repository,
-                               :issue_title => self.title }
+    FeedItem.publish author, 'new_issue', self, [author, repository,
+        repository.profile, self], { :profile_name => repository.profile.name,
+                                     :repo_name => repository.name,
+                                     :author_name => author.name,
+                                     :issue_title => title }
   end
   
   # Updates feeds to reflect that this issue was destroyed.
   def publish_deletion(author_profile)
     FeedItem.publish author_profile, 'del_issue', self, [author_profile,
-        self.profile], { :profile_name => profile.name,
-                         :repo_name => self.repository,
-                         :issue_title => self.title }
+        repository, repository.profile, self],
+        { :profile_name => repository.profile.name,
+          :repo_name => repository.name, :author_name => author.name,
+          :issue_title => title }
   end
 end

@@ -1,13 +1,13 @@
 <p id="notice"><%= notice %></p>
 
 <p>
-  <b>Profile:</b>
-  <%= @issue.profile_id %>
+  <b>Author:</b>
+  <%= @issue.author.name %>
 </p>
 
 <p>
   <b>Repository:</b>
-  <%= @issue.repository_id %>
+  <%= @issue.repository.name %>
 </p>
 
 <p>
@@ -26,8 +26,7 @@
 </p>
 
 
-<%= link_to 'Edit', edit_profile_repository_issue_path(params[:repo_name], 
-                                                  params[:profile_name],
-                                                  @issue) %> |
-<%= link_to 'Back', profile_repository_issues_path(params[:repo_name], 
-                                                  params[:profile_name]) %>
+<%= link_to 'Edit', edit_profile_repository_issue_path(
+      @issue.repository.profile, @issue.repository, @issue) %> |
+<%= link_to 'Back', profile_repository_issues_path(@issue.repository.profile,
+                                                   @issue.repository) %>
