@@ -34,6 +34,17 @@ class BlobsHelperTest < ActionView::TestCase
     html = marked_up_blob @blob, '/d1/d2/a'
     assert html.html_safe?, 'output not marked as html_safe'
     assert_match /<div class="markdpwn-parsed-code">/, html
+    assert_no_match /<div class="markdpwn-off-code">/, html
+    assert_match "Version 1", html
+  end
+
+  test 'marked_up_blob with markdpwn=disabled' do
+    mock_repository_path @blob.repository
+    ConfigVar['markdpwn'] = 'disabled'
+    html = marked_up_blob @blob, '/d1/d2/a'
+    assert html.html_safe?, 'output not marked as html_safe'
+    assert_match /<div class="markdpwn-off-code">/, html
+    assert_no_match /<div class="markdpwn-parsed-code">/, html
     assert_match "Version 1", html
   end
 end

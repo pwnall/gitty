@@ -1,15 +1,6 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
-
-one:
-  profile_id: 1
-  repository_id: 1
-  open: false
-  title: MyString
-  description: MyText
-
-two:
-  profile_id: 1
-  repository_id: 1
-  open: false
-  title: MyString
-  description: MyText
+costan_ghost_translated:
+  author: dexter
+  repository: costan_ghost
+  open: true
+  title: Missing translation
+  description: The text files in this project are English-only. It would be nice if they had translations.

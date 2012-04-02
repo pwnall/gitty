@@ -78,7 +78,7 @@ END_SHELL
 
   test "initial repository push and delete" do
     Dir.chdir @temp_dir do      
-      assert Kernel.system('git init'), 'Failed to initialize repository'
+      assert Kernel.system('git init -q'), 'Failed to initialize repository'
       assert Kernel.system("git remote add origin #{@win_repository.ssh_uri}"),
              'Failed to add remote'
       add_commit_push
@@ -95,7 +95,7 @@ END_SHELL
     
     
     Dir.chdir @temp_dir do
-      assert Kernel.system("git clone #{@win_repository.ssh_uri}"),
+      assert Kernel.system("git clone -q #{@win_repository.ssh_uri}"),
              'Failed to clone repository'
       FileUtils.cp 'git-ssh.sh', 'rwin'
       Dir.chdir 'rwin' do
@@ -116,11 +116,11 @@ END_SHELL
 
   def add_commit_push
     assert Kernel.system('git add .'), 'Failed to add initial content'
-    assert Kernel.system('git commit -a -m "Integration test commit"'),
+    assert Kernel.system('git commit -a -q -m "Integration test commit"'),
            'Failed to make test commit'
     assert Kernel.system('git tag -m "Integration test tag" integration'),
            'Failed to make test tag'
-    assert Kernel.system('git push --tags origin master'),
+    assert Kernel.system('git push -q --tags origin master'),
            'Git push failed'
   end
 end

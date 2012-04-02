@@ -30,7 +30,7 @@ class Repository < ActiveRecord::Base
   has_many :acl_entries, :as => :subject, :dependent => :destroy,
                          :inverse_of => :subject
                          
-  # Issues                         
+  # The issues created against this repository.
   has_many :issues, :inverse_of => :repository, :dependent => :destroy
   
   # The repository name.

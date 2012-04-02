@@ -48,12 +48,15 @@ $pre-color: $base1 !default;
 
 // Code highlighting for solarized.
 
-div.markdpwn-parsed-code {
+div.markdpwn-off-code, div.markdpwn-parsed-code {
   padding: 0.5em 0.5em;
   line-height: 1.45em;
   background: $pre-bg;
   color: $pre-color;
   white-space: pre;
+}
+
+div.markdpwn-parsed-code {
   span { color: $pre-color; }
   span { font-style: normal; font-weight: normal; }
 

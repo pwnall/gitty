@@ -1,4 +1,4 @@
-<%= form_for @issue do |f| %>
+<%= form_for [@issue.repository.profile, @issue.repository, @issue] do |f| %>
   <% if @issue.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(@issue.errors.count, "error") %> prohibited this issue from being saved:</h2>
