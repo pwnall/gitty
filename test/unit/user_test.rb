@@ -42,9 +42,9 @@ class UserTest < ActiveSupport::TestCase
 
   test 'can_list_users?' do
     users(:jane).admin = true
-    assert Users.can_list_users?(users(:jane)), 'admin'
-    assert !Users.can_list_users?(users(:john)), 'non-admin'
-    assert !Users.can_list_users?(users(:john)), 'no user signed in'
+    assert User.can_list_users?(users(:jane)), 'admin'
+    assert !User.can_list_users?(users(:john)), 'non-admin'
+    assert !User.can_list_users?(users(:john)), 'no user signed in'
   end
   
   test 'find_by_name' do
