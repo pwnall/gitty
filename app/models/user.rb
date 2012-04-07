@@ -21,8 +21,11 @@ class User < ActiveRecord::Base
   
   # True if the given user can list the user account database.
   def self.can_list_users?(user)
-    false
+    user && user.admin?
   end
+  
+  # Flag set for site administrators.
+  validates :admin, :inclusion => { :in => [true, false], :allow_nil => false }
   
   # The profile representing this user.
   belongs_to :profile, :inverse_of => :user

@@ -1,6 +1,8 @@
 class AddUserProfiles < ActiveRecord::Migration
   def change
-    add_column :users, :profile_id, :integer, :null => true
+    change_table :users do |t|
+      t.references :profile, :null => true
+    end
     add_index :users, :profile_id, :unique => true, :null => true
   end
 end

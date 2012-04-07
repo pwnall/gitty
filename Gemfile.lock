@@ -200,7 +200,7 @@ DEPENDENCIES
   mysql2 (>= 0.3.11)
   net-ssh (>= 2.3.0)
   railroady (>= 0.4.5)
-  rails (>= 3.2.2.rc1)
+  rails (>= 3.2.2)
   rbtree (>= 0.3.0)
   rbtree-pure (>= 0.1.1)
   sass-rails (>= 3.2.3)
