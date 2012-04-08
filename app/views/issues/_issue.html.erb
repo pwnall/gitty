@@ -1,0 +1,34 @@
+<div class="repository_issue">
+  <dl class="edges">
+    <% if issue.open %>
+      <div class="issue_status open_issue">Open
+    <% else %>
+      <div class="issue_status closed_issue">Closed
+    <% end %>
+    </div>
+    <%= link_to 'Show', profile_repository_issue_path(
+                                issue.repository.profile,
+                                issue.repository, issue) %>
+    <% if issue.can_edit? current_user %>
+      <%= link_to 'Edit', profile_repository_issue_path(
+                                issue.repository.profile,
+                                issue.repository, issue) %>
+      <%= link_to 'Destroy', profile_repository_issue_path(
+                                issue.repository.profile,
+                                issue.repository, issue), 
+                                confirm: 'Are you sure?', 
+                                method: :delete %>
+    <% end %>
+  </dl>
+  <div class="metadata">
+    <p class="title">
+      <%= issue.title %>
+    </p>
+    <p class="author">
+      by <%= issue.author.name %>
+    </p>
+    <p class="time">
+      <%= distance_of_time_in_words_to_now issue.created_at %> ago
+    </p>
+  </div>
+</div>

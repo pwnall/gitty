@@ -96,6 +96,26 @@
     <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
     <% end %>  
   </div>
+  
+<% when 'new_issue' %>
+  <% Rails.logger.debug "*** Feed item data: #{feed_item.data}" %>
+  created <%= link_to feed_item.data[:issue_title], 
+                  profile_repository_issue_path(feed_item.data[:profile_name],
+                  feed_item.data[:repo_name]) %> in 
+  <% if repository = feed_item.target_repository %>
+  <%= link_to_repository feed_item.target_repository %>
+  <% else %>
+  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+  <% end %> 
+  </div>
+<% when 'del_issue' %>
+  deleted <%= feed_item.data[:issue_title] %> in 
+  <% if repository = feed_item.target_repository %>
+  <%= link_to_repository feed_item.target_repository %>
+  <% else %>
+  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+  <% end %> 
+  </div>
 <% else %>
   <% raise "Unimplemented verb #{feed_item.verb}"%>
 <% end %>

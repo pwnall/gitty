@@ -11,6 +11,10 @@ class Profile < ActiveRecord::Base
   has_many :profile_acl_entries, :class_name => "AclEntry", :as => :principal, 
                                  :dependent => :destroy,
                                  :inverse_of => :principal
+                                 
+  # The issues opened by the user behind this profile.
+  has_many :issues, :inverse_of => :author, :foreign_key => 'author_id',
+                    :dependent => :destroy
   
   # The ACL entries shown in the ACL editing UI.
   def acl_entries

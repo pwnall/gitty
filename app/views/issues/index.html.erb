@@ -1,0 +1,11 @@
+<h1>Listing issues</h1>
+
+<h2>Open Issues</h2>
+<%= render 'open', :issues => @issues %>
+
+<h2>Closed Issues</h2>
+<%= render 'closed', :issues => @issues %>
+
+<br />
+
+<%= link_to 'New Issue', new_issue_path %>

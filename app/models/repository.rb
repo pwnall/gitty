@@ -29,6 +29,9 @@ class Repository < ActiveRecord::Base
   # This repository's ACL. All entries have Profiles as principals.
   has_many :acl_entries, :as => :subject, :dependent => :destroy,
                          :inverse_of => :subject
+                         
+  # The issues created against this repository.
+  has_many :issues, :inverse_of => :repository, :dependent => :destroy
   
   # The repository name.
   validates :name, :length => 1..64, :format => /\A\w([\w.-]*\w)?\Z/,

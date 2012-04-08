@@ -138,6 +138,19 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
   add_index "feed_subscriptions", ["profile_id", "topic_id", "topic_type"], :name => "index_feed_subscriptions_on_profile_topic", :unique => true
   add_index "feed_subscriptions", ["topic_id", "topic_type", "profile_id"], :name => "index_feed_subscriptions_on_topic_profile", :unique => true
 
+  create_table "issues", :force => true do |t|
+    t.integer  "repository_id",                   :null => false
+    t.integer  "author_id",                       :null => false
+    t.boolean  "open",          :default => true, :null => false
+    t.string   "title",                           :null => false
+    t.text     "description",                     :null => false
+    t.datetime "created_at",                      :null => false
+    t.datetime "updated_at",                      :null => false
+  end
+
+  add_index "issues", ["author_id", "open"], :name => "index_issues_on_author_id_and_open"
+  add_index "issues", ["repository_id", "open"], :name => "index_issues_on_repository_id_and_open"
+
   create_table "profiles", :force => true do |t|
     t.string   "name",          :limit => 32,  :null => false
     t.string   "display_name",  :limit => 128, :null => false

@@ -1,0 +1,8 @@
+<h1>Editing issue</h1>
+
+<%= render 'form' %>
+
+<%= link_to 'Show', profile_repository_issue_path(@issue.repository.profile, 
+                                                  @issue.repository, @issue) %> |
+<%= link_to 'Back', profile_repository_issues_path(@issue.repository.profile, 
+                                                   @issue.repository) %>

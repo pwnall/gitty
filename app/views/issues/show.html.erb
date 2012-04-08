@@ -1,0 +1,31 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Author:</b>
+  <%= @issue.author.name %>
+</p>
+
+<p>
+  <b>Repository:</b>
+  <%= @issue.repository.name %>
+</p>
+
+<p>
+  <b>Open:</b>
+  <%= @issue.open %>
+</p>
+
+<p>
+  <b>Title:</b>
+  <%= @issue.title %>
+</p>
+
+<p>
+  <b>Description:</b>
+  <%= @issue.description %>
+</p>
+
+<%= link_to 'Edit', edit_profile_repository_issue_path(
+      @issue.repository.profile, @issue.repository, @issue) %> |
+<%= link_to 'Back', profile_repository_issues_path(@issue.repository.profile,
+                                                   @issue.repository) %>
