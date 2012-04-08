@@ -68,5 +68,41 @@ class IssueTest < ActiveSupport::TestCase
     assert !@issue.can_edit?(nil)
   end
 
-  # TODO(christy13): publishing tests
+  # Publishing tests
+  test 'publish_open_issue from issue' do
+    item = nil
+    assert_difference 'FeedItem.count' do
+      item = @issue.publish_opening
+    end
+    assert_equal @issue.author, item.author
+    assert_equal 'open_issue', item.verb
+    assert_equal @issue, item.target
+    assert_equal 'Crashes on OSX', item.data[:issue_title]
+  end
+  
+  test 'publish_close_issue from issue' do
+    item = nil
+    profile = profiles(:dexter)
+    assert_difference 'FeedItem.count' do
+      item = @issue.publish_closure(profile)
+    end
+    assert_equal @issue.author, item.author
+    assert_equal 'close_issue', item.verb
+    assert_equal @issue, item.target
+    assert_equal 'ghost', item.data[:repo_name]
+    assert_equal 'Crashes on OSX', item.data[:issue_title]
+  end
+  
+  test 'publish_reopen_issue from issue' do
+    item = nil
+    profile = profiles(:dexter)
+    assert_difference 'FeedItem.count' do
+      item = @issue.publish_reopening(profile)
+    end
+    assert_equal @issue.author, item.author
+    assert_equal 'reopen_issue', item.verb
+    assert_equal @issue, item.target
+    assert_equal 'ghost', item.data[:repo_name]
+    assert_equal 'Crashes on OSX', item.data[:issue_title]
+  end
 end

@@ -24,6 +24,10 @@ class Issue
   def can_edit?(user)
     repository.can_edit?(user) || (user && user.profile == author)
   end
+  
+  def can_read?(user)
+    repository.can_read?(user) || (user && user.profile == author)
+  end
 end
 
 # :nodoc: activity feed integration
@@ -48,24 +52,42 @@ class Issue
   #       it only removes the FeedItemTopic records connecting to them.
   has_many :feed_item_topic, :as => :topic, :dependent => :destroy,
                              :inverse_of => :topic
+                             
+                             
+  # Recently created events connected with this issue.
+  def recent_feed_items(limit = 100)
+    feed_items.order('created_at DESC').limit(limit)
+  end
 
   # Updates feeds to reflect that this issue was created.
-  def publish_creation
+  def publish_opening
     # Duplicating the profile and issue title because the issue record
     # can be deleted.
-    FeedItem.publish author, 'new_issue', self, [author, repository,
+    FeedItem.publish author, 'open_issue', self, [author, repository,
         repository.profile, self], { :profile_name => repository.profile.name,
                                      :repo_name => repository.name,
                                      :author_name => author.name,
                                      :issue_title => title }
   end
   
-  # Updates feeds to reflect that this issue was destroyed.
-  def publish_deletion(author_profile)
-    FeedItem.publish author_profile, 'del_issue', self, [author_profile,
+  # Updates feeds to reflect that this issue was closed.
+  def publish_closure(author_profile)
+    FeedItem.publish author_profile, 'close_issue', self, [author_profile,
         repository, repository.profile, self],
         { :profile_name => repository.profile.name,
           :repo_name => repository.name, :author_name => author.name,
+          :issue_title => title }
+  end
+  
+  # Updates feeds to reflect that this issue was reopened.
+  def publish_reopening(author_profile)
+    # Duplicating the profile and issue title because the issue record
+    # can be deleted.
+    FeedItem.publish author_profile, 'reopen_issue', self, [author_profile, 
+        repository, repository.profile, self], 
+        { :profile_name => repository.profile.name,
+          :repo_name => repository.name,
+          :author_name => author.name,
           :issue_title => title }
   end
 end

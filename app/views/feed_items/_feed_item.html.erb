@@ -97,19 +97,30 @@
     <% end %>  
   </div>
   
-<% when 'new_issue' %>
-  <% Rails.logger.debug "*** Feed item data: #{feed_item.data}" %>
-  created <%= link_to feed_item.data[:issue_title], 
-                  profile_repository_issue_path(feed_item.data[:profile_name],
-                  feed_item.data[:repo_name]) %> in 
+<% when 'open_issue' %>
+  opened <%= link_to feed_item.data[:issue_title], 
+                 profile_repository_issue_path(feed_item.data[:profile_name],
+                 feed_item.data[:repo_name], feed_item.target) %> in 
   <% if repository = feed_item.target_repository %>
   <%= link_to_repository feed_item.target_repository %>
   <% else %>
   <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
   <% end %> 
   </div>
-<% when 'del_issue' %>
-  deleted <%= feed_item.data[:issue_title] %> in 
+<% when 'close_issue' %>
+  closed <%= link_to feed_item.data[:issue_title], 
+                 profile_repository_issue_path(feed_item.data[:profile_name],
+                 feed_item.data[:repo_name], feed_item.target) %> in 
+  <% if repository = feed_item.target_repository %>
+  <%= link_to_repository feed_item.target_repository %>
+  <% else %>
+  <%= feed_item.data[:profile_name] %>/<%= feed_item.data[:repository_name] %>
+  <% end %> 
+  </div>
+<% when 'reopen_issue' %>
+  reopened <%= link_to feed_item.data[:issue_title], 
+                   profile_repository_issue_path(feed_item.data[:profile_name],
+                   feed_item.data[:repo_name], feed_item.target) %> in 
   <% if repository = feed_item.target_repository %>
   <%= link_to_repository feed_item.target_repository %>
   <% else %>
