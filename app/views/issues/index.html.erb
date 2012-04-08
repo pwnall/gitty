@@ -1,11 +1,21 @@
-<h1>Listing issues</h1>
+<%= render @repository %>
 
-<h2>Open Issues</h2>
+<h2>Listing issues</h2>
+<% unless @issues.first.nil? %>
+<h3>Open Issues</h3>
 <%= render 'open', :issues => @issues %>
 
-<h2>Closed Issues</h2>
+<h3>Closed Issues</h3>
 <%= render 'closed', :issues => @issues %>
+
+<% else %>
+There are no issues to display.
+<% end %>
 
 <br />
 
-<%= link_to 'New Issue', new_issue_path %>
+<% if @repository.can_read? current_user %>
+<%= button_to 'New Issue', new_profile_repository_issue_path(
+        @repository.profile, @repository), 
+        :method => :get %>
+<% end %>

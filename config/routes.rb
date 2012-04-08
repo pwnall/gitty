@@ -112,12 +112,9 @@ Gitty::Application.routes.draw do
     end
 
     # Issues
-    resources :issues, :only => [:create, :new]
+    resources :issues, :only => [:create]
     get 'issues' => 'issues#index', :as => :profile_repository_issues
-    #get 'issues/new' => 'issues#new', :as => :new_profile_repository_issue
-    #new_profile_repository_issue_path(
-                             #params[:profile_name],
-                             #params[:repo_name]), :action => 'new' %>
+    get 'issues/new' => 'issues#new', :as => :new_profile_repository_issue
     get 'issues/:id' => 'issues#show', :as => :profile_repository_issue
     get 'issues/:id/edit(.:format)' => 'issues#edit', 
         :as => :edit_profile_repository_issue
