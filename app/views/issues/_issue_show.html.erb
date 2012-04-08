@@ -1,0 +1,46 @@
+<div class="repository_issue">
+  <dl class="edges">
+    <% if issue.open %>
+      <div class="issue_status open_issue">Open</div>
+    <% else %>
+      <div class="issue_status closed_issue">Closed</div>
+    <% end %>
+    <% if issue.can_edit? current_user %>
+      <%= link_to 'Edit', profile_repository_issue_path(
+                                issue.repository.profile,
+                                issue.repository, issue) %>
+      <%= link_to 'Destroy', profile_repository_issue_path(
+                                issue.repository.profile,
+                                issue.repository, issue), 
+                                confirm: 'Are you sure?', 
+                                method: :delete %>
+      <% if issue.open %>
+      <%= button_to 'Close Issue', profile_repository_issue_path(
+                                   issue.repository.profile,
+                                   issue.repository, issue, 
+                                   :issue => { :open => false }),
+                                   :method => :put,
+                                   :class => "close_issue_button" %>
+      <% else %>
+      <%= button_to 'Reopen Issue', profile_repository_issue_path(
+                                    issue.repository.profile,
+                                    issue.repository, issue, 
+                                    :issue => { :open => true }),
+                                    :method => :put,
+                                    :class => "reopen_issue_button" %>
+      <% end %>
+    <% end %>
+  </dl>
+  <div class="metadata">
+    <p class="author">
+      <%= issue_author_image issue %>
+      <%= issue.author.name %> &lt;<%= issue.author.display_email %>&gt;
+    </p>
+    <p class="description">
+      <%= issue.description %>
+    </p>  
+    <p class="time">
+      <%= distance_of_time_in_words_to_now issue.created_at %> ago
+    </p>
+  </div>
+</div>
