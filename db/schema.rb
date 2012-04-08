@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120304034951) do
+ActiveRecord::Schema.define(:version => 20120328051521) do
 
   create_table "acl_entries", :force => true do |t|
     t.string   "role",           :null => false
@@ -139,8 +139,8 @@ ActiveRecord::Schema.define(:version => 20120304034951) do
   add_index "feed_subscriptions", ["topic_id", "topic_type", "profile_id"], :name => "index_feed_subscriptions_on_topic_profile", :unique => true
 
   create_table "issues", :force => true do |t|
-    t.integer  "author_id",                       :null => false
     t.integer  "repository_id",                   :null => false
+    t.integer  "author_id",                       :null => false
     t.boolean  "open",          :default => true, :null => false
     t.string   "title",                           :null => false
     t.text     "description",                     :null => false
@@ -219,10 +219,11 @@ ActiveRecord::Schema.define(:version => 20120304034951) do
   add_index "trees", ["repository_id", "gitid"], :name => "index_trees_on_repository_id_and_gitid", :unique => true
 
   create_table "users", :force => true do |t|
-    t.string   "exuid",      :limit => 32, :null => false
-    t.datetime "created_at",               :null => false
-    t.datetime "updated_at",               :null => false
+    t.string   "exuid",      :limit => 32,                    :null => false
+    t.datetime "created_at",                                  :null => false
+    t.datetime "updated_at",                                  :null => false
     t.integer  "profile_id"
+    t.boolean  "admin",                    :default => false, :null => false
   end
 
   add_index "users", ["exuid"], :name => "index_users_on_exuid", :unique => true
