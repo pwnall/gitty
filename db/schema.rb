@@ -142,13 +142,13 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
     t.string   "name",          :limit => 32,  :null => false
     t.string   "display_name",  :limit => 128, :null => false
     t.string   "display_email", :limit => 128
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
     t.string   "blog",          :limit => 128
     t.string   "company",       :limit => 128
     t.string   "city",          :limit => 128
     t.string   "language",      :limit => 64
     t.text     "about"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
   end
 
   add_index "profiles", ["name"], :name => "index_profiles_on_name", :unique => true

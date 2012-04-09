@@ -384,4 +384,10 @@ class RepositoriesControllerTest < ActionController::TestCase
                    {:controller => 'repositories', :action => 'feed',
                     :profile_name => 'costan', :repo_name => 'rails'})
   end
+  
+  test "special characters in repository names" do
+    assert_routing({:path => '/co.st-an_/r-ai_l.s', :method => :get},
+                   {:controller => 'repositories', :action => 'show',
+                    :profile_name => 'co.st-an_', :repo_name => 'r-ai_l.s'})
+  end
 end
