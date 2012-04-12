@@ -6,7 +6,7 @@ class SshKeyTest < ActiveSupport::TestCase
   setup do
     @key_path = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'new_key.pub'
     @key = SshKey.new :name => 'Some name', :key_line => File.read(@key_path),
-                      :user => users(:jane)
+                      :user => users(:dexter)
   end
     
   test 'setup' do

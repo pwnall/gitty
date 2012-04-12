@@ -394,12 +394,12 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'acl for new repository' do
     @repo.save!
     assert_equal :edit, AclEntry.get(@repo.profile, @repo)
-    assert @repo.can_read?(users(:jane)), 'author'
-    assert @repo.can_commit?(users(:jane)), 'author'
-    assert @repo.can_edit?(users(:jane)), 'author'
-    assert !@repo.can_read?(users(:john)), 'unrelated user'
-    assert !@repo.can_commit?(users(:john)), 'unrelated user'
-    assert !@repo.can_edit?(users(:john)), 'unrelated user'
+    assert @repo.can_read?(users(:dexter)), 'author'
+    assert @repo.can_commit?(users(:dexter)), 'author'
+    assert @repo.can_edit?(users(:dexter)), 'author'
+    assert !@repo.can_read?(users(:costan)), 'unrelated user'
+    assert !@repo.can_commit?(users(:costan)), 'unrelated user'
+    assert !@repo.can_edit?(users(:costan)), 'unrelated user'
   end
   
   test 'acl for repository profile change' do 
@@ -414,23 +414,23 @@ class RepositoryTest < ActiveSupport::TestCase
 
   test 'can_read?' do
     assert !@repo.can_read?(nil), 'no user'
-    assert !@repo.can_read?(users(:john))
+    assert !@repo.can_read?(users(:costan))
     repo = repositories(:dexter_ghost)
-    assert repo.can_read?(users(:john))
-    assert repo.can_read?(users(:jane))
+    assert repo.can_read?(users(:costan))
+    assert repo.can_read?(users(:dexter))
   end
 
   test 'can_read? for public repos' do
     @repo.public = true
     assert @repo.can_read?(nil), 'no user'
-    assert @repo.can_read?(users(:john))
+    assert @repo.can_read?(users(:costan))
   end
   
   test 'can_commit?' do
     assert !@repo.can_commit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
-    assert !repo.can_commit?(users(:john)) 
-    assert repo.can_commit?(users(:jane))
+    assert !repo.can_commit?(users(:costan)) 
+    assert repo.can_commit?(users(:dexter))
   end
 
   test 'can_commit? for public repos' do
@@ -439,15 +439,15 @@ class RepositoryTest < ActiveSupport::TestCase
     assert !@repo.can_commit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
     repo.public = true
-    assert !repo.can_commit?(users(:john)) 
-    assert repo.can_commit?(users(:jane))
+    assert !repo.can_commit?(users(:costan)) 
+    assert repo.can_commit?(users(:dexter))
   end
   
   test 'can_edit?' do
     assert !@repo.can_edit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
-    assert repo.can_edit?(users(:jane))
-    assert !repo.can_edit?(users(:john))
+    assert repo.can_edit?(users(:dexter))
+    assert !repo.can_edit?(users(:costan))
   end
 
   test 'can_edit? for public repos' do
@@ -456,8 +456,8 @@ class RepositoryTest < ActiveSupport::TestCase
     assert !@repo.can_edit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
     repo.public = true
-    assert repo.can_edit?(users(:jane))
-    assert !repo.can_edit?(users(:john))
+    assert repo.can_edit?(users(:dexter))
+    assert !repo.can_edit?(users(:costan))
   end
   
   test 'acl_roles' do

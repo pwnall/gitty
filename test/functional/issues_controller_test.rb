@@ -4,7 +4,7 @@ class IssuesControllerTest < ActionController::TestCase
   setup do
     @issue = issues(:costan_ghost_translated)
     @repository = @issue.repository
-    @author = users(:john)
+    @author = users(:costan)
     
     set_session_current_user @author
   end
@@ -107,7 +107,7 @@ class IssuesControllerTest < ActionController::TestCase
   end
   
   test "should not be able to close issue if user isn't editor or author" do
-    set_session_current_user users(:john)
+    set_session_current_user users(:costan)
     issue = issues(:public_ghost_dead_code)
     put :update, :profile_name => issue.repository.profile,
                  :repo_name => issue.repository, 
@@ -116,7 +116,7 @@ class IssuesControllerTest < ActionController::TestCase
   end
   
   test "should be able to close issue if user is editor or author" do
-    set_session_current_user users(:jane)
+    set_session_current_user users(:dexter)
     issue = issues(:public_ghost_dead_code)
     put :update, :profile_name => issue.repository.profile,
                  :repo_name => issue.repository, 

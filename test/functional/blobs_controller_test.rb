@@ -46,8 +46,8 @@ class BlobsControllerTest < ActionController::TestCase
   end
   
   test "should grant read access to participating user" do
-    set_session_current_user users(:john)
-    AclEntry.set(users(:john).profile, @commit.repository, :participate)
+    set_session_current_user users(:costan)
+    AclEntry.set(users(:costan).profile, @commit.repository, :participate)
 
     get :show, :commit_gid => @commit.to_param,
                :repo_name => @commit.repository.to_param,

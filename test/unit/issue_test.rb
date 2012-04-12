@@ -53,11 +53,11 @@ class IssueTest < ActiveSupport::TestCase
   end
   
   test 'users can edit their own issues' do
-    assert @issue.can_edit?(users(:jane))
+    assert @issue.can_edit?(users(:dexter))
   end
   
   test "users can edit their repositories' issues" do
-    assert @issue.can_edit?(users(:john))
+    assert @issue.can_edit?(users(:costan))
   end
 
   test "users can't edit random issues" do

@@ -4,8 +4,8 @@ class FeedSubscriptionsControllerTest < ActionController::TestCase
   setup do
     @repository = repositories(:dexter_ghost)
     @profile = profiles(:dexter)
-    @author = users(:jane)
-    @reader = users(:john)
+    @author = users(:dexter)
+    @reader = users(:costan)
 
     set_session_current_user @author
   end
