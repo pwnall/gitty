@@ -6,7 +6,7 @@ class AclEntriesControllerTest < ActionController::TestCase
     @repo_acl_entry = acl_entries(:csail_dexter_ghost)
 
     @profile = profiles(:csail)
-    @profile_acl_entry = acl_entries(:john_csail)
+    @profile_acl_entry = acl_entries(:costan_csail)
     
     @session_user = @repository.profile.user
     set_session_current_user @session_user    
@@ -30,7 +30,7 @@ class AclEntriesControllerTest < ActionController::TestCase
 
   test "should create acl_entry for repository" do
     attributes = {
-      :principal_name => users(:john).profile.to_param,
+      :principal_name => users(:costan).profile.to_param,
       :role => 'commit'
     }
     assert_difference 'AclEntry.count' do
@@ -44,7 +44,7 @@ class AclEntriesControllerTest < ActionController::TestCase
   test "should create acl_entry for profile" do
     set_session_current_user @profile_acl_entry.principal
     attributes = {
-      :principal_name => users(:jane).email,
+      :principal_name => users(:dexter).email,
       :role => 'charge'
     }
     assert_difference 'AclEntry.count' do
@@ -93,14 +93,14 @@ class AclEntriesControllerTest < ActionController::TestCase
   end
   
   test "should deny access to non-admins for repository" do
-    set_session_current_user users(:john)
+    set_session_current_user users(:costan)
 
     get :index, :profile_name => @repository.profile.to_param,
                 :repo_name => @repository.to_param
     assert_response :forbidden
     
     attributes = {
-      :principal_name => users(:john).profile.to_param,
+      :principal_name => users(:costan).profile.to_param,
       :role => 'commit'
     }
     assert_no_difference 'AclEntry.count' do
@@ -124,14 +124,14 @@ class AclEntriesControllerTest < ActionController::TestCase
   end
 
   test "should deny access to non-admins for profile" do
-    set_session_current_user users(:jane)
+    set_session_current_user users(:dexter)
 
     get :index, :profile_name => @profile.to_param
     assert_response :forbidden
     
 
     attributes = {
-      :principal_name => users(:jane).to_param,
+      :principal_name => users(:dexter).to_param,
       :role => 'charge'
     }
     assert_no_difference 'AclEntry.count' do

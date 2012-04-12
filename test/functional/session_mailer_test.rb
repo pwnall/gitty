@@ -2,10 +2,10 @@ require 'test_helper'
 
 class SessionMailerTest < ActionMailer::TestCase
   setup do
-    @reset_email = credentials(:jane_email).email
-    @reset_token = credentials(:jane_password_token)
-    @verification_token = credentials(:john_email_token)
-    @verification_email = credentials(:john_email).email
+    @reset_email = credentials(:dexter_email).email
+    @reset_token = credentials(:dexter_password_token)
+    @verification_token = credentials(:costan_email_token)
+    @verification_email = credentials(:costan_email).email
     @root_url = 'hxxp://test.host/'
   end
 

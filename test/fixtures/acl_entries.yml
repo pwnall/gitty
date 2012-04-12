@@ -1,10 +1,10 @@
-john_csail:
-  principal: john (User)
+costan_csail:
+  principal: costan (User)
   subject: csail (Profile)
   role: edit
   
-john_mit:
-  principal: john (User)
+costan_mit:
+  principal: costan (User)
   subject: mit (Profile)
   role: charge
 
@@ -19,14 +19,14 @@ csail_dexter_ghost:
   role: read
 
 # Should be added by AR hook after_save.
-jane_dexter:
-  principal: jane (User)
+dexter_dexter:
+  principal: dexter (User)
   subject: dexter (Profile)
   role: edit
 
 # Should be added by AR hook after_save.
-john_costan:
-  principal: john (User)
+costan_costan:
+  principal: costan (User)
   subject: costan (Profile)
   role: edit
 
