@@ -3,10 +3,10 @@
 <h2>Listing issues</h2>
 <% unless @issues.first.nil? %>
 <h3>Open Issues</h3>
-<%= render 'open', :issues => @issues %>
+<%= render @issues.select(&:open) %>
 
 <h3>Closed Issues</h3>
-<%= render 'closed', :issues => @issues %>
+<%= render @issues.reject(&:open) %>
 
 <% else %>
 There are no issues to display.

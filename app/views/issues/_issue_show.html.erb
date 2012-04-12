@@ -7,28 +7,21 @@
     <% end %>
     <% if issue.can_edit? current_user %>
       <%= link_to 'Edit', edit_profile_repository_issue_path(
-              issue.repository.profile,
-              issue.repository, issue),
-              method: :get %>
-      <%= link_to 'Destroy', profile_repository_issue_path(
-              issue.repository.profile,
-              issue.repository, issue), 
-              confirm: 'Are you sure?', 
-              method: :delete %>
+              issue.repository.profile, issue.repository, issue),
+              :method => :get %>
+      <%= link_to 'Delete', profile_repository_issue_path(
+              issue.repository.profile, issue.repository, issue),
+              :confirm => 'Are you sure?', :method => :delete %>
       <% if issue.open %>
       <%= button_to 'Close Issue', profile_repository_issue_path(
-              issue.repository.profile,
-              issue.repository, issue, 
-              :issue => { :open => false }),
-              :method => :put,
-              :class => "close_issue_button" %>
+              issue.repository.profile, issue.repository, issue,
+              :issue => { :open => false }), :method => :put,
+              :class => 'close_issue_button' %>
       <% else %>
       <%= button_to 'Reopen Issue', profile_repository_issue_path(
-              issue.repository.profile,
-              issue.repository, issue, 
+              issue.repository.profile, issue.repository, issue, 
               :issue => { :open => true }),
-              :method => :put,
-              :class => "reopen_issue_button" %>
+              :method => :put, :class => 'reopen_issue_button' %>
       <% end %>
     <% end %>
   </dl>

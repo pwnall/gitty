@@ -3,7 +3,3 @@
 <h2><%= @issue.title %></h2>
 
 <%= render 'issue_show', :issue => @issue %>
-
-<%= link_to 'Back to issue list', profile_repository_issues_path(
-        @issue.repository.profile,
-        @issue.repository) %>

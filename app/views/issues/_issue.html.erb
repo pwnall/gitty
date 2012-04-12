@@ -5,15 +5,12 @@
     <% else %>
       <div class="issue_status closed_issue">Closed</div>
     <% end %>
-    <%= link_to 'Show', profile_repository_issue_path(
-            issue.repository.profile,
-            issue.repository, issue) %>
     <% if issue.can_edit? current_user %>
       <%= link_to 'Edit', edit_profile_repository_issue_path(
               issue.repository.profile,
               issue.repository, issue), 
               method: :get %>
-      <%= link_to 'Destroy', profile_repository_issue_path(
+      <%= link_to 'Delete', profile_repository_issue_path(
               issue.repository.profile,
               issue.repository, issue), 
               confirm: 'Are you sure?', 
@@ -22,7 +19,9 @@
   </dl>
   <div class="metadata">
     <p class="title">
-      <%= issue.title %>
+      <%= link_to issue.title, profile_repository_issue_path(
+            issue.repository.profile,
+            issue.repository, issue) %>
     </p>
     <p class="author">
       by <%= issue.author.name %>
