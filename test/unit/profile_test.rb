@@ -152,22 +152,22 @@ class ProfileTest < ActiveSupport::TestCase
   test 'can_participate' do
     profile = profiles(:csail)
     assert !profile.can_participate?(nil), 'no user'
-    assert profile.can_participate?(users(:john)), 'participating user'
-    assert !profile.can_participate?(users(:jane)), 'unrelated user'  
+    assert profile.can_participate?(users(:costan)), 'participating user'
+    assert !profile.can_participate?(users(:dexter)), 'unrelated user'  
   end
   
   test 'can_charge?' do
     profile = profiles(:costan)
     assert !profile.can_charge?(nil), 'no user'
-    assert profile.can_charge?(users(:john)), 'owning user'
-    assert !profile.can_charge?(users(:jane)), 'unrelated user'
+    assert profile.can_charge?(users(:costan)), 'owning user'
+    assert !profile.can_charge?(users(:dexter)), 'unrelated user'
   end
   
   test 'can_edit?' do
     profile = profiles(:costan)
     assert !profile.can_edit?(nil), 'no user'
-    assert profile.can_edit?(users(:john)), 'owning user'
-    assert !profile.can_edit?(users(:jane)), 'unrelated user'
+    assert profile.can_edit?(users(:costan)), 'owning user'
+    assert !profile.can_edit?(users(:dexter)), 'unrelated user'
   end
   
   test 'acl_roles' do
@@ -198,7 +198,7 @@ class ProfileTest < ActiveSupport::TestCase
   
   test 'members' do
     profile = profiles(:csail)
-    assert_equal [users(:john), users(:sam)].to_set, profile.members.to_set
+    assert_equal [users(:costan), users(:sam)].to_set, profile.members.to_set
   end
   
   test 'recent_subscribed_feed_items' do

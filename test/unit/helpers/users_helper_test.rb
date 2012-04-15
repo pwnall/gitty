@@ -2,7 +2,7 @@ require 'test_helper'
 
 class UsersHelperTest < ActionView::TestCase
   setup do
-    @user = users(:john)
+    @user = users(:costan)
   end
   
   test 'header_profile_image renders gravatar' do

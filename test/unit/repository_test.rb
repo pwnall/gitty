@@ -113,10 +113,26 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'find_by_ssh_path' do
     assert_equal repositories(:dexter_ghost),
                  Repository.find_by_ssh_path('dexter/ghost.git')
-    ['../something/else.git', 'dexter/ghost/more.git',
-     'nobody/ghost.git', 'dexter/nothing.git'].each do |path|
+    ['../something/else.git', 'nobody/ghost.git',
+     'dexter/nothing.git'].each do |path|
       assert_equal nil, Repository.find_by_ssh_path(path), "Bad path #{path}"
     end
+  end
+  
+  test 'parse_ssh_path' do
+    assert_equal({ :profile_name => 'dexter', :repo_name => 'ghost' },
+                 Repository.parse_ssh_path('dexter/ghost.git'))
+    assert_equal({ :profile_name => 'dexter', :repo_name => 'gh-o_s.t' },
+                 Repository.parse_ssh_path('dexter/gh-o_s.t.git'))
+    assert_equal nil,
+                 Repository.parse_ssh_path('../something/else.git'),
+                 'path starting with ../'
+    assert_equal nil,
+                 Repository.parse_ssh_path('a+b/cd.git'),
+                 'invalid characters in path'
+    assert_equal nil,
+                 Repository.parse_ssh_path('dexter/ghost/more.git'),
+                 'too many slashes in path'
   end
   
   test 'model-repository lifetime sync' do    
@@ -378,12 +394,12 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'acl for new repository' do
     @repo.save!
     assert_equal :edit, AclEntry.get(@repo.profile, @repo)
-    assert @repo.can_read?(users(:jane)), 'author'
-    assert @repo.can_commit?(users(:jane)), 'author'
-    assert @repo.can_edit?(users(:jane)), 'author'
-    assert !@repo.can_read?(users(:john)), 'unrelated user'
-    assert !@repo.can_commit?(users(:john)), 'unrelated user'
-    assert !@repo.can_edit?(users(:john)), 'unrelated user'
+    assert @repo.can_read?(users(:dexter)), 'author'
+    assert @repo.can_commit?(users(:dexter)), 'author'
+    assert @repo.can_edit?(users(:dexter)), 'author'
+    assert !@repo.can_read?(users(:costan)), 'unrelated user'
+    assert !@repo.can_commit?(users(:costan)), 'unrelated user'
+    assert !@repo.can_edit?(users(:costan)), 'unrelated user'
   end
   
   test 'acl for repository profile change' do 
@@ -398,23 +414,23 @@ class RepositoryTest < ActiveSupport::TestCase
 
   test 'can_read?' do
     assert !@repo.can_read?(nil), 'no user'
-    assert !@repo.can_read?(users(:john))
+    assert !@repo.can_read?(users(:costan))
     repo = repositories(:dexter_ghost)
-    assert repo.can_read?(users(:john))
-    assert repo.can_read?(users(:jane))
+    assert repo.can_read?(users(:costan))
+    assert repo.can_read?(users(:dexter))
   end
 
   test 'can_read? for public repos' do
     @repo.public = true
     assert @repo.can_read?(nil), 'no user'
-    assert @repo.can_read?(users(:john))
+    assert @repo.can_read?(users(:costan))
   end
   
   test 'can_commit?' do
     assert !@repo.can_commit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
-    assert !repo.can_commit?(users(:john)) 
-    assert repo.can_commit?(users(:jane))
+    assert !repo.can_commit?(users(:costan)) 
+    assert repo.can_commit?(users(:dexter))
   end
 
   test 'can_commit? for public repos' do
@@ -423,15 +439,15 @@ class RepositoryTest < ActiveSupport::TestCase
     assert !@repo.can_commit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
     repo.public = true
-    assert !repo.can_commit?(users(:john)) 
-    assert repo.can_commit?(users(:jane))
+    assert !repo.can_commit?(users(:costan)) 
+    assert repo.can_commit?(users(:dexter))
   end
   
   test 'can_edit?' do
     assert !@repo.can_edit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
-    assert repo.can_edit?(users(:jane))
-    assert !repo.can_edit?(users(:john))
+    assert repo.can_edit?(users(:dexter))
+    assert !repo.can_edit?(users(:costan))
   end
 
   test 'can_edit? for public repos' do
@@ -440,8 +456,8 @@ class RepositoryTest < ActiveSupport::TestCase
     assert !@repo.can_edit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
     repo.public = true
-    assert repo.can_edit?(users(:jane))
-    assert !repo.can_edit?(users(:john))
+    assert repo.can_edit?(users(:dexter))
+    assert !repo.can_edit?(users(:costan))
   end
   
   test 'acl_roles' do

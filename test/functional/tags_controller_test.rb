@@ -22,8 +22,8 @@ class TagsControllerTest < ActionController::TestCase
   end
   
   test "should grant read access to participating user" do
-    set_session_current_user users(:john)
-    AclEntry.set(users(:john).profile, @tag.repository, :participate)
+    set_session_current_user users(:costan)
+    AclEntry.set(users(:costan).profile, @tag.repository, :participate)
 
     get :index, :repo_name => @tag.repository.to_param,
                 :profile_name => @tag.repository.profile.to_param

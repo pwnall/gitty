@@ -1,7 +1,7 @@
 costan:
   name: costan
   display_name: Victor Costan
-  display_email: john@gmail.com
+  display_email: costan@gmail.com
   blog: http://www.awesomeblog.com
   company: Awesome, Inc.
   city: Bestplaceonearth, USA
@@ -12,7 +12,7 @@ costan:
 dexter:
   name: dexter
   display_name: Dexter
-  display_email: jane@gmail.com
+  display_email: dexter@gmail.com
   blog: http://www.otherawesomeblog.com
   company: Cool, Inc.
   city: Anytown, USA

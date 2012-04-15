@@ -5,9 +5,9 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   setup do
     @repository = repositories(:dexter_ghost)
-    @author = users(:jane)
+    @author = users(:dexter)
     @author_key = @author.ssh_keys.first
-    @reader = users(:john)
+    @reader = users(:costan)
     @reader_key = @reader.ssh_keys.first
 
     set_session_current_user @author
@@ -57,7 +57,7 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   test "should show git directions to author for empty repository" do
     repository = repositories(:costan_ghost)
-    set_session_current_user users(:john)
+    set_session_current_user users(:costan)
     get :show, :repo_name => repository.to_param,
                :profile_name => repository.profile.to_param
     assert_response :success
@@ -66,8 +66,8 @@ class RepositoriesControllerTest < ActionController::TestCase
   
   test "should show oops page to non-committer for empty repository" do
     repository = repositories(:costan_ghost)
-    set_session_current_user users(:jane)
-    AclEntry.set(users(:jane).profile, repository, :read)
+    set_session_current_user users(:dexter)
+    AclEntry.set(users(:dexter).profile, repository, :read)
 
     get :show, :repo_name => repository.to_param,
                :profile_name => repository.profile.to_param
@@ -186,8 +186,8 @@ class RepositoriesControllerTest < ActionController::TestCase
   end
   
   test "should grant read access to participating user" do
-    set_session_current_user users(:john)
-    AclEntry.set(users(:john).profile, @repository, :participate)
+    set_session_current_user users(:costan)
+    AclEntry.set(users(:costan).profile, @repository, :participate)
     
     get :show, :repo_name => @repository.to_param,
                :profile_name => @repository.profile.to_param
@@ -383,5 +383,11 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_routing({:path => '/costan/rails/feed', :method => :get},
                    {:controller => 'repositories', :action => 'feed',
                     :profile_name => 'costan', :repo_name => 'rails'})
+  end
+  
+  test "special characters in repository names" do
+    assert_routing({:path => '/co.st-an_/r-ai_l.s', :method => :get},
+                   {:controller => 'repositories', :action => 'show',
+                    :profile_name => 'co.st-an_', :repo_name => 'r-ai_l.s'})
   end
 end

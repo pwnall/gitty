@@ -2,10 +2,10 @@ require 'test_helper'
 
 class SessionControllerTest < ActionController::TestCase
   setup do
-    @user = users(:john)
-    @email_credential = credentials(:john_email)
-    @password_credential = credentials(:john_password)
-    @token_credential = credentials(:john_email_token)
+    @user = users(:costan)
+    @email_credential = credentials(:costan_email)
+    @password_credential = credentials(:costan_password)
+    @token_credential = credentials(:costan_email_token)
   end
   
   test "user home page" do
@@ -68,8 +68,8 @@ class SessionControllerTest < ActionController::TestCase
   end
   
   test "password reset link" do
-    password_credential = credentials(:jane_password)
-    get :token, :code => credentials(:jane_password_token).code
+    password_credential = credentials(:dexter_password)
+    get :token, :code => credentials(:dexter_password_token).code
     assert_redirected_to change_password_session_url
     assert_nil Credential.where(:id => password_credential.id).first,
                'Password not cleared'

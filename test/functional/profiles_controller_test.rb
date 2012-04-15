@@ -7,7 +7,7 @@ class ProfilesControllerTest < ActionController::TestCase
     @profile = profiles(:costan)
     @session_user = profiles(:costan).user
     set_session_current_user @session_user
-    admin = users(:jane)
+    admin = users(:dexter)
 
     User.class_eval do
       (class <<self; self; end).class_eval do      
@@ -30,7 +30,7 @@ class ProfilesControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    set_session_current_user users(:jane)
+    set_session_current_user users(:dexter)
     get :index
     assert_response :success
     assert_not_nil assigns(:profiles)
@@ -60,7 +60,7 @@ class ProfilesControllerTest < ActionController::TestCase
   end
 
   test "should create a team profile" do
-    user = users(:john)
+    user = users(:costan)
     set_session_current_user user
     assert_difference 'Profile.count' do
       post :create, :profile => @profile.attributes.merge(:name => 'newest')

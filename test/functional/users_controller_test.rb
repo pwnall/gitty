@@ -2,8 +2,8 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
   setup do
-    @user = users(:john)
-    admin = users(:jane)
+    @user = users(:costan)
+    admin = users(:dexter)
 
     User.class_eval do
       (class <<self; self; end).class_eval do      
@@ -26,7 +26,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    set_session_current_user users(:jane)
+    set_session_current_user users(:dexter)
     get :index
     assert_response :success
     assert_not_nil assigns(:users)
@@ -39,7 +39,7 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should create user" do
     ActionMailer::Base.deliveries = []
-    attributes = { :email => 'john2@gmail.com', :password => 'passw0rd',
+    attributes = { :email => 'costan2@gmail.com', :password => 'passw0rd',
                    :password_confirmation => 'passw0rd'}
     assert_difference 'User.count' do
       assert_difference 'Credentials::Token.count', 1,
@@ -60,7 +60,7 @@ class UsersControllerTest < ActionController::TestCase
   test "should create user when email checking is disabled" do
     ConfigVar['signup.email_check'] = 'disabled'
     ActionMailer::Base.deliveries = []
-    attributes = { :email => 'john2@gmail.com', :password => 'passw0rd',
+    attributes = { :email => 'costan2@gmail.com', :password => 'passw0rd',
                    :password_confirmation => 'passw0rd'}
     assert_difference 'User.count' do
       assert_no_difference 'Credentials::Token.count',
@@ -79,13 +79,13 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   test "should show user" do
-    set_session_current_user users(:john)
+    set_session_current_user users(:costan)
     get :show, :user_param => @user.to_param
     assert_response :success
   end
 
   test "should destroy user" do
-    set_session_current_user users(:john)
+    set_session_current_user users(:costan)
     assert_difference('User.count', -1) do
       delete :destroy, :user_param => @user.to_param
     end
@@ -94,7 +94,7 @@ class UsersControllerTest < ActionController::TestCase
   end
   
   test "another user should not be able to change account" do
-    set_session_current_user users(:jane)
+    set_session_current_user users(:dexter)
 
     get :show, :user_param => @user.to_param
     assert_response :forbidden
@@ -106,7 +106,7 @@ class UsersControllerTest < ActionController::TestCase
   end
   
   test "random users should not be able to list accounts" do
-    set_session_current_user users(:john)
+    set_session_current_user users(:costan)
     get :index
     assert_response :forbidden
   end
