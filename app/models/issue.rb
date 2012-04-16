@@ -17,6 +17,10 @@ class Issue < ActiveRecord::Base
   
   # True for issues that still require attention.
   validates :open, :inclusion => { :in => [true, false] }
+  
+  # True for issues that have sensitive information and so will only be seen by
+  # the developers and the author.
+  validates :sensitive, :inclusion => { :in => [true, false] }
 end
 
 # :nodoc: access control
@@ -26,7 +30,11 @@ class Issue
   end
   
   def can_read?(user)
-    repository.can_read?(user) || (user && user.profile == author)
+    if sensitive?
+      repository.can_edit?(user) || (user && user.profile == author)
+    else 
+      repository.can_read?(user)
+    end
   end
 end
 
@@ -60,9 +68,11 @@ class Issue
   end
 
   # Updates feeds to reflect that this issue was created.
+  # TODO(pwnall): Filter issue feed items by reading access
   def publish_opening
     # Duplicating the profile and issue title because the issue record
     # can be deleted.
+    return if sensitive?
     FeedItem.publish author, 'open_issue', self, [author, repository,
         repository.profile, self], { :profile_name => repository.profile.name,
                                      :repo_name => repository.name,
@@ -71,7 +81,9 @@ class Issue
   end
   
   # Updates feeds to reflect that this issue was closed.
+  # TODO(pwnall): Filter issue feed items by reading access
   def publish_closure(author_profile)
+    return if sensitive?
     FeedItem.publish author_profile, 'close_issue', self, [author_profile,
         repository, repository.profile, self],
         { :profile_name => repository.profile.name,
@@ -80,9 +92,11 @@ class Issue
   end
   
   # Updates feeds to reflect that this issue was reopened.
+  # TODO(pwnall): Filter issue feed items by reading access
   def publish_reopening(author_profile)
     # Duplicating the profile and issue title because the issue record
     # can be deleted.
+    return if sensitive?
     FeedItem.publish author_profile, 'reopen_issue', self, [author_profile, 
         repository, repository.profile, self], 
         { :profile_name => repository.profile.name,

@@ -139,13 +139,14 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
   add_index "feed_subscriptions", ["topic_id", "topic_type", "profile_id"], :name => "index_feed_subscriptions_on_topic_profile", :unique => true
 
   create_table "issues", :force => true do |t|
-    t.integer  "repository_id",                   :null => false
-    t.integer  "author_id",                       :null => false
-    t.boolean  "open",          :default => true, :null => false
-    t.string   "title",                           :null => false
-    t.text     "description",                     :null => false
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.integer  "repository_id",                    :null => false
+    t.integer  "author_id",                        :null => false
+    t.boolean  "open",          :default => true,  :null => false
+    t.boolean  "sensitive",     :default => false, :null => false
+    t.string   "title",                            :null => false
+    t.text     "description",                      :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   add_index "issues", ["author_id", "open"], :name => "index_issues_on_author_id_and_open"
@@ -155,13 +156,13 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
     t.string   "name",          :limit => 32,  :null => false
     t.string   "display_name",  :limit => 128, :null => false
     t.string   "display_email", :limit => 128
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
     t.string   "blog",          :limit => 128
     t.string   "company",       :limit => 128
     t.string   "city",          :limit => 128
     t.string   "language",      :limit => 64
     t.text     "about"
+    t.datetime "created_at",                   :null => false
+    t.datetime "updated_at",                   :null => false
   end
 
   add_index "profiles", ["name"], :name => "index_profiles_on_name", :unique => true

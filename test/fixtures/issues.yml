@@ -2,13 +2,50 @@ costan_ghost_translated:
   author: dexter
   repository: costan_ghost
   open: true
+  sensitive: false
   title: Missing translation
   description: The text files in this project are English-only. It would be nice
-      if they had translations.
-      
+      if they had translations.      
+
 public_ghost_dead_code:
   author: dexter
   repository: public_ghost
   open: true
+  sensitive: false
   title: Dead code
   description: There's a bunch of dead code in the controller files.
+
+public_ghost_security_vulnerability:
+  author: dexter
+  repository: public_ghost
+  open: true
+  sensitive: true
+  title: Security Vulnerability
+  description: There's a huge chance someone could break the app in line 10.
+
+public_ghost_pizza:
+  author: dexter
+  repository: public_ghost
+  open: true
+  sensitive: true
+  title: Meta-x Pizza
+  description: I keep on trying to hit 'm-x pizza', but no pizza jumps out of
+      the screen. Help?
+
+public_ghost_jquery:
+  author: dexter
+  repository: public_ghost
+  open: false
+  sensitive: false
+  title: Needs more jQuery
+  description: The lack of jQuery in this repo is too high!
+  
+public_ghost_code_language:
+  author: dexter
+  repository: public_ghost
+  open: false
+  sensitive: true
+  title: Code language request
+  description: I think the code should be rewritten in a more popular language,
+      like LOLCODE. You'll be able to reach a far wider audience with it.
+      

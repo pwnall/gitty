@@ -18,6 +18,9 @@
 .open_issue {
   background-color: green;
 }
+.sensitive_issue {
+  background-color: #81C3EA;
+}
 .repository_issue {
   margin: 5px 0;
   padding: 0;

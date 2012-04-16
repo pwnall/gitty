@@ -6,4 +6,14 @@ module IssuesHelper
     image_tag url, :alt => 'gravatar for issue author',
                    :style => 'width: 20px; height: 20px;'
   end
+  
+  # Returns array of open issues a user can read
+  def readable_open_issues(issues, user)
+    issues.select { |i| i.can_read?(user) && i.open? }
+  end
+  
+  # Returns array of closed issues a user can read
+  def readable_closed_issues(issues, user)
+    issues.select { |i| i.can_read?(user) && !i.open? } 
+  end
 end

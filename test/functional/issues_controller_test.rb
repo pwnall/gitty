@@ -106,7 +106,7 @@ class IssuesControllerTest < ActionController::TestCase
     assert_response :forbidden
   end
   
-  test "should not be able to close issue if user isn't editor or author" do
+  test "should not be able to close issue if user isn't an editor or author" do
     set_session_current_user users(:costan)
     issue = issues(:public_ghost_dead_code)
     put :update, :profile_name => issue.repository.profile,
@@ -115,13 +115,31 @@ class IssuesControllerTest < ActionController::TestCase
     assert_response :forbidden
   end
   
-  test "should be able to close issue if user is editor or author" do
+  test "should be able to close issue if user is an editor or author" do
     set_session_current_user users(:dexter)
     issue = issues(:public_ghost_dead_code)
     put :update, :profile_name => issue.repository.profile,
                  :repo_name => issue.repository, 
                  :id => issue, :issue => { :open => false }
     assert_equal issue.reload.open, false
+  end
+  
+  test 'should not show sensitive issue if user is not an editor or author' do
+    set_session_current_user users(:costan)
+    issue = issues(:public_ghost_security_vulnerability)
+    get :show, :repo_name => issue.repository,
+               :profile_name => issue.repository.profile,
+               :id => issue
+    assert_response :forbidden
+  end
+  
+  test 'should show sensitive issue if user is an editor or author' do
+    set_session_current_user users(:dexter)
+    issue = issues(:public_ghost_security_vulnerability)
+    get :show, :repo_name => issue.repository,
+               :profile_name => issue.repository.profile,
+               :id => issue
+    assert_response :success
   end
   
   test "issue routes" do
