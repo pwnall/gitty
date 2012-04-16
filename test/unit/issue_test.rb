@@ -4,7 +4,7 @@ class IssueTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:costan_ghost)
     @issue = Issue.new :repository => @repo, :author => profiles(:dexter),
-        :open => true, :title => 'Crashes on OSX',
+        :open => true, :sensitive => false, :title => 'Crashes on OSX',
         :description => 'Running Lion 10.7'
   end
   
@@ -52,6 +52,16 @@ class IssueTest < ActiveSupport::TestCase
     assert @issue.valid?
   end
   
+  test 'requires sensitive' do
+    @issue.sensitive = nil
+    assert !@issue.valid?
+  end
+  
+  test 'accepts sensitive=true' do
+    @issue.sensitive = true
+    assert @issue.valid?
+  end
+  
   test 'users can edit their own issues' do
     assert @issue.can_edit?(users(:dexter))
   end
@@ -66,6 +76,18 @@ class IssueTest < ActiveSupport::TestCase
   
   test "non logged-in users can't edit issues" do
     assert !@issue.can_edit?(nil)
+  end
+  
+  test "can read issue if sensitive = false" do
+    issue = issues(:public_ghost_dead_code)
+    issue.sensitive = false
+    assert issue.can_read?(users(:costan))
+  end
+  
+  test "cannot read issue if sensitive = true" do
+    issue = issues(:public_ghost_dead_code)
+    issue.sensitive = true
+    assert !issue.can_read?(users(:costan))
   end
 
   # Publishing tests
@@ -104,5 +126,14 @@ class IssueTest < ActiveSupport::TestCase
     assert_equal @issue, item.target
     assert_equal 'ghost', item.data[:repo_name]
     assert_equal 'Crashes on OSX', item.data[:issue_title]
+  end
+  
+  test 'should not publish_open_issue from issue if sensitive' do
+    item = nil
+    @issue.sensitive = true
+    assert_no_difference 'FeedItem.count' do
+      item = @issue.publish_opening
+    end
+    assert_nil item
   end
 end

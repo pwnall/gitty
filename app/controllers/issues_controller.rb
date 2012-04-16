@@ -1,16 +1,22 @@
 class IssuesController < ApplicationController
-  before_filter :current_user_can_read_repo, 
-      :except => [:edit, :destroy, :update]
+  before_filter :current_user_can_read_repo,
+      :only => [:index, :new, :create]
+      
+  def current_user_can_read_issue
+    @issue = Issue.find(params[:id])
+    bounce_user unless @issue.can_read? current_user
+  end
+  private :current_user_can_read_issue
+  before_filter :current_user_can_read_issue, 
+      :only => [:show]
       
   def current_user_can_edit_issue
     @issue = Issue.find(params[:id])
-    unless @issue.can_edit? current_user || @issue.author == current_user
-      bounce_user
-    end
+    bounce_user unless @issue.can_edit? current_user
   end
   private :current_user_can_edit_issue
   before_filter :current_user_can_edit_issue, 
-      :only => [:edit, :destroy, :update]
+      :only => [:edit, :update, :destroy]
   
   # GET /costan/rails/issues
   # GET /costan/rails/issues.xml

@@ -5,6 +5,11 @@
     <% else %>
       <div class="issue_status closed_issue">Closed</div>
     <% end %>
+    <% if issue.sensitive? %>
+      <div class="issue_status sensitive_issue" 
+          title="visible only to committers">Private</div>
+      <br />
+    <% end %>
     <% if issue.can_edit? current_user %>
       <%= link_to 'Edit', edit_profile_repository_issue_path(
               issue.repository.profile,

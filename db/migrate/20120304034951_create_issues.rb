@@ -4,6 +4,7 @@ class CreateIssues < ActiveRecord::Migration
       t.references :repository, :null  => false
       t.references :author, :null => false
       t.boolean :open, :default => true, :null => false
+      t.boolean :sensitive, :default => false, :null => false
       t.string :title, :length => 160, :null => false
       t.text :description, :length => 1.kilobyte, :null => false
 

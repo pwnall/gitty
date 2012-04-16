@@ -20,6 +20,10 @@
     <%= f.label :description %><br />
     <%= f.text_area :description %>
   </div>
+  <div class="field">
+    <%= f.label "Private" %>
+    <%= f.check_box :sensitive %> visible only to committers
+  </div>
   <div class="actions">
     <%= f.submit %>
   </div>

@@ -1,12 +1,16 @@
 <%= render @repository %>
 
 <h2>Listing issues</h2>
-<% unless @issues.first.nil? %>
+<% unless @issues.select { |i| i.can_read? current_user }.empty? %>
 <h3>Open Issues</h3>
-<%= render @issues.select(&:open) %>
+<% readable_open_issues(@issues, current_user).each do |issue| %>
+  <%= render 'issue', :issue => issue %>
+<% end %>
 
 <h3>Closed Issues</h3>
-<%= render @issues.reject(&:open) %>
+<% readable_closed_issues(@issues, current_user).each do |issue| %>
+  <%= render 'issue', :issue => issue %>
+<% end %>
 
 <% else %>
 There are no issues to display.

@@ -5,6 +5,11 @@
     <% else %>
       <div class="issue_status closed_issue">Closed</div>
     <% end %>
+    <% if issue.sensitive? %>
+      <div class="issue_status sensitive_issue"
+          title="visible only to committers">Private</div>
+      <br />
+    <% end %>
     <% if issue.can_edit? current_user %>
       <%= link_to 'Edit', edit_profile_repository_issue_path(
               issue.repository.profile, issue.repository, issue),
@@ -12,6 +17,8 @@
       <%= link_to 'Delete', profile_repository_issue_path(
               issue.repository.profile, issue.repository, issue),
               :confirm => 'Are you sure?', :method => :delete %>
+      <br />
+      <br />
       <% if issue.open %>
       <%= button_to 'Close Issue', profile_repository_issue_path(
               issue.repository.profile, issue.repository, issue,

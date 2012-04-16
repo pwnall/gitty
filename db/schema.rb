@@ -139,13 +139,14 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
   add_index "feed_subscriptions", ["topic_id", "topic_type", "profile_id"], :name => "index_feed_subscriptions_on_topic_profile", :unique => true
 
   create_table "issues", :force => true do |t|
-    t.integer  "author_id",                       :null => false
-    t.integer  "repository_id",                   :null => false
-    t.boolean  "open",          :default => true, :null => false
-    t.string   "title",                           :null => false
-    t.text     "description",                     :null => false
-    t.datetime "created_at",                      :null => false
-    t.datetime "updated_at",                      :null => false
+    t.integer  "repository_id",                    :null => false
+    t.integer  "author_id",                        :null => false
+    t.boolean  "open",          :default => true,  :null => false
+    t.boolean  "sensitive",     :default => false, :null => false
+    t.string   "title",                            :null => false
+    t.text     "description",                      :null => false
+    t.datetime "created_at",                       :null => false
+    t.datetime "updated_at",                       :null => false
   end
 
   add_index "issues", ["author_id", "open"], :name => "index_issues_on_author_id_and_open"
