@@ -11,7 +11,7 @@ class Blob < ActiveRecord::Base
                     :uniqueness => { :scope => :repository_id }  
 
   # The MIME type for the blob (helpful for generating a preview).
-  validates :mime_type, :length => 1..64, :presence => true
+  validates :mime_type, :length => 1..256, :presence => true
   
   # The size of the data in the blob.
   validates :size, :presence => true,
