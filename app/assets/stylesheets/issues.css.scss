@@ -1,0 +1,55 @@
+.reopen_issue_button {
+}
+.close_issue_button {
+}
+.issue_status {
+  font-size: 14px;
+  font-weight: bold;
+  color: white;
+  border-radius: 3px;
+  padding: 7px 10px;
+  display: block;
+  text-align: center;
+  width: 80%;
+}
+.closed_issue {
+  background-color: red;
+}
+.open_issue {
+  background-color: green;
+}
+.sensitive_issue {
+  background-color: #81C3EA;
+}
+.repository_issue {
+  margin: 5px 0;
+  padding: 0;
+  border: 1px solid #BECFA2;
+  border-radius: 4px;
+  -moz-border-radius: 4px;
+  -webkit-border-radius: 4px;
+  background: #E7F5D0;
+  overflow: hidden;
+
+  .title {
+    margin: 0;
+    padding: 5px;
+    font-weight: bold;
+  }
+  .author {
+    margin: 0;
+    padding: 5px;
+  }
+  .time {
+    margin: 0;
+    padding: 5px 5px 5px 1em;
+    color: #666666;
+  }
+  .edges {
+    float: right;
+    width: 130px;
+    margin: 0;
+    border-left: 1px solid #D6E8B6;
+    padding: 5px;
+  }
+}

@@ -1,5 +1,5 @@
 <div class="repository_issue">
-  <dl class="edges">
+  <div class="edges">
     <% if issue.open %>
       <div class="issue_status open_issue">Open</div>
     <% else %>
@@ -11,6 +11,7 @@
       <br />
     <% end %>
     <% if issue.can_edit? current_user %>
+    <p>
       <%= link_to 'Edit', edit_profile_repository_issue_path(
               issue.repository.profile,
               issue.repository, issue), 
@@ -20,8 +21,9 @@
               issue.repository, issue), 
               confirm: 'Are you sure?', 
               method: :delete %>
+    </p>
     <% end %>
-  </dl>
+  </div>
   <div class="metadata">
     <p class="title">
       <%= link_to issue.title, profile_repository_issue_path(
