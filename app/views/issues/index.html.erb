@@ -1,25 +1,17 @@
 <%= render @repository %>
 
-<h2>Listing issues</h2>
-<% unless @issues.select { |i| i.can_read? current_user }.empty? %>
-<h3>Open Issues</h3>
-<% readable_open_issues(@issues, current_user).each do |issue| %>
-  <%= render 'issue', :issue => issue %>
-<% end %>
-
-<h3>Closed Issues</h3>
-<% readable_closed_issues(@issues, current_user).each do |issue| %>
-  <%= render 'issue', :issue => issue %>
-<% end %>
-
+<% if @issues.select { |i| i.can_read? current_user }.empty? %>
+<%= render 'issues/no_issues', :repository => @repository %>
 <% else %>
-There are no issues to display.
-<% end %>
+  <%= render 'issues/new_issue_button', :repository => @repository %>
 
-<br />
-
-<% if @repository.can_read? current_user %>
-<%= button_to 'New Issue', new_profile_repository_issue_path(
-        @repository.profile, @repository), 
-        :method => :get %>
+  <% unless (issues = readable_open_issues(@issues, current_user)).empty? %>
+  <h2>Open Issues</h2>
+  <%= render issues %>
+  <% end %>
+  
+  <% unless (_issues = readable_closed_issues(@issues, current_user)).empty? %>
+  <h2>Closed Issues</h2>
+  <%= render issues %>
+  <% end %>
 <% end %>

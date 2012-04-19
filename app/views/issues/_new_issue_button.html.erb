@@ -1,0 +1,4 @@
+<% if repository.can_read? current_user %>
+<%= button_to 'New Issue', new_profile_repository_issue_path(
+        repository.profile, @repository), :method => :get %>
+<% end %>
