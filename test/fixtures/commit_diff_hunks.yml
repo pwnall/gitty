@@ -1,13 +1,13 @@
-commit1_d1_d2_a_hunk1:
-  diff: commit1_d1_d2_a 
+hello_lib_ghost_hello_rb_hunk1:
+  diff: hello_lib_ghost_hello_rb
   old_start: 0
   old_count: 0
   new_start: 1
   new_count: 1
   summary: "+1"
 
-commit2_d1_b_hunk1:
-  diff: commit2_d1_b
+require_lib_ghost_rb_hunk1:
+  diff: require_lib_ghost_rb
   old_start: 0
   old_count: 0
   new_start: 1

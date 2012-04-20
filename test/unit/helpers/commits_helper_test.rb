@@ -4,7 +4,7 @@ class CommitsHelperTest < ActionView::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
     @branch = branches(:branch1)
-    @commit = commits(:commit1)
+    @commit = commits(:hello)
     @tag = tags(:v1)
   end
 

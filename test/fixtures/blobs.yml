@@ -1,11 +1,17 @@
-d1_d2_a:
+gitmodules:
   repository: dexter_ghost
-  gitid: fb8247c7b27ae4cad9e7e3e66ba95126658ea7c2
+  gitid: a3dc76f192b7003dcd32b45e4d71f298e56bd01f
   mime_type: text/plain
-  size: 1
-
-d1_b:
+  size: 92
+  
+lib_ghost_hello_rb:
   repository: dexter_ghost
-  gitid: d7156e34dd1a091d5a38fc676c11fe91681c843f
+  gitid: fe629487131256f4d47c351d8ca81580635db554
+  mime_type: application/ruby
+  size: 39
+
+lib_ghost_rb:
+  repository: dexter_ghost
+  gitid: 0bc251a8adc9df4230059b2052c09b6dd3afac8f
   mime_type: text/plain
   size: 1

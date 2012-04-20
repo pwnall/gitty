@@ -3,8 +3,8 @@ require 'test_helper'
 class TreeEntryTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @entry = TreeEntry.new :tree => trees(:commit1_root),
-                           :child => blobs(:d1_b), :name => 'b'
+    @entry = TreeEntry.new :tree => trees(:hello_root),
+                           :child => blobs(:lib_ghost_rb), :name => 'ghost.rb'
   end
   
   test 'setup' do
@@ -12,13 +12,13 @@ class TreeEntryTest < ActiveSupport::TestCase
   end
   
   test 'no duplicate names' do
-    @entry.name = 'd1'
+    @entry.name = 'lib'
     assert !@entry.valid?
   end
   
   test 'duplicate objects with different names are ok' do
     @entry.name = 'new'
-    @entry.tree = trees(:commit2_d1)
+    @entry.tree = trees(:require_lib)
     assert @entry.valid?
   end
   
@@ -41,13 +41,15 @@ class TreeEntryTest < ActiveSupport::TestCase
     mock_repository_path @repo
     TreeEntry.destroy_all
 
-    git_tree = @repo.grit_repo.tree trees(:commit2_d1).gitid
+    git_tree = @repo.grit_repo.tree trees(:require_lib).gitid
     entries = TreeEntry.from_git_tree git_tree, @repo
-    assert_equal [trees(:commit2_d1), trees(:commit2_d1)],
-                 entries.map(&:tree), 'Tree'
-    assert_equal Set.new([trees(:d1_d2), blobs(:d1_b)]),
+    assert_equal [trees(:require_lib), trees(:require_lib),
+                  trees(:require_lib)], entries.map(&:tree), 'Tree'
+    assert_equal Set.new([trees(:lib_ghost), blobs(:lib_ghost_rb),
+                          submodules(:markdpwn_012)]),
                  Set.new(entries.map(&:child)), 'Children'
-    assert_equal ['b', 'd2'], entries.map(&:name).sort, 'Names'
+    assert_equal ['ghost', 'ghost.rb', 'markdpwn'],
+                 entries.map(&:name).sort, 'Names'
     assert entries.all?(&:valid?), 'Valid entries'
     entries.each(&:save!)  # Smoke-test saving.
   end

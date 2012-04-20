@@ -2,7 +2,7 @@ require 'test_helper'
 
 class CommitsControllerTest < ActionController::TestCase
   setup do
-    @commit = commits(:commit2)
+    @commit = commits(:require)
     @branch = branches(:branch1)
     @tag = tags(:v1)
     @session_user = @branch.repository.profile.user
@@ -15,7 +15,7 @@ class CommitsControllerTest < ActionController::TestCase
                 :profile_name => @commit.repository.profile.to_param
     assert_response :success
     assert_equal branches(:master), assigns(:branch)
-    assert_equal [commits(:commit1)], assigns(:commits)
+    assert_equal [commits(:hello)], assigns(:commits)
     
     assert_nil assigns(:previous_page)
     assert_nil assigns(:next_page)
@@ -27,7 +27,7 @@ class CommitsControllerTest < ActionController::TestCase
                 :ref_name => @branch.to_param
     assert_response :success
     assert_equal @branch, assigns(:branch)
-    assert_equal [commits(:commit2), commits(:commit1)], assigns(:commits)
+    assert_equal [commits(:require), commits(:hello)], assigns(:commits)
 
     assert_nil assigns(:previous_page)
     assert_nil assigns(:next_page)

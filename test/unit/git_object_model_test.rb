@@ -2,14 +2,16 @@ require 'test_helper'
 
 class GitObjectModelTest < ActiveSupport::TestCase
   setup do
-    @commit = commits(:commit1)
-    @blob = blobs(:d1_d2_a)
-    @tree = trees(:d1_d2)
+    @commit = commits(:hello)
+    @blob = blobs(:lib_ghost_hello_rb)
+    @submodule = submodules(:markdpwn_012)
+    @tree = trees(:lib_ghost)
   end
   
   test 'short_gitid' do
-    assert_equal 'bf28647e6740e2970b8e', @commit.short_gitid, 'commit'
-    assert_equal 'fb8247c7b27ae4cad9e7', @blob.short_gitid, 'blob'
-    assert_equal 'c15e2d5a841838292a87', @tree.short_gitid, 'tree'
+    assert_equal '09129da5a9d7b16d4f12', @commit.short_gitid, 'commit'
+    assert_equal 'fe629487131256f4d47c', @blob.short_gitid, 'blob'
+    assert_equal '50dd97ed5108082b0d0c', @submodule.short_gitid, 'submodule'
+    assert_equal 'afd48debd11b5fe644ad', @tree.short_gitid, 'tree'
   end
 end

@@ -3,8 +3,8 @@ require 'test_helper'
 class BlobTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @blob = Blob.new :gitid => '5146ab699d565600dc54251c226d6e528b448b93',
-                     :repository => @repo, :mime_type => 'text/plain',
+    @blob = Blob.new :gitid => '84840e173dd8b77b7451aa2c9346cb69d4ecf0cd',
+                     :repository => @repo, :mime_type => 'application/ruby',
                      :size => 12
   end
   
@@ -13,7 +13,7 @@ class BlobTest < ActiveSupport::TestCase
   end
   
   test 'no duplicate git ids' do
-    @blob.gitid = blobs(:d1_d2_a).gitid
+    @blob.gitid = blobs(:lib_ghost_hello_rb).gitid
     assert !@blob.valid?
   end
   
@@ -43,19 +43,20 @@ class BlobTest < ActiveSupport::TestCase
     blob = Blob.from_git_blob git_blob, @repo
     assert blob.valid?, 'Invalid blob created from git'
     assert_equal 'text/plain', blob.mime_type
-    assert_equal 12, blob.size
+    assert_equal 44, blob.size
     blob.save!
     assert !@blob.valid?, "Blob incorrectly created from git"
   end
   
   test 'data' do
     mock_repository_path @repo
-    assert_equal "Version 1.2\n", @blob.data
+    assert_equal "Dir['ghost/**/*.rb'].each { |f| require f }\n", @blob.data
     assert_raise TypeError, RuntimeError, 'data are frozen' do
       @blob.data[1] = 'E'
     end
     
-    assert_equal ['Version 1.2'], @blob.data_lines
+    assert_equal ["Dir['ghost/**/*.rb'].each { |f| require f }"],
+                 @blob.data_lines
     assert_raise TypeError, RuntimeError, 'data_lines array are frozen' do
       @blob.data_lines[0] = 'New version'
     end

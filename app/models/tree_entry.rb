@@ -9,7 +9,7 @@ class TreeEntry < ActiveRecord::Base
   validates :child, :presence => true
 
   # The child's name.
-  validates :name, :length => 1..256, :presence => true,
+  validates :name, :length => 1..128, :presence => true,
                    :uniqueness => { :scope => :tree_id }
 
   # Tree entries for an on-disk tree (directory).
@@ -25,8 +25,16 @@ class TreeEntry < ActiveRecord::Base
     tree ||= repository.trees.where(:gitid => git_tree.id).first
     blobs, trees = repository.blobs, repository.trees
     git_tree.contents.map do |git_child|
-      collection = git_child.kind_of?(Grit::Blob) ? blobs : trees
-      child = collection.where(:gitid => git_child.id).first
+      case git_child
+      when Grit::Blob, Grit::Tree
+        collection = git_child.kind_of?(Grit::Blob) ? blobs : trees
+        child = collection.where(:gitid => git_child.id).first
+      when Grit::Submodule
+        child = repository.submodules.where(:name => git_child.basename,
+                                            :gitid => git_child.id).first
+      else
+        raise "Git tree element #{git_child.inspect} not implemented"
+      end
       self.new :tree => tree, :child => child, :name => git_child.name
     end
   end

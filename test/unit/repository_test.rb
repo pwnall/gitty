@@ -219,10 +219,10 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'commits_added with an empty db' do
     @repo.save!
     mock_repository_path @repo
-    commit_a = commits(:commit1).gitid
-    commit_b1 = commits(:commit2).gitid
-    commit_b2 = 'becaeef98b57cfcc17472c001ebb5a4af5e4347b'
-    commit_c = '7ab1d7b5c5ddf87c73636109a9b256c23c3e0bed'
+    commit_a = commits(:hello).gitid
+    commit_b1 = commits(:require).gitid
+    commit_b2 = '93d00ea479394cd110116b29748538d16d9b931e'
+    commit_c = '88ca4433d478d6abb6558bebb9524fb72300457e'
     
     branches = @repo.grit_repo.branches.index_by(&:name)
     tags = @repo.grit_repo.tags.index_by(&:name)
@@ -275,8 +275,8 @@ class RepositoryTest < ActiveSupport::TestCase
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
     
-    commit_b2 = 'becaeef98b57cfcc17472c001ebb5a4af5e4347b'
-    commit_c = '7ab1d7b5c5ddf87c73636109a9b256c23c3e0bed'
+    commit_b2 = '93d00ea479394cd110116b29748538d16d9b931e'
+    commit_c = '88ca4433d478d6abb6558bebb9524fb72300457e'
     
     branches = repo.grit_repo.branches.index_by(&:name)
     commit_ids = repo.commits_added([branches['master']]).map(&:id)
@@ -300,54 +300,70 @@ class RepositoryTest < ActiveSupport::TestCase
     @repo.save!
     mock_repository_path @repo
     
-    commit_a = @repo.grit_repo.commit(commits(:commit1).gitid)
-    commit_b1 = @repo.grit_repo.commit(commits(:commit2).gitid)
+    commit_a = @repo.grit_repo.commit(commits(:hello).gitid)
+    commit_b1 = @repo.grit_repo.commit(commits(:require).gitid)
     
-    bits = @repo.contents_added([commit_a, commit_a])
-    assert_equal [blobs(:d1_d2_a).gitid], bits[:blobs].map(&:id),
-                 'Blobs for commit 1'
-    assert_equal [trees(:d1_d2), trees(:commit1_d1), trees(:commit1_root)].
-                 map(&:gitid), bits[:trees].map(&:id), 'Trees for commit 1'    
-  
     # NOTE: order dependent on topological sort implementation details, but not
     #       on Grit implementation
 
+    bits = @repo.contents_added([commit_a, commit_a])
+    assert_equal [blobs(:lib_ghost_hello_rb), blobs(:gitmodules)].map(&:gitid),
+                 bits[:blobs].map(&:id), 'Blobs for commit Hello'
+    assert_equal [trees(:lib_ghost), trees(:hello_lib), trees(:hello_root)].
+                 map(&:gitid), bits[:trees].map(&:id), 'Trees for commit Hello'    
+    assert_equal [submodules(:markdpwn_012).gitid], bits[:submodules].map(&:id),
+                 'Submodules for commit Hello'
+  
     bits = @repo.contents_added([commit_a, commit_b1])
-    assert_equal [blobs(:d1_d2_a), blobs(:d1_b)].map(&:gitid).sort,
-                 bits[:blobs].map(&:id).sort, 'Blobs for commit 2'
-    assert_equal [trees(:d1_d2), trees(:commit1_d1), trees(:commit1_root),
-                  trees(:commit2_d1), trees(:commit2_root)].map(&:gitid),
-                 bits[:trees].map(&:id), 'Trees for commit 2'
+    assert_equal [blobs(:gitmodules), blobs(:lib_ghost_hello_rb),
+                  blobs(:lib_ghost_rb)].map(&:gitid).sort,
+                 bits[:blobs].map(&:id).sort, 'Blobs for commit Require'
+    assert_equal [trees(:lib_ghost), trees(:hello_lib), trees(:hello_root),
+                  trees(:require_lib), trees(:require_root)].map(&:gitid),
+                 bits[:trees].map(&:id), 'Trees for commit Require'
+    assert_equal [submodules(:markdpwn_012).gitid], bits[:submodules].map(&:id),
+                 'Submodules for commit Require'
   end
   
   test 'contents_added with fixtures' do
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
 
-    commit_a = repo.grit_repo.commit commits(:commit1).gitid
-    commit_b1 = repo.grit_repo.commit commits(:commit2).gitid
-    commit_b2 = repo.grit_repo.commit 'becaeef98b57cfcc17472c001ebb5a4af5e4347b'
-    commit_c = repo.grit_repo.commit '7ab1d7b5c5ddf87c73636109a9b256c23c3e0bed'
-    d1_b2 = '5146ab699d565600dc54251c226d6e528b448b93'
-    commit3_root = 'c5411c50d6c35cb4c1d0c75e16db82bd3a12113d'
-    commit3_d1 = '0583a12952e34e9e1e8387963f61bca56e7025ad'
-    commit3_d1_d2 = 'd11a38de02c1bd03dd14ec0928748cc8aa86d6c2'
-    commitm_root = 'd8949111e5d63fa7e82888efd340844cbaa1cc0e'
-    commitm_d1 = '0c5e66ffb62b42f6ea7138cae8dff7e24a125c35'
+    commit_a = repo.grit_repo.commit commits(:hello).gitid
+    commit_b1 = repo.grit_repo.commit commits(:require).gitid
+    commit_b2 = repo.grit_repo.commit '93d00ea479394cd110116b29748538d16d9b931e'
+    commit_c = repo.grit_repo.commit '88ca4433d478d6abb6558bebb9524fb72300457e'
+    lib_easy_rb = '84840e173dd8b77b7451aa2c9346cb69d4ecf0cd'
+    easy_root = 'a4816eeed7c020b19545455b0366d252b0d73672'  # easy is commit_b2
+    easy_gitmodules = '1c62d4f811a5d22dbec88416dcbbbe3f7638dd83'
+    easy_lib = '55c232282ca3c345768919e41e8217c946fca152'
+    easy_lib_ghost = '353051a55953ecf3b384bf3d70c17c38181e80db'
+    easy_markdpwn = 'ecfce28e87c21965a8fadd65b0e12ea9ac2d2937'
+    easy_vendored_gitty = '796087fe7706929726f7163e9b39369cc8ea3053'
+    merge_root = 'cdf8b819e316b50817592526c1a5c5b7a120c363'
+    merge_lib = 'deddf356258c2943ad586557ade40b6e29876937'
     
     bits = repo.contents_added([commit_a, commit_b1])
-    assert_equal [], bits[:blobs], 'No new blobs in commit 2'
-    assert_equal [], bits[:trees], 'No new trees for commit 2'
+    assert_equal [], bits[:blobs], 'No new blobs in commit Require'
+    assert_equal [], bits[:submodules], 'No new submodules for commit Require'
+    assert_equal [], bits[:trees], 'No new trees for commit Require'
     
     bits = repo.contents_added([commit_a, commit_b1, commit_b2])
-    assert_equal [d1_b2], bits[:blobs].map(&:id), 'Blobs for commit 3'
-    assert_equal [commit3_d1_d2, commit3_d1, commit3_root],
-                 bits[:trees].map(&:id), 'Trees for commit 3'
+    assert_equal [lib_easy_rb, easy_gitmodules], bits[:blobs].map(&:id),
+                 'Blobs for commit Easy'
+    assert_equal [easy_markdpwn, easy_vendored_gitty],
+                 bits[:submodules].sort_by(&:basename).map(&:id),
+                 'Submodules for commit Easy'
+    assert_equal [easy_lib_ghost, easy_lib, easy_root],
+                 bits[:trees].map(&:id), 'Trees for commit Easy'
     
     bits = repo.contents_added([commit_a, commit_b1, commit_c, commit_b2])
-    assert_equal [d1_b2], bits[:blobs].map(&:id), 'Blobs for merge commit'
-    assert_equal [commit3_d1_d2, commitm_d1, commitm_root, commit3_d1,
-                  commit3_root],
+    assert_equal [lib_easy_rb, easy_gitmodules], bits[:blobs].map(&:id),
+                 'Blobs for merge commit'
+    assert_equal [easy_markdpwn, easy_vendored_gitty],
+                 bits[:submodules].map(&:id), 'Submodules for merge commit'
+    assert_equal [easy_lib_ghost, merge_lib, merge_root, easy_lib,
+                  easy_root],
                  bits[:trees].map(&:id), 'Trees for merge commit'
   end
   
@@ -359,9 +375,9 @@ class RepositoryTest < ActiveSupport::TestCase
       assert_difference 'Tag.count', 1 do
         assert_difference 'Commit.count', 2 do
           assert_difference 'CommitParent.count', 3 do
-            assert_difference 'CommitDiff.count', 3 do
-              assert_difference 'CommitDiffHunk.count', 3 do
-                assert_difference 'TreeEntry.count', 9 do
+            assert_difference 'CommitDiff.count', 4 do
+              assert_difference 'CommitDiffHunk.count', 4 do
+                assert_difference 'TreeEntry.count', 15 do
                   delta = repo.integrate_changes
                 end
               end
@@ -371,7 +387,7 @@ class RepositoryTest < ActiveSupport::TestCase
       end
     end
     
-    assert_equal ['Commit 3', "Merge branch 'branch1'"],
+    assert_equal ['Easy mode', "Merge branch 'branch1'"],
                  delta[:commits].map(&:message).sort, 'New commits'
     assert_equal ['deleted'], delta[:branches][:deleted].map(&:name),
                  'Deleted branches'
@@ -527,7 +543,7 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'publish_changes with branches' do
     repo = repositories(:dexter_ghost)
     ghost_branch = Branch.create! :repository => repo, :name => 'ghosty',
-                                  :commit => commits(:commit2)
+                                  :commit => commits(:require)
     changes = {
       :branches => {
         :added => [branches(:branch1)],
@@ -535,7 +551,7 @@ class RepositoryTest < ActiveSupport::TestCase
         :deleted => [ghost_branch]
       },
       :tags => { :added => [], :changed => [], :deleted => [] },
-      :commits => Set.new([commits(:commit2)])
+      :commits => Set.new([commits(:require)])
     }
     author = profiles(:costan)
     items = repo.publish_changes author, changes  
@@ -558,9 +574,9 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal repo.id, items[2].data[:repository_id]
     assert_equal 'branch1', items[2].data[:branch_name]
     assert_equal 1, items[2].data[:commits].length
-    assert_equal commits(:commit2).gitid, items[2].data[:commits][0][:gitid]
-    assert_equal commits(:commit2).message, items[2].data[:commits][0][:message]
-    assert_equal commits(:commit2).author_email,
+    assert_equal commits(:require).gitid, items[2].data[:commits][0][:gitid]
+    assert_equal commits(:require).message, items[2].data[:commits][0][:message]
+    assert_equal commits(:require).author_email,
                  items[2].data[:commits][0][:author]
 
     assert_equal 'del_branch', items[3].verb
@@ -574,7 +590,7 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'publish_changes with tags' do
     repo = repositories(:dexter_ghost)
     ghost_tag = Tag.create! :repository => repo, :name => 'ghosty',
-        :commit => commits(:commit2), :message => 'Ghosting around.',
+        :commit => commits(:require), :message => 'Ghosting around.',
         :committer_name => profiles(:costan).name,
         :committer_email => profiles(:costan).user.email,
         :committed_at => Time.now - 1
@@ -599,9 +615,9 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal repo.id, items[0].data[:repository_id]
     assert_equal 'ci_request', items[0].data[:tag_name]
     assert_equal 'Continuous integration request.', items[0].data[:message]
-    assert_equal commits(:commit2).gitid, items[0].data[:commit][:gitid]
-    assert_equal commits(:commit2).message, items[0].data[:commit][:message]
-    assert_equal commits(:commit2).author_email, items[0].data[:commit][:author]
+    assert_equal commits(:require).gitid, items[0].data[:commit][:gitid]
+    assert_equal commits(:require).message, items[0].data[:commit][:message]
+    assert_equal commits(:require).author_email, items[0].data[:commit][:author]
 
     assert_equal 'new_tag', items[2].verb
     assert_equal author, items[2].author
@@ -611,9 +627,9 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal repo.id, items[2].data[:repository_id]
     assert_equal 'v1.0', items[2].data[:tag_name]
     assert_equal 'Released version 1.', items[2].data[:message]
-    assert_equal commits(:commit1).gitid, items[2].data[:commit][:gitid]
-    assert_equal commits(:commit1).message, items[2].data[:commit][:message]
-    assert_equal commits(:commit1).author_email, items[2].data[:commit][:author]
+    assert_equal commits(:hello).gitid, items[2].data[:commit][:gitid]
+    assert_equal commits(:hello).message, items[2].data[:commit][:message]
+    assert_equal commits(:hello).author_email, items[2].data[:commit][:author]
 
     assert_equal 'del_tag', items[3].verb
     assert_equal author, items[3].author

@@ -25,6 +25,8 @@ class Repository < ActiveRecord::Base
   has_many :trees, :dependent => :destroy, :inverse_of => :repository
   # Blob information cached from the on-disk repository.
   has_many :blobs, :dependent => :destroy, :inverse_of => :repository
+  # Submodule information cached from the on-disk repository.
+  has_many :submodules, :dependent => :destroy, :inverse_of => :repository
   
   # This repository's ACL. All entries have Profiles as principals.
   has_many :acl_entries, :as => :subject, :dependent => :destroy,
@@ -260,7 +262,7 @@ class Repository
     end
   end
   
-  # Trees and blobs that don't have associated database models.
+  # Trees, blobs, and submodules that don't have associated database models.
   #
   # Args:
   #   git_branches:: array of Grit::Head objects representing on-disk branches
@@ -268,6 +270,7 @@ class Repository
   #
   # Returns a hash with the follwing keys:
   #   blobs:: array of Grit::Blob objects
+  #   submodules:: array of Grit::Submodule objects
   #   trees:: array of Grit::Tree objects, topologically sorted. This means
   #           that, if the trees are created in order, a tree's children will
   #           always exist before it is created.
@@ -282,7 +285,7 @@ class Repository
     roots = roots.reject { |root| db_ids[root.id] }
     
     new_trees = topological_sort roots do |tree|
-      parents = tree.contents.reject { |child| child.kind_of? Grit::Blob }
+      parents = tree.contents.select { |child| child.kind_of? Grit::Tree }
       unknown_ids = parents.map(&:id).reject { |p_id| db_ids.has_key? p_id }
       db_ids2 = Set.new self.trees.select(:gitid).
                                    where(:gitid => unknown_ids).map(&:gitid)
@@ -298,9 +301,19 @@ class Repository
     new_ids = new_blobs.map(&:id)
     db_ids = Set.new self.blobs.select(:gitid).
                                 where(:gitid => new_ids).map(&:gitid)
-    new_blobs = new_blobs.reject { |blob| db_ids.include? blob.id }
+    new_blobs.reject! { |blob| db_ids.include? blob.id }
     
-    { :blobs => new_blobs, :trees => new_trees }
+    new_submodules = new_trees.map { |tree|
+      tree.contents.select { |child| child.kind_of? Grit::Submodule }
+    }.flatten.index_by { |sub| [sub.basename, sub.id] }.values
+    new_ids = new_submodules.map(&:id)
+    new_names = new_submodules.map(&:basename)
+    db_keys = Set.new self.submodules.select([:gitid, :name]).
+        where(:gitid => new_ids, :name => new_names).
+        map { |sub| [sub.gitid, sub.name] }
+    new_submodules.reject! { |sub| db_keys.include? [sub.id, sub.basename] }
+    
+    { :blobs => new_blobs, :submodules => new_submodules, :trees => new_trees }
   end
   
   # Integrates changes to the on-disk repository into the database.
@@ -331,6 +344,9 @@ class Repository
     
     new_contents[:blobs].each do |git_blob|
       Blob.from_git_blob(git_blob, self).save!
+    end
+    new_contents[:submodules].each do |git_submodule|
+      Submodule.from_git_submodule(git_submodule, self).save!
     end
     new_contents[:trees].each do |git_tree|
       tree = Tree.from_git_tree(git_tree, self)

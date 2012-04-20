@@ -18,13 +18,15 @@ class CommitDiff < ActiveRecord::Base
       :length => { :in => 1..1.kilobyte, :allow_nil => true },
       :uniqueness => { :scope => :commit_id, :allow_nil => true }
 
-  # The blob contents before the commit. Nil for newly added blobs.
-  belongs_to :old_blob, :class_name => 'Blob'
-  validates :old_blob, :presence => true, :if => lambda { |d| d.old_path }
+  # Blob contents or submodule before the commit. Nil for newly added objects.
+  belongs_to :old_object, :polymorphic => true
+  validates :old_object, :presence => true,
+                         :if => lambda { |diff| diff.old_path }
   
-  # The blob contents after the commit. Nil for removed blobs.
-  belongs_to :new_blob, :class_name => 'Blob'
-  validates :new_blob, :presence => true, :if => lambda { |d| d.new_path }
+  # Blob contents after the commit. Nil for removed blobs and all submodules.
+  belongs_to :new_object, :polymorphic => true
+  validates :new_object, :presence => true,
+                         :if => lambda { |diff| diff.new_path }
   
   # Hunks in the diff.
   has_many :hunks, :class_name => 'CommitDiffHunk', :foreign_key => 'diff_id',
@@ -44,20 +46,37 @@ class CommitDiff < ActiveRecord::Base
       raise ArgumentError, "commit doesn't correspond to git_commit"
     end
     
-    diffs = {}    
-    repo = commit.repository
+    diffs = {}
+    old_commit = commit.parents.first
     git_commit.diffs.each do |git_diff|
-      old_blob = git_diff.a_blob &&
-          repo.blobs.where(:gitid => git_diff.a_blob.id).first
-      new_blob = git_diff.b_blob &&
-          repo.blobs.where(:gitid => git_diff.b_blob.id).first
-      old_path = old_blob && git_diff.a_path
-      new_path = new_blob && git_diff.b_path
+      old_object = resolve_object git_diff.a_blob, git_diff.a_path, old_commit
+      new_object = resolve_object git_diff.b_blob, git_diff.b_path, commit
+      old_path = old_object && git_diff.a_path
+      new_path = new_object && git_diff.b_path
     
       diff = self.new :commit => commit, :old_path => old_path,
-          :new_path => new_path, :old_blob => old_blob, :new_blob => new_blob
+          :new_path => new_path, :old_object => old_object,
+          :new_object => new_object
       diffs[diff] = CommitDiffHunk.from_git_diff(git_diff, diff)
     end
     diffs
+  end
+  
+  # Locates one of the two objects connected by a diff.
+  #
+  # Args:
+  #  git_blob:: the Grit::Blob pointed to by the diff 
+  #  path:: the object path
+  #  commit:: Commit instance for the commit that has the object
+  #
+  # Returns the object pointed by the diff (a Blob or Submodule).
+  def self.resolve_object(git_blob, diff_path, commit)
+    return nil unless git_blob
+    
+    blob = commit.repository.blobs.where(:gitid => git_blob.id).first
+    return blob if blob
+    
+    # This slow path is only activated for modules.
+    commit.tree.walk_path diff_path
   end
 end

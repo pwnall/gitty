@@ -4,24 +4,24 @@ class TreesHelperTest < ActionView::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
     @branch = branches(:branch1)
-    @commit = commits(:commit1)
+    @commit = commits(:hello)
     @tag = tags(:v1)
     @gid = @commit.gitid
   end
   
   test 'tree_path with branch and path' do
-    assert_equal '/dexter/ghost/tree/branch1/d1/d2',
-                 tree_path(@branch, '/d1/d2')
+    assert_equal '/dexter/ghost/tree/branch1/lib/ghost',
+                 tree_path(@branch, '/lib/ghost')
   end
 
   test 'tree_path with tag and path' do
-    assert_equal '/dexter/ghost/tree/v1.0/d1/d2',
-                 tree_path(@tag, '/d1/d2')
+    assert_equal '/dexter/ghost/tree/v1.0/lib/ghost',
+                 tree_path(@tag, '/lib/ghost')
   end
 
   test 'tree_path with commit and path' do
-    assert_equal "/dexter/ghost/tree/#{@gid}/d1/d2",
-                 tree_path(@commit, 'd1/d2')
+    assert_equal "/dexter/ghost/tree/#{@gid}/lib/ghost",
+                 tree_path(@commit, 'lib/ghost')
   end
 
   test 'tree_path with branch' do

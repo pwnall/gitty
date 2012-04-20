@@ -1,9 +1,19 @@
-commit1_d1_d2_a:
-  commit: commit1
-  new_blob: d1_d2_a
-  new_path: d1/d2/a
+hello_gitmodules:
+  commit: hello
+  new_object: gitmodules (Blob)
+  new_path: .gitmodules
 
-commit2_d1_b:
-  commit: commit2
-  new_blob: d1_b
-  new_path: d1/b
+hello_lib_ghost_hello_rb:
+  commit: hello
+  new_object: lib_ghost_hello_rb (Blob)
+  new_path: lib/ghost/hello.rb
+
+hello_lib_markdpwn:
+  commit: hello
+  new_object: markdpwn_012 (Submodule)
+  new_path: lib/markdpwn
+
+require_lib_ghost_rb:
+  commit: require
+  new_object: lib_ghost_rb (Blob)
+  new_path: lib/ghost.rb

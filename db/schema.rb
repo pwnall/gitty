@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120328051521) do
+ActiveRecord::Schema.define(:version => 20120420051746) do
 
   create_table "acl_entries", :force => true do |t|
     t.string   "role",           :null => false
@@ -27,10 +27,10 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
   add_index "acl_entries", ["subject_id", "subject_type", "principal_id", "principal_type"], :name => "index_acl_entries_by_subject_principal", :unique => true
 
   create_table "blobs", :force => true do |t|
-    t.integer "repository_id",               :null => false
-    t.string  "gitid",         :limit => 64, :null => false
-    t.string  "mime_type",     :limit => 64, :null => false
-    t.integer "size",                        :null => false
+    t.integer "repository_id",                :null => false
+    t.integer "size",                         :null => false
+    t.string  "gitid",         :limit => 64,  :null => false
+    t.string  "mime_type",     :limit => 256, :null => false
   end
 
   add_index "blobs", ["repository_id", "gitid"], :name => "index_blobs_on_repository_id_and_gitid", :unique => true
@@ -57,9 +57,11 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
   add_index "commit_diff_hunks", ["diff_id"], :name => "index_commit_diff_hunks_on_diff_id"
 
   create_table "commit_diffs", :force => true do |t|
-    t.integer "commit_id",   :null => false
-    t.integer "old_blob_id"
-    t.integer "new_blob_id"
+    t.integer "commit_id",                     :null => false
+    t.integer "old_object_id"
+    t.string  "old_object_type", :limit => 16
+    t.integer "new_object_id"
+    t.string  "new_object_type", :limit => 16
     t.string  "old_path"
     t.string  "new_path"
   end
@@ -191,6 +193,14 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
   add_index "ssh_keys", ["fprint"], :name => "index_ssh_keys_on_fprint", :unique => true
   add_index "ssh_keys", ["user_id"], :name => "index_ssh_keys_on_user_id"
 
+  create_table "submodules", :force => true do |t|
+    t.integer "repository_id",                :null => false
+    t.string  "name",          :limit => 128, :null => false
+    t.string  "gitid",         :limit => 64,  :null => false
+  end
+
+  add_index "submodules", ["repository_id", "name", "gitid"], :name => "index_submodules_on_repository_id_and_name_and_gitid", :unique => true
+
   create_table "tags", :force => true do |t|
     t.string   "name",            :limit => 128, :null => false
     t.integer  "repository_id",                  :null => false
@@ -205,7 +215,7 @@ ActiveRecord::Schema.define(:version => 20120328051521) do
 
   create_table "tree_entries", :force => true do |t|
     t.integer "tree_id",                   :null => false
-    t.string  "child_type", :limit => 8,   :null => false
+    t.string  "child_type", :limit => 16,  :null => false
     t.integer "child_id",                  :null => false
     t.string  "name",       :limit => 128, :null => false
   end

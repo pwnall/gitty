@@ -13,36 +13,35 @@ class TreesControllerTest < ActionController::TestCase
     get :show, :commit_gid => @commit.to_param,
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param,
-               :path => 'd1/d2'
+               :path => 'lib/ghost'
     assert_response :success
     assert_equal @commit, assigns(:tree_reference)
-    assert_equal 'd1/d2', assigns(:tree_path)
-    assert_equal trees(:d1_d2), assigns(:tree)
+    assert_equal 'lib/ghost', assigns(:tree_path)
+    assert_equal trees(:lib_ghost), assigns(:tree)
   end
 
   test "should show tree with branch name" do
     get :show, :commit_gid => @branch.to_param,
                :repo_name => @branch.repository.to_param,
                :profile_name => @branch.repository.profile.to_param,
-               :path => 'd1/d2'
+               :path => 'lib/ghost'
     assert_response :success
     assert_equal @branch, assigns(:tree_reference)
     assert_equal @branch, assigns(:branch)
-    assert_equal 'd1/d2', assigns(:tree_path)
-    assert_equal trees(:d1_d2), assigns(:tree)
+    assert_equal 'lib/ghost', assigns(:tree_path)
+    assert_equal trees(:lib_ghost), assigns(:tree)
   end
-
 
   test "should show tree with tag name" do
     get :show, :commit_gid => @tag.to_param,
                :repo_name => @tag.repository.to_param,
                :profile_name => @tag.repository.profile.to_param,
-               :path => 'd1/d2'
+               :path => 'lib/ghost'
     assert_response :success
     assert_equal @tag, assigns(:tree_reference)
     assert_equal @tag, assigns(:tag)
-    assert_equal 'd1/d2', assigns(:tree_path)
-    assert_equal trees(:d1_d2), assigns(:tree)
+    assert_equal 'lib/ghost', assigns(:tree_path)
+    assert_equal trees(:lib_ghost), assigns(:tree)
   end
 
   test "should show commit tree with commit sha" do
@@ -76,6 +75,20 @@ class TreesControllerTest < ActionController::TestCase
     assert_equal '/', assigns(:tree_path)
     assert_equal @tag.commit.tree, assigns(:tree)
   end
+
+  test "should show tree containing all sorts of objects" do
+    commit = commits(:require)
+    get :show, :commit_gid => commit.to_param,
+               :repo_name => commit.repository.to_param,
+               :profile_name => commit.repository.profile.to_param,
+               :path => 'lib'
+    assert_response :success
+    assert_equal commit, assigns(:tree_reference)
+    assert_equal 'lib', assigns(:tree_path)
+    assert_equal trees(:require_lib), assigns(:tree)
+    
+    # TODO(pwnall): rendering tests
+  end
   
   test "should grant read access to non-owner" do
     set_session_current_user users(:costan)
@@ -84,13 +97,13 @@ class TreesControllerTest < ActionController::TestCase
     get :show, :commit_gid => @commit.to_param,
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param,
-               :path => 'd1/d2'
+               :path => 'lib/ghost'
     assert_response :success
     
     get :show, :commit_gid => @branch.to_param,
                :repo_name => @branch.repository.to_param,
                :profile_name => @branch.repository.profile.to_param,
-               :path => 'd1/d2'
+               :path => 'lib/ghost'
     assert_response :success
     
     get :show, :commit_gid => @branch.to_param,
@@ -105,13 +118,13 @@ class TreesControllerTest < ActionController::TestCase
     get :show, :commit_gid => @commit.to_param,
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param,
-               :path => 'd1/d2'
+               :path => 'lib/ghost'
     assert_response :forbidden
     
     get :show, :commit_gid => @branch.to_param,
                :repo_name => @branch.repository.to_param,
                :profile_name => @branch.repository.profile.to_param,
-               :path => 'd1/d2'
+               :path => 'lib/ghost'
     assert_response :forbidden
     
     get :show, :commit_gid => @branch.to_param,

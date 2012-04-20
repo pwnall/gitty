@@ -3,8 +3,8 @@ require 'test_helper'
 class CommitParentTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @parent = CommitParent.new :commit => commits(:commit1),
-                               :parent => commits(:commit2)
+    @parent = CommitParent.new :commit => commits(:hello),
+                               :parent => commits(:require)
   end
   
   test 'setup' do
@@ -29,21 +29,21 @@ class CommitParentTest < ActiveSupport::TestCase
   test 'from_git_commit' do
     mock_repository_path @repo
     
-    git_commit3 =
-       @repo.grit_repo.commit 'becaeef98b57cfcc17472c001ebb5a4af5e4347b'
-    Tree.from_git_tree(git_commit3.tree, @repo).save!
-    commit3 = Commit.from_git_commit git_commit3, @repo
-    commit3.save!
+    git_easy_commit =
+       @repo.grit_repo.commit '93d00ea479394cd110116b29748538d16d9b931e'
+    Tree.from_git_tree(git_easy_commit.tree, @repo).save!
+    easy_commit = Commit.from_git_commit git_easy_commit, @repo
+    easy_commit.save!
     
-    git_commit_m =
-       @repo.grit_repo.commit '7ab1d7b5c5ddf87c73636109a9b256c23c3e0bed'
-    Tree.from_git_tree(git_commit_m.tree, @repo).save!
-    commit_m = Commit.from_git_commit git_commit_m, @repo
-    commit_m.save!
+    git_merge_commit =
+       @repo.grit_repo.commit '88ca4433d478d6abb6558bebb9524fb72300457e'
+    Tree.from_git_tree(git_merge_commit.tree, @repo).save!
+    merge_commit = Commit.from_git_commit git_merge_commit, @repo
+    merge_commit.save!
 
-    parents = CommitParent.from_git_commit git_commit_m, @repo
-    assert_equal [commit_m, commit_m], parents.map(&:commit), 'Commit'
-    assert_equal Set.new([commits(:commit2), commit3]),
+    parents = CommitParent.from_git_commit git_merge_commit, @repo
+    assert_equal [merge_commit, merge_commit], parents.map(&:commit), 'Commit'
+    assert_equal Set.new([commits(:require), easy_commit]),
                  Set.new(parents.map(&:parent)),
                  'Parents'
     assert parents.all?(&:valid?), 'Valid' 

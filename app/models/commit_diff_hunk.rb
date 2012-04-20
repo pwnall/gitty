@@ -47,10 +47,10 @@ class CommitDiffHunk < ActiveRecord::Base
     
     old_line, new_line = old_start, new_start
     
-    old_lines = diff.old_blob && diff.old_blob.data_lines
-    new_lines = diff.new_blob && diff.new_blob.data_lines
+    old_lines = diff.old_object && diff.old_object.data_lines
+    new_lines = diff.new_object && diff.new_object.data_lines
     
-    diff_data = summary.split /(\d+)/
+    diff_data = summary.split(/(\d+)/)
     lines = []
     i = 0
     while i < diff_data.length
@@ -92,10 +92,10 @@ class CommitDiffHunk < ActiveRecord::Base
     git_diff.hunks.map do |git_hunk|
       old_start = git_hunk.a_first_line || 0
       old_count = git_hunk.a_lines
-      old_count ||= diff.old_blob ? diff.old_blob.data_line_count : 0      
+      old_count ||= diff.old_object ? diff.old_object.data_line_count : 0      
       new_start = git_hunk.b_first_line || 0
       new_count = git_hunk.b_lines
-      new_count ||= diff.new_blob ? diff.new_blob.data_line_count : 0
+      new_count ||= diff.new_object ? diff.new_object.data_line_count : 0
       context = git_hunk.context.blank? ? nil : git_hunk.context
       
       hunk = self.new :diff => diff, :old_start => old_start,

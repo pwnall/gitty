@@ -1,19 +1,19 @@
-commit1_root:
+hello_root:
   repository: dexter_ghost
-  gitid: 6ccd9a0b61bf34540ae17414257af5afbb3dafe9
+  gitid: 57872360e2532c634c9588baf5fe5304c4a9c031
 
-commit1_d1:
+hello_lib:
   repository: dexter_ghost
-  gitid: 835b54b9575e1e74644bf2e671d4286b93d3ebf1
+  gitid: 2298b820368f56874deaa5d4690a0a29bca7fc08
 
-d1_d2:
+lib_ghost:
   repository: dexter_ghost
-  gitid: c15e2d5a841838292a879ccad2cd89f91886e092
+  gitid: afd48debd11b5fe644adaaed71b9c7c0ad75eb62
 
-commit2_root:
+require_root:
   repository: dexter_ghost
-  gitid: 0a21b3740bf1f51d75767a0f0b29dc56f22fd64a
+  gitid: 291828d9656a7de20f443e359b332dc28f5cd1bc
 
-commit2_d1:
+require_lib:
   repository: dexter_ghost
-  gitid: 8c4ddb9cd8faed019c17cce23d98af29882b7296
+  gitid: de0b134e0b0a79eb87dc189985c4f89db44e802c

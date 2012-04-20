@@ -3,10 +3,10 @@ require 'test_helper'
 class TagTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @tag = Tag.new :name => 'tag', :commit => commits(:commit1),
-                   :committer_name => 'Victor Costan',
-                   :committer_email => 'costan@gmail.com',
-                   :committed_at => Time.now - 1,
+    @tag = Tag.new :name => 'tag', :commit => commits(:hello),
+                   :committer_name => 'Dexter',
+                   :committer_email => 'dexter@gmail.com',
+                   :committed_at => Time.parse('Mon Apr 2 16:18:19 2012 -0400'),
                    :message => 'Tagged version tag.',
                    :repository => @repo
   end
@@ -47,15 +47,15 @@ class TagTest < ActiveSupport::TestCase
   test 'from_git_branch' do
     mock_repository_path @repo
     
-    git_commit3 =
-       @repo.grit_repo.commit 'becaeef98b57cfcc17472c001ebb5a4af5e4347b'
-    Tree.from_git_tree(git_commit3.tree, @repo).save!
-    commit3 = Commit.from_git_commit git_commit3, @repo
-    commit3.save!
+    git_easy_commit =
+       @repo.grit_repo.commit '93d00ea479394cd110116b29748538d16d9b931e'
+    Tree.from_git_tree(git_easy_commit.tree, @repo).save!
+    easy_commit = Commit.from_git_commit git_easy_commit, @repo
+    easy_commit.save!
     
     git_tag = @repo.grit_repo.tags.find { |t| t.name == 'demo' }
     tag = Tag.from_git_tag git_tag, @repo
-    assert_equal commit3, tag.commit
+    assert_equal easy_commit, tag.commit
     assert tag.new_record?, 'New record for tag'
     assert_equal @repo, tag.repository
     assert_equal 'demo', tag.name

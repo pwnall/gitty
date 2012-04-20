@@ -7,7 +7,7 @@ class BlobsControllerTest < ActionController::TestCase
     @branch = branches(:master)
     @tag = tags(:v1)
     @commit = @branch.commit
-    @blob = blobs(:d1_d2_a)
+    @blob = blobs(:lib_ghost_hello_rb)
     @session_user = @branch.repository.profile.user
     set_session_current_user @session_user
   end
@@ -16,33 +16,33 @@ class BlobsControllerTest < ActionController::TestCase
     get :show, :commit_gid => @commit.to_param,
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param,
-               :path => 'd1/d2/a'
+               :path => 'lib/ghost/hello.rb'
     assert_response :success
     assert_equal @commit, assigns(:blob_reference)
-    assert_equal 'd1/d2/a', assigns(:blob_path)
-    assert_equal blobs(:d1_d2_a), assigns(:blob)
+    assert_equal 'lib/ghost/hello.rb', assigns(:blob_path)
+    assert_equal blobs(:lib_ghost_hello_rb), assigns(:blob)
   end
 
   test "should show blob with branch name" do
     get :show, :commit_gid => @branch.to_param,
                :repo_name => @branch.repository.to_param,
                :profile_name => @branch.repository.profile.to_param,
-               :path => 'd1/d2/a'
+               :path => 'lib/ghost/hello.rb'
     assert_response :success
     assert_equal @branch, assigns(:blob_reference)
-    assert_equal 'd1/d2/a', assigns(:blob_path)
-    assert_equal blobs(:d1_d2_a), assigns(:blob)
+    assert_equal 'lib/ghost/hello.rb', assigns(:blob_path)
+    assert_equal blobs(:lib_ghost_hello_rb), assigns(:blob)
   end
 
   test "should show blob with tag name" do
     get :show, :commit_gid => @tag.to_param,
                :repo_name => @tag.repository.to_param,
                :profile_name => @tag.repository.profile.to_param,
-               :path => 'd1/d2/a'
+               :path => 'lib/ghost/hello.rb'
     assert_response :success
     assert_equal @tag, assigns(:blob_reference)
-    assert_equal 'd1/d2/a', assigns(:blob_path)
-    assert_equal blobs(:d1_d2_a), assigns(:blob)
+    assert_equal 'lib/ghost/hello.rb', assigns(:blob_path)
+    assert_equal blobs(:lib_ghost_hello_rb), assigns(:blob)
   end
   
   test "should grant read access to participating user" do
@@ -52,13 +52,13 @@ class BlobsControllerTest < ActionController::TestCase
     get :show, :commit_gid => @commit.to_param,
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param,
-               :path => 'd1/d2/a'
+               :path => 'lib/ghost/hello.rb'
     assert_response :success
     
     get :show, :commit_gid => @branch.to_param,
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param,
-               :path => 'd1/d2/a'
+               :path => 'lib/ghost/hello.rb'
     assert_response :success    
   end
 
@@ -68,13 +68,13 @@ class BlobsControllerTest < ActionController::TestCase
     get :show, :commit_gid => @commit.to_param,
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param,
-               :path => 'd1/d2/a'
+               :path => 'lib/ghost/hello.rb'
     assert_response :forbidden
     
     get :show, :commit_gid => @branch.to_param,
                :repo_name => @commit.repository.to_param,
                :profile_name => @commit.repository.profile.to_param,
-               :path => 'd1/d2/a'
+               :path => 'lib/ghost/hello.rb'
     assert_response :forbidden
   end  
   

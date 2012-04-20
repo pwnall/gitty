@@ -2,7 +2,7 @@ require 'test_helper'
 
 class CommitDiffHunkTest < ActiveSupport::TestCase
   setup do
-    @hunk = CommitDiffHunk.new :diff => commit_diffs(:commit1_d1_d2_a),
+    @hunk = CommitDiffHunk.new :diff => commit_diffs(:hello_lib_ghost_hello_rb),
         :old_start => 1, :old_count => 5, :new_start => 3, :new_count => 6,
         :summary => ' 2-2+3 1'
     @repo = @hunk.diff.commit.repository
@@ -61,9 +61,30 @@ class CommitDiffHunkTest < ActiveSupport::TestCase
     commit = diff.commit
     g_commit = @repo.grit_repo.commit(commit.gitid)
 
-    
-    hunks = CommitDiffHunk.from_git_diff(g_commit.diffs.first, diff)
+    # Add lib/ghost/hello.rb    
+    hunks = CommitDiffHunk.from_git_diff(g_commit.diffs[1], diff)
+    assert_equal 1, hunks.length, '1 hunk'
+    assert_equal diff, hunks[0].diff
+    assert_equal 0, hunks[0].old_start, 'old_start'
+    assert_equal 0, hunks[0].old_count, 'old_count'
+    assert_equal 1, hunks[0].new_start, 'new_start'
+    assert_equal 1, hunks[0].new_count, 'new_count'
+    assert_nil hunks[0].context, 'context'
+    assert_equal "+1", hunks[0].summary
 
+    # Add .gitmodules
+    hunks = CommitDiffHunk.from_git_diff(g_commit.diffs[0], diff)
+    assert_equal 1, hunks.length, '1 hunk'
+    assert_equal diff, hunks[0].diff
+    assert_equal 0, hunks[0].old_start, 'old_start'
+    assert_equal 0, hunks[0].old_count, 'old_count'
+    assert_equal 1, hunks[0].new_start, 'new_start'
+    assert_equal 3, hunks[0].new_count, 'new_count'
+    assert_nil hunks[0].context, 'context'
+    assert_equal "+3", hunks[0].summary
+    
+    # Add submodule lib/markdpwn
+    hunks = CommitDiffHunk.from_git_diff(g_commit.diffs[2], diff)
     assert_equal 1, hunks.length, '1 hunk'
     assert_equal diff, hunks[0].diff
     assert_equal 0, hunks[0].old_start, 'old_start'
@@ -73,7 +94,7 @@ class CommitDiffHunkTest < ActiveSupport::TestCase
     assert_nil hunks[0].context, 'context'
     assert_equal "+1", hunks[0].summary
     
-    # Smoke test to ensure the hunk is really valid.
+    # Smoke test to ensure the hunks are really valid.
     diff.hunks.destroy_all
     assert commit.valid?
     commit.save!
@@ -120,7 +141,7 @@ Third base line.
 Not in patch 3B.
 Not in patch 4B.
 END_DATA
-    diff = CommitDiff.new :old_blob => old_blob, :new_blob => new_blob
+    diff = CommitDiff.new :old_object => old_blob, :new_object => new_blob
     @hunk.diff = diff
     lines = @hunk.patch_lines
     
@@ -159,7 +180,7 @@ First base line.
 Added line 1.
 Third base line.
 END_DATA
-    diff = CommitDiff.new :old_blob => old_blob, :new_blob => new_blob
+    diff = CommitDiff.new :old_object => old_blob, :new_object => new_blob
     @hunk.summary = ' 1-1+1 1\\1'
     @hunk.diff = diff
     lines = @hunk.patch_lines

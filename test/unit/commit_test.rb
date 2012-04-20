@@ -3,15 +3,15 @@ require 'test_helper'
 class CommitTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @commit = Commit.new :gitid => 'becaeef98b57cfcc17472c001ebb5a4af5e4347b',
-                         :author_name => 'Victor Costan',
-                         :author_email => 'costan@gmail.com',
-                         :committer_name => 'Victor Costan',
-                         :committer_email => 'costan@gmail.com',
-                         :authored_at => Time.now - 2,
-                         :committed_at => Time.now - 1,
-                         :message => 'Commit 3',
-                         :repository => @repo
+    @commit = Commit.new :gitid => '93d00ea479394cd110116b29748538d16d9b931e',
+        :author_name => 'Victor Costan',
+        :author_email => 'victor@costan.us',
+        :committer_name => 'Dexter',
+        :committer_email => 'dexter@gmail.com',
+        :authored_at => Time.parse('Mon Apr 2 16:17:18 2012 -0400'),
+        :committed_at => Time.parse('Mon Apr 2 16:17:19 2012 -0400'),
+        :message => 'Easy mode',
+        :repository => @repo
   end
   
   test 'setup' do
@@ -19,7 +19,7 @@ class CommitTest < ActiveSupport::TestCase
   end
   
   test 'no duplicate git ids' do
-    @commit.gitid = commits(:commit1).gitid
+    @commit.gitid = commits(:hello).gitid
     assert !@commit.valid?
   end
   
@@ -66,6 +66,8 @@ class CommitTest < ActiveSupport::TestCase
     assert_equal @commit.author_email, commit.author_email, 'Author email'
     assert_equal @commit.committer_email, commit.committer_email,
                  'Committer email'
+    assert_equal @commit.authored_at, commit.authored_at, 'Date authored'
+    assert_equal @commit.committed_at, commit.committed_at, 'Date committed'
     commit.save!
     assert !@commit.valid?, "Commit incorrectly created from git"
   end
@@ -87,6 +89,6 @@ class CommitTest < ActiveSupport::TestCase
   end
   
   test 'walk_path' do
-    assert_equal trees(:d1_d2), commits(:commit1).walk_path('/d1/d2')
+    assert_equal trees(:lib_ghost), commits(:hello).walk_path('/lib/ghost')
   end  
 end

@@ -3,7 +3,7 @@ require 'test_helper'
 class TreeTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @tree = Tree.new :gitid => 'c5411c50d6c35cb4c1d0c75e16db82bd3a12113d',
+    @tree = Tree.new :gitid => 'a6ffe7f0b6d11b67df94795512c11460e303e2a2',
                      :repository => @repo
   end
   
@@ -12,7 +12,7 @@ class TreeTest < ActiveSupport::TestCase
   end
   
   test 'no duplicate git ids' do
-    @tree.gitid = trees(:commit1_root).gitid
+    @tree.gitid = trees(:hello_root).gitid
     assert !@tree.valid?
   end
   
@@ -31,10 +31,11 @@ class TreeTest < ActiveSupport::TestCase
   end
   
   test 'walk_path' do
-    tree = trees(:commit1_root)
-    assert_equal trees(:commit1_d1), tree.walk_path('/d1')
-    assert_equal trees(:d1_d2), tree.walk_path('/d1/d2')
-    assert_equal blobs(:d1_d2_a), tree.walk_path('/d1/d2/a')
-    assert_equal nil, tree.walk_path('/d1/d2/b')
+    tree = trees(:hello_root)
+    assert_equal trees(:hello_lib), tree.walk_path('/lib')
+    assert_equal trees(:lib_ghost), tree.walk_path('/lib/ghost')
+    assert_equal blobs(:lib_ghost_hello_rb),
+                 tree.walk_path('/lib/ghost/hello.rb')
+    assert_equal nil, tree.walk_path('/lib/ghost/ghost.rb')
   end
 end

@@ -1,23 +1,23 @@
-commit1:
+hello:
   repository: dexter_ghost
-  gitid: bf28647e6740e2970b8e9e3de1484000c4637e58
-  author_name: Victor Costan
-  author_email: costan@gmail.com
+  gitid: 09129da5a9d7b16d4f1245abf8ab35eb09a74bf6
+  author_name: Dexter
+  author_email: dexter@gmail.com
   committer_name: Victor Costan
-  committer_email: costan@gmail.com
-  authored_at: 2010-07-13 23:09:32 -04:00
-  committed_at: 2010-07-13 23:09:32 -04:00
-  tree: commit1_root
-  message: Commit 1.
+  committer_email: victor@costan.us
+  authored_at: 2012-04-02 14:15:16 -04:00
+  committed_at: 2012-04-02 14:15:17 -04:00
+  tree: hello_root
+  message: Hello world
 
-commit2:
+require:
   repository: dexter_ghost
-  gitid: '15f49486892eb05391b6b70fd395fb3908365417'
+  gitid: ddf9d231a59d83803b3090fa93bb46a7fcd4ff8f
   author_name: Victor Costan
-  author_email: costan@gmail.com
+  author_email: victor@costan.us
   committer_name: Victor Costan
-  committer_email: costan@gmail.com
-  authored_at: 2010-07-13 23:13:07 -04:00
-  committed_at: 2010-07-13 23:13:07 -04:00
-  tree: commit2_root
-  message: Commit 2.
+  committer_email: victor@costan.us
+  authored_at: 2012-04-02 15:16:17 -04:00
+  committed_at: 2012-04-02 15:16:18 -04:00
+  tree: require_root
+  message: Master require
