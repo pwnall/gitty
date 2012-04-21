@@ -4,11 +4,17 @@
     <span class="type">Type</span>
     <span class="size">Size</span>
   </li>
-  <% tree.entries.select { |e| e.child.kind_of? Tree }.sort_by(&:name).each do |entry| %>
+  <% tree.entries.select { |e| !e.child.kind_of? Blob }.sort_by(&:name).each do |entry| %>
   <li>
-    <span class="name"><%= link_to entry.name, tree_path(tree_reference, File.join(tree_path, entry.name)) %>/</span>
-    <span class="type">directory</span>
-    <span class="size"><%= entry.child.entries.count %> entries</span>
+    <% if entry.child.kind_of? Tree %>
+      <span class="name"><%= link_to entry.name, tree_path(tree_reference, File.join(tree_path, entry.name)) %>/</span>
+      <span class="type">directory</span>
+      <span class="size"><%= entry.child.entries.count %> entries</span>
+    <% elsif entry.child.kind_of? Submodule %>
+      <span class="name"><%= entry.name %> at <%= entry.child.short_gitid %> </span>
+      <span class="type">submodule</span>
+      <span class="size"></span>
+    <% end %>
   </li>
   <% end %>
   <% tree.entries.select { |e| e.child.kind_of? Blob }.sort_by(&:name).each do |entry| %>

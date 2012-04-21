@@ -9,8 +9,9 @@ require 'pathname'
 # Parameter processing.
 
 if Process.euid != 0
-  puts "This script needs to be run as superuser. Enter your password below."
-  exec *(['sudo', $0] + ARGV)
+  exec *(['sudo', '-p',
+          'This script needs to be run as superuser. Enter your password: ',
+          $0] + ARGV)
 end
 
 if ARGV.length != 2
