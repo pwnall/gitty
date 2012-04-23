@@ -3,7 +3,9 @@ class IssuesController < ApplicationController
       :only => [:index, :new, :create]
       
   def current_user_can_read_issue
-    @issue = Issue.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
     bounce_user unless @issue.can_read? current_user
   end
   private :current_user_can_read_issue
@@ -11,7 +13,9 @@ class IssuesController < ApplicationController
       :only => [:show]
       
   def current_user_can_edit_issue
-    @issue = Issue.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
     bounce_user unless @issue.can_edit? current_user
   end
   private :current_user_can_edit_issue
@@ -34,7 +38,9 @@ class IssuesController < ApplicationController
   # GET /costan/rails/issues/1
   # GET /costan/rails/issues/1.xml
   def show
-    @issue = Issue.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
 
     respond_to do |format|
       format.html # show.html.erb
@@ -59,8 +65,9 @@ class IssuesController < ApplicationController
 
   # GET /costan/rails/issues/1/edit
   def edit
-    @issue = Issue.find(params[:id])
-    @repository = @issue.repository
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
     
     respond_to do |format|
       format.html # edit.html.erb
@@ -78,12 +85,11 @@ class IssuesController < ApplicationController
     @issue = Issue.new params[:issue]
     @issue.repository = @repository
     @issue.author = @author
-
+    
     respond_to do |format|
       if @issue.save
         @issue.publish_opening
         FeedSubscription.add @author, @issue
-        
         format.html do 
           redirect_to profile_repository_issues_path(@profile, @repository),
               notice: 'Issue was successfully created.' 
@@ -103,7 +109,9 @@ class IssuesController < ApplicationController
   # PUT /costan/rails/issues/1
   # PUT /costan/rails/issues/1.xml
   def update
-    @issue = Issue.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
     
     respond_to do |format|
       if @issue.update_attributes(params[:issue])
@@ -135,7 +143,10 @@ class IssuesController < ApplicationController
   # DELETE /costan/rails/issues/1
   # DELETE /costan/rails/issues/1.xml
   def destroy
-    @issue = Issue.find(params[:id])
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
+    
     FeedSubscription.remove @issue.author, @issue
     FeedItem.delete(FeedItem.where(:author_id => @issue.author,
                                    :target_type => "Issue",

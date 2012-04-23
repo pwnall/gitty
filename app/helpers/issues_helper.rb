@@ -16,4 +16,9 @@ module IssuesHelper
   def readable_closed_issues(issues, user)
     issues.select { |i| i.can_read?(user) && !i.open? } 
   end
+  
+  # Returns number of readable open issues
+  def readable_open_issues_counter(issues, user)
+    issues.select { |i| i.can_read?(user) && i.open? }.length
+  end
 end

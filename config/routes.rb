@@ -115,11 +115,11 @@ Gitty::Application.routes.draw do
     resources :issues, :only => [:create]
     get 'issues' => 'issues#index', :as => :profile_repository_issues
     get 'issues/new' => 'issues#new', :as => :new_profile_repository_issue
-    get 'issues/:id' => 'issues#show', :as => :profile_repository_issue
-    get 'issues/:id/edit(.:format)' => 'issues#edit', 
+    get 'issues/:issue_exid' => 'issues#show', :as => :profile_repository_issue
+    get 'issues/:issue_exid/edit(.:format)' => 'issues#edit', 
         :as => :edit_profile_repository_issue
-    put 'issues/:id' => 'issues#update'
-    delete 'issues/:id' => 'issues#destroy'
+    put 'issues/:issue_exid' => 'issues#update'
+    delete 'issues/:issue_exid' => 'issues#destroy'
         
     # Admin.
     get 'edit' => 'repositories#edit', :as => :edit_profile_repository

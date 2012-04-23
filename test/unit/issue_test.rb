@@ -4,62 +4,73 @@ class IssueTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:costan_ghost)
     @issue = Issue.new :repository => @repo, :author => profiles(:dexter),
-        :open => true, :sensitive => false, :title => 'Crashes on OSX',
+        :open => true, :sensitive => false, :title => 'Crashes on OSX', 
         :description => 'Running Lion 10.7'
   end
   
   test 'setup' do
-    assert @issue.valid?
+    assert @issue.valid?, @issue.errors.inspect
+  end
+  
+  test 'exid is set after creation' do
+    @issue.save
+    assert @issue.exid
   end
   
   test 'requires repository' do
     @issue.repository = nil
-    assert !@issue.valid?
+    assert !@issue.valid?, @issue.errors.inspect
   end
 
   test 'requires author' do
     @issue.author = nil
-    assert !@issue.valid?
+    assert !@issue.valid?, @issue.errors.inspect
   end
 
   test 'requires title' do
     @issue.title = nil
-    assert !@issue.valid?
+    assert !@issue.valid?, @issue.errors.inspect
   end
 
   test 'requires non-empty title' do
     @issue.title = ''
-    assert !@issue.valid?
+    assert !@issue.valid?, @issue.errors.inspect
   end
 
   test 'requires description' do
     @issue.description = nil
-    assert !@issue.valid?
+    assert !@issue.valid?, @issue.errors.inspect
   end
 
   test 'accepts empty description' do
     @issue.description = ''
-    assert @issue.valid?
+    assert @issue.valid?, @issue.errors.inspect
   end
 
   test 'requires open' do
     @issue.open = nil
-    assert !@issue.valid?
+    assert !@issue.valid?, @issue.errors.inspect
   end
 
   test 'accepts open=false' do
     @issue.open = false
-    assert @issue.valid?
+    assert @issue.valid?, @issue.errors.inspect
   end
   
   test 'requires sensitive' do
     @issue.sensitive = nil
-    assert !@issue.valid?
+    assert !@issue.valid?, @issue.errors.inspect
   end
   
   test 'accepts sensitive=true' do
     @issue.sensitive = true
-    assert @issue.valid?
+    assert @issue.valid?, @issue.errors.inspect
+  end
+  
+  test 'requires exid' do
+    issue = issues(:costan_ghost_translated)
+    issue.exid = nil
+    assert !issue.valid?, issue.errors.inspect
   end
   
   test 'users can edit their own issues' do
@@ -88,6 +99,30 @@ class IssueTest < ActiveSupport::TestCase
     issue = issues(:public_ghost_dead_code)
     issue.sensitive = true
     assert !issue.can_read?(users(:costan))
+  end
+  
+  test 'cannot have same exids within a repo' do
+    issue0 = issues(:public_ghost_dead_code)
+    issue1 = issues(:public_ghost_pizza)
+    issue1.exid = issue0.exid
+    assert !issue1.valid?
+  end
+  
+  test 'can have same exids in different repos' do
+    issue0 = issues(:costan_ghost_translated)
+    issue1 = issues(:public_ghost_code_language)
+    issue1.exid = issue0.exid
+    assert issue1.valid?
+  end
+  
+  test 'next_exid returns 1 for repo with no issues' do
+    repo = repositories(:csail_ghost)
+    assert_equal 1, Issue.next_exid(repo)
+  end
+  
+  test 'next_exid returns next valid external id' do
+    issue = issues(:public_ghost_code_language)
+    assert_equal 8, Issue.next_exid(issue.repository)
   end
 
   # Publishing tests
