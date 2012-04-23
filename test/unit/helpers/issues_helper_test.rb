@@ -26,4 +26,16 @@ class IssuesHelperTest < ActionView::TestCase
     assert_equal [issues(:public_ghost_jquery), 
         issues(:public_ghost_code_language)].sort, readable_issues.sort
   end
+  
+  test "readable open issues counter" do
+    num = readable_open_issues_counter([issues(:public_ghost_pizza), 
+        issues(:public_ghost_dead_code), issues(:public_ghost_code_language),
+        issues(:public_ghost_jquery)], users(:costan))
+    assert_equal 1, num
+    
+    num = readable_open_issues_counter([issues(:public_ghost_pizza), 
+        issues(:public_ghost_dead_code), issues(:public_ghost_code_language),
+        issues(:public_ghost_jquery)], users(:rms))
+    assert_equal 2, num
+  end
 end

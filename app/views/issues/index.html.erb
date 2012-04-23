@@ -10,7 +10,7 @@
   <%= render issues %>
   <% end %>
   
-  <% unless (_issues = readable_closed_issues(@issues, current_user)).empty? %>
+  <% unless (issues = readable_closed_issues(@issues, current_user)).empty? %>
   <h2>Closed Issues</h2>
   <%= render issues %>
   <% end %>
