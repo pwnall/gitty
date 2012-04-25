@@ -1,41 +1,33 @@
 require 'test_helper'
 
 class IssuesHelperTest < ActionView::TestCase
-  test "readable open issues" do
-    readable_issues = readable_open_issues([issues(:public_ghost_pizza), 
-        issues(:public_ghost_dead_code), issues(:public_ghost_code_language),
-        issues(:public_ghost_jquery)], users(:costan))
-    assert_equal [issues(:public_ghost_dead_code)], readable_issues
-    
-    readable_issues = readable_open_issues([issues(:public_ghost_pizza), 
-        issues(:public_ghost_dead_code), issues(:public_ghost_code_language),
-        issues(:public_ghost_jquery)], users(:rms))
-    assert_equal [issues(:public_ghost_pizza), 
-        issues(:public_ghost_dead_code)].sort, readable_issues.sort
+  setup do
+    @repository = repositories(:public_ghost)
+    @issues = @repository.issues
   end
   
   test "readable closed issues" do
-    readable_issues = readable_closed_issues([issues(:public_ghost_pizza), 
-        issues(:public_ghost_dead_code), issues(:public_ghost_code_language),
-        issues(:public_ghost_jquery)], users(:costan))
-    assert_equal [issues(:public_ghost_jquery)], readable_issues
+    assert_equal [issues(:public_ghost_jquery)],
+                 readable_closed_issues(@issues, users(:costan))
     
-    readable_issues = readable_closed_issues([issues(:public_ghost_pizza), 
-        issues(:public_ghost_dead_code), issues(:public_ghost_code_language),
-        issues(:public_ghost_jquery)], users(:rms))
-    assert_equal [issues(:public_ghost_jquery), 
-        issues(:public_ghost_code_language)].sort, readable_issues.sort
+    assert_equal [issues(:public_ghost_jquery),
+                  issues(:public_ghost_code_language)].sort,
+                 readable_closed_issues(@issues, users(:rms)).sort
   end
   
-  test "readable open issues counter" do
-    num = readable_open_issues_counter([issues(:public_ghost_pizza), 
-        issues(:public_ghost_dead_code), issues(:public_ghost_code_language),
-        issues(:public_ghost_jquery)], users(:costan))
-    assert_equal 1, num
+  test "readable open issues" do
+    assert_equal [issues(:public_ghost_dead_code)],
+                 readable_open_issues(@issues, users(:costan))
     
-    num = readable_open_issues_counter([issues(:public_ghost_pizza), 
-        issues(:public_ghost_dead_code), issues(:public_ghost_code_language),
-        issues(:public_ghost_jquery)], users(:rms))
-    assert_equal 2, num
+    assert_equal [issues(:public_ghost_security_vulnerability),
+                  issues(:public_ghost_pizza), 
+                  issues(:public_ghost_dead_code)].sort,
+                 readable_open_issues(@issues, users(:rms)).sort
+  end
+  
+  test "open issue counter" do
+    assert_equal '(3)', issue_counter(@repository, users(:rms))
+    assert_equal '(1)', issue_counter(@repository, users(:costan))
+    assert_equal '', issue_counter(Repository.new, users(:costan)) 
   end
 end

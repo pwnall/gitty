@@ -7,18 +7,19 @@ module IssuesHelper
                    :style => 'width: 20px; height: 20px;'
   end
   
-  # Returns array of open issues a user can read
-  def readable_open_issues(issues, user)
-    issues.select { |i| i.can_read?(user) && i.open? }
-  end
-  
-  # Returns array of closed issues a user can read
+  # Returns array of closed issues that a user can read.
   def readable_closed_issues(issues, user)
     issues.select { |i| i.can_read?(user) && !i.open? } 
   end
   
-  # Returns number of readable open issues
-  def readable_open_issues_counter(issues, user)
-    issues.select { |i| i.can_read?(user) && i.open? }.length
+  # Returns array of open issues that a user can read.
+  def readable_open_issues(issues, user)
+    issues.select { |i| i.can_read?(user) && i.open? }
+  end
+  
+  # Returns a user notification counting the number of open issues.
+  def issue_counter(repository, user)
+    count = readable_open_issues(repository.issues, user).length
+    count == 0 ? '' : "(#{count})"
   end
 end
