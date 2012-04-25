@@ -3,7 +3,7 @@ costan_ghost_translated:
   repository: costan_ghost
   open: true
   sensitive: false
-  exid: 42
+  number: 42
   title: Missing translation
   description: The text files in this project are English-only. It would be nice
       if they had translations.      
@@ -13,7 +13,7 @@ public_ghost_dead_code:
   repository: public_ghost
   open: true
   sensitive: false
-  exid: 1
+  number: 1
   title: Dead code
   description: There's a bunch of dead code in the controller files.
 
@@ -22,7 +22,7 @@ public_ghost_security_vulnerability:
   repository: public_ghost
   open: true
   sensitive: true
-  exid: 2
+  number: 2
   title: Security Vulnerability
   description: There's a huge chance someone could break the app in line 10.
 
@@ -31,7 +31,7 @@ public_ghost_pizza:
   repository: public_ghost
   open: true
   sensitive: true
-  exid: 3
+  number: 3
   title: Meta-x Pizza
   description: I keep on trying to hit 'm-x pizza', but no pizza jumps out of
       the screen. Help?
@@ -41,7 +41,7 @@ public_ghost_jquery:
   repository: public_ghost
   open: false
   sensitive: false
-  exid: 4
+  number: 4
   title: Needs more jQuery
   description: The lack of jQuery in this repo is too high!
   
@@ -50,7 +50,7 @@ public_ghost_code_language:
   repository: public_ghost
   open: false
   sensitive: true
-  exid: 7
+  number: 7
   title: Code language request
   description: I think the code should be rewritten in a more popular language,
       like LOLCODE. You'll be able to reach a far wider audience with it.

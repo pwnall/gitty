@@ -1,5 +1,8 @@
 <%= render @issue.repository %>
 
-<h2><%= @issue.title %></h2>
+<h2 class="issue_header">
+  <span class="number"><%= @issue.number%></span>
+  <%= @issue.title %>
+</h2>
 
 <%= render 'issue_show', :issue => @issue %>

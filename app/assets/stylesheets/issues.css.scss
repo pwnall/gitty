@@ -31,6 +31,13 @@
   background: #E7F5D0;
   overflow: hidden;
 
+  .number {
+    color: hsl(0deg, 0%, 42%);
+    font-weight: normal;
+    &:before {
+      content: "#";
+    }
+  }
   .title {
     margin: 0;
     padding: 5px;
@@ -51,5 +58,14 @@
     margin: 0;
     border-left: 1px solid #D6E8B6;
     padding: 5px;
+  }
+}
+
+h2.issue_header {
+  .number {
+    &:before {
+      content: "Issue #";
+    }
+    padding-right: 0.5em;
   }
 }

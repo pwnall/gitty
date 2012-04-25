@@ -1,5 +1,8 @@
 <%= render @repository %>
 
-<h2>Editing issue</h2>
+<h2 class="issue_header">
+  Editing
+  <span class="number"><%= @issue.number%></span>
+</h2>
 
 <%= render 'form' %>

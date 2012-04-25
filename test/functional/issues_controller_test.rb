@@ -24,44 +24,31 @@ class IssuesControllerTest < ActionController::TestCase
   end
 
   test "should create issue" do
-    attributes = @issue.attributes
-    attributes['exid'] = nil
     assert_difference('Issue.count') do
       post :create, :profile_name => @issue.repository.profile,
-                    :repo_name => @issue.repository, :issue => attributes
+                    :repo_name => @issue.repository,
+                    :issue => @issue.attributes.except('number')
     end
 
     assert_redirected_to profile_repository_issues_path(
         assigns(:issue).repository.profile, assigns(:issue).repository)
   end
   
-  test "should increment exid" do
-    attributes = @issue.attributes
-    attributes['exid'] = nil
-    post :create, :profile_name => @issue.repository.profile,
-                  :repo_name => @issue.repository, :issue => attributes
-    post :create, :profile_name => @issue.repository.profile,
-                  :repo_name => @issue.repository, :issue => attributes
-    issue1 = @repository.issues[1]
-    issue2 = @repository.issues[2]
-    assert issue1.exid < issue2.exid
-  end
-
   test "should show issue" do
     get :show, :profile_name => @issue.repository.profile,
-               :repo_name => @issue.repository, :issue_exid => @issue
+               :repo_name => @issue.repository, :issue_number => @issue
     assert_response :success
   end
 
   test "should get edit" do
     get :edit, :profile_name => @issue.repository.profile,
-               :repo_name => @issue.repository, :issue_exid => @issue
+               :repo_name => @issue.repository, :issue_number => @issue
     assert_response :success
   end
 
   test "should update issue" do
     put :update, :profile_name => @issue.repository.profile,
-                 :repo_name => @issue.repository, :issue_exid => @issue,
+                 :repo_name => @issue.repository, :issue_number => @issue,
                  :issue => @issue.attributes
     assert_redirected_to profile_repository_issues_path(
         assigns(:issue).repository.profile, assigns(:issue).repository)
@@ -70,7 +57,7 @@ class IssuesControllerTest < ActionController::TestCase
   test "should destroy issue" do
     assert_difference('Issue.count', -1) do
       delete :destroy, :profile_name => @issue.repository.profile,
-                       :repo_name => @issue.repository, :issue_exid => @issue
+                       :repo_name => @issue.repository, :issue_number => @issue
     end
 
     assert_redirected_to issues_path
@@ -88,7 +75,7 @@ class IssuesControllerTest < ActionController::TestCase
     set_session_current_user users(:rms)
     get :show, :repo_name => @issue.repository, 
                :profile_name => @issue.repository.profile, 
-               :issue_exid => @issue
+               :issue_number => @issue
     assert_response :forbidden
     assert_select %Q|a[href*="#{edit_profile_repository_issue_path(
         @issue.repository.profile,
@@ -108,7 +95,7 @@ class IssuesControllerTest < ActionController::TestCase
     set_session_current_user users(:rms)
     get :show, :repo_name => @issue.repository, 
                :profile_name => @issue.repository.profile, 
-               :issue_exid => @issue
+               :issue_number => @issue
     assert_response :forbidden
     assert_select %Q|input[class*="close_issue_button"]|, 0
   end
@@ -125,7 +112,7 @@ class IssuesControllerTest < ActionController::TestCase
     issue = issues(:public_ghost_dead_code)
     put :update, :profile_name => issue.repository.profile,
                  :repo_name => issue.repository, 
-                 :issue_exid => issue, :issue => { :open => false }
+                 :issue_number => issue, :issue => { :open => false }
     assert_response :forbidden
   end
   
@@ -134,7 +121,7 @@ class IssuesControllerTest < ActionController::TestCase
     issue = issues(:public_ghost_dead_code)
     put :update, :profile_name => issue.repository.profile,
                  :repo_name => issue.repository, 
-                 :issue_exid => issue, :issue => { :open => false }
+                 :issue_number => issue, :issue => { :open => false }
     assert_equal issue.reload.open, false
   end
   
@@ -143,7 +130,7 @@ class IssuesControllerTest < ActionController::TestCase
     issue = issues(:public_ghost_security_vulnerability)
     get :show, :repo_name => issue.repository,
                :profile_name => issue.repository.profile,
-               :issue_exid => issue
+               :issue_number => issue
     assert_response :forbidden
   end
   
@@ -152,7 +139,7 @@ class IssuesControllerTest < ActionController::TestCase
     issue = issues(:public_ghost_security_vulnerability)
     get :show, :repo_name => issue.repository,
                :profile_name => issue.repository.profile,
-               :issue_exid => issue
+               :issue_number => issue
     assert_response :success
   end
   
@@ -176,24 +163,24 @@ class IssuesControllerTest < ActionController::TestCase
                    {:controller => 'issues', :action => 'edit', 
                     :profile_name => 'costan', 
                     :repo_name => 'costan_ghost',
-                    :issue_exid => '42'})
+                    :issue_number => '42'})
     assert_routing({:path => "/costan/costan_ghost/issues/42",
                     :method => :get}, 
                    {:controller => 'issues', :action => 'show', 
                     :profile_name => 'costan', 
                     :repo_name => 'costan_ghost',
-                    :issue_exid => '42'})
+                    :issue_number => '42'})
     assert_routing({:path => "/costan/costan_ghost/issues/42",
                     :method => :put}, 
                    {:controller => 'issues', :action => 'update', 
                     :profile_name => 'costan', 
                     :repo_name => 'costan_ghost',
-                    :issue_exid => '42'})
+                    :issue_number => '42'})
     assert_routing({:path => "/costan/costan_ghost/issues/42",
                     :method => :delete}, 
                    {:controller => 'issues', :action => 'destroy', 
                     :profile_name => 'costan', 
                     :repo_name => 'costan_ghost',
-                    :issue_exid => '42'})
+                    :issue_number => '42'})
   end
 end

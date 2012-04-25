@@ -26,6 +26,7 @@
   </div>
   <div class="metadata">
     <p class="title">
+      <span class="number"><%= issue.number %></span>
       <%= link_to issue.title, profile_repository_issue_path(
             issue.repository.profile,
             issue.repository, issue) %>

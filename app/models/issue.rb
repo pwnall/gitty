@@ -26,29 +26,29 @@ class Issue < ActiveRecord::Base
   #
   # This is decoupled from "id" column to avoid leaking information about
   # the application's usage.
-  validates :exid, :presence => true, 
+  validates :number, :presence => true, 
       :numericality => { :greater_than => 0 }, 
       :uniqueness => { :scope => :repository_id }
   
-  # Automatically set the exid
-  before_validation :set_default_exid, :on => :create
+  # Automatically set the number
+  before_validation :set_default_number, :on => :create
   
   # Use external IDs for routes instead of IDs.
   def to_param
-    exid.to_s
+    number.to_s
   end
   
-  # Returns next valid external id for an issue
-  def self.next_exid(repo)
-    if repo && (repo.issues.length > 0)
-      return repo.issues.order('exid').last.exid + 1
+  # The next valid number that can be assigned to an issue.
+  def self.next_number(repository)
+    if repository && !repository.issues.empty?
+      return repository.issues.order('number DESC').first.number + 1
     end
-    1  # first issue in sequence
+    1  # Issue numbering is 1-based.
   end
   
-  # Set the exid of the issue
-  def set_default_exid
-    self.exid ||= Issue.next_exid(self.repository)
+  # If the issue doesn't have a number, gives it the next available number.
+  def set_default_number
+    self.number ||= self.class.next_number repository
   end
 end
 

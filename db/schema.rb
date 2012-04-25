@@ -147,13 +147,13 @@ ActiveRecord::Schema.define(:version => 20120420051746) do
     t.boolean  "sensitive",                    :default => false, :null => false
     t.string   "title",         :limit => 160,                    :null => false
     t.text     "description",                                     :null => false
-    t.integer  "exid",                                            :null => false
+    t.integer  "number",                                            :null => false
     t.datetime "created_at",                                      :null => false
     t.datetime "updated_at",                                      :null => false
   end
 
   add_index "issues", ["author_id", "open"], :name => "index_issues_on_author_id_and_open"
-  add_index "issues", ["repository_id", "exid"], :name => "index_issues_on_repository_id_and_exid", :unique => true
+  add_index "issues", ["repository_id", "number"], :name => "index_issues_on_repository_id_and_number", :unique => true
   add_index "issues", ["repository_id", "open"], :name => "index_issues_on_repository_id_and_open"
 
   create_table "profiles", :force => true do |t|

@@ -7,14 +7,15 @@ class CreateIssues < ActiveRecord::Migration
       t.boolean :sensitive, :default => false, :null => false
       t.string :title, :limit => 160, :null => false
       t.text :description, :limit => 1.kilobyte, :null => false
-      t.integer :exid, :limit => 1..32, :null => false
+      t.integer :number, :null => false
 
       t.timestamps
     end
     
     add_index :issues, [:author_id, :open], :unique => false, :null => false
-    add_index :issues, [:repository_id, :open], :unique => false, :null => false
-    add_index :issues, [:repository_id, :exid], :unique => true, 
-        :null => false
+    add_index :issues, [:repository_id, :number], :unique => true,
+                                                  :null => false
+    add_index :issues, [:repository_id, :open, :number], :unique => true,
+                                                         :null => false
   end
 end
