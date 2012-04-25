@@ -25,8 +25,6 @@ class IssuesController < ApplicationController
   # GET /costan/rails/issues
   # GET /costan/rails/issues.xml
   def index
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
     @issues = @repository.issues.order('created_at DESC')
 
     respond_to do |format|
@@ -38,10 +36,6 @@ class IssuesController < ApplicationController
   # GET /costan/rails/issues/1
   # GET /costan/rails/issues/1.xml
   def show
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
-
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @issue }
@@ -51,9 +45,6 @@ class IssuesController < ApplicationController
   # GET /costan/rails/issues/new
   # GET /costan/rails/issues/new.xml
   def new
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-
     @issue = Issue.new
     @issue.repository = @repository
 
@@ -65,10 +56,6 @@ class IssuesController < ApplicationController
 
   # GET /costan/rails/issues/1/edit
   def edit
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
-    
     respond_to do |format|
       format.html # edit.html.erb
       format.xml  { render xml: @issue }
@@ -79,8 +66,6 @@ class IssuesController < ApplicationController
   # POST /costan/rails/issues.xml
   def create
     @author = current_user.profile
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
     
     @issue = Issue.new params[:issue]
     @issue.repository = @repository
@@ -109,10 +94,6 @@ class IssuesController < ApplicationController
   # PUT /costan/rails/issues/1
   # PUT /costan/rails/issues/1.xml
   def update
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
-    
     respond_to do |format|
       if @issue.update_attributes(params[:issue])
         # publish issue depending on being closed or reopened
@@ -143,10 +124,6 @@ class IssuesController < ApplicationController
   # DELETE /costan/rails/issues/1
   # DELETE /costan/rails/issues/1.xml
   def destroy
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-    @issue = @repository.issues.where(:exid => params[:issue_exid]).first
-    
     FeedSubscription.remove @issue.author, @issue
     FeedItem.delete(FeedItem.where(:author_id => @issue.author,
                                    :target_type => "Issue",
