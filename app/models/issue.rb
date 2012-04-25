@@ -21,6 +21,35 @@ class Issue < ActiveRecord::Base
   # True for issues that have sensitive information and so will only be seen by
   # the developers and the author.
   validates :sensitive, :inclusion => { :in => [true, false] }
+  
+  # Externally-visible issue ID.
+  #
+  # This is decoupled from "id" column to avoid leaking information about
+  # the application's usage.
+  validates :exid, :presence => true, 
+      :numericality => { :greater_than => 0 }, 
+      :uniqueness => { :scope => :repository_id }
+  
+  # Automatically set the exid
+  before_validation :set_default_exid, :on => :create
+  
+  # Use external IDs for routes instead of IDs.
+  def to_param
+    exid.to_s
+  end
+  
+  # Returns next valid external id for an issue
+  def self.next_exid(repo)
+    if repo && (repo.issues.length > 0)
+      return repo.issues.order('exid').last.exid + 1
+    end
+    1  # first issue in sequence
+  end
+  
+  # Set the exid of the issue
+  def set_default_exid
+    self.exid ||= Issue.next_exid(self.repository)
+  end
 end
 
 # :nodoc: access control

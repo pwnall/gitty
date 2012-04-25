@@ -83,8 +83,9 @@
                                                        repository) %>
     </li>
     <li>
-      <%= link_to 'Issues', profile_repository_issues_path(repository.profile,
-                                                           repository) %>  
+      <%= link_to "Issues (#{readable_open_issues_counter(repository.issues, 
+              current_user)})", 
+              profile_repository_issues_path(repository.profile, repository) %>  
     </li>
     <% if repository.can_edit? current_user %>
     <li>
