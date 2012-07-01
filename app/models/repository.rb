@@ -39,6 +39,11 @@ class Repository < ActiveRecord::Base
   validates :name, :length => 1..64, :format => /\A\w([\w.-]*\w)?\Z/,
                    :presence => true,
                    :uniqueness => { :scope => :profile_id }
+  validates_each :name do |record, attr, value|
+    if /\.git$/ =~ value
+      record.errors.add attr, "Don't use .git in the repository name."
+    end
+  end
   attr_accessible :name
 
   # Usually a blog post introducing the repository's contents, or a development site.

@@ -48,7 +48,11 @@ END_SHELL
     
     @fixture_repo_path = Rails.root.join 'test', 'fixtures', 'repo.git'
 
-    # Wait until the Rails server has booted.
+    wait_for_server_start
+  end
+
+  # Wait until the Rails server has booted.
+  def wait_for_server_start
     deadline = Time.now + 30.seconds
     loop do
       begin

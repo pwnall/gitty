@@ -8,8 +8,8 @@
     <ul class="actions">
       <li>
         <%= link_to 'Delete', [repository.profile, repository],
-                :method => :delete,
-                :confirm => "This will permanently delete all the information in the #{repository.name} repository." %>
+                :method => :delete, :data => {
+                :confirm => "This will permanently delete all the information in the #{repository.name} repository." } %>
       </li>
     </ul>
     

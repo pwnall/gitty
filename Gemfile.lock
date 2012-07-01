@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/pwnall/grit.git
+  remote: https://github.com/pwnall/grit.git
   revision: 5e7a554c2aac8c77ae02ff81b71f164a2640605e
   branch: hunks
   specs:

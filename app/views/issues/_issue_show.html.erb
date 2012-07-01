@@ -17,7 +17,7 @@
               :method => :get %>
       <%= link_to 'Delete', profile_repository_issue_path(
               issue.repository.profile, issue.repository, issue),
-              :confirm => 'Are you sure?', :method => :delete %>
+              :method => :delete, :data => { :confirm => 'Are you sure?' } %>
     </p>
     <p>
       <% if issue.open %>

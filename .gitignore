@@ -7,7 +7,7 @@ tmp
 .DS_Store
 *~
 *.rbc
-*.swp
+*.sw*
 
 doc/controllers_brief.svg
 doc/controllers_complete.svg

@@ -13,14 +13,11 @@
     <% if issue.can_edit? current_user %>
     <p>
       <%= link_to 'Edit', edit_profile_repository_issue_path(
-              issue.repository.profile,
-              issue.repository, issue), 
-              method: :get %>
+              issue.repository.profile, issue.repository, issue), 
+              :method => :get %>
       <%= link_to 'Delete', profile_repository_issue_path(
-              issue.repository.profile,
-              issue.repository, issue), 
-              confirm: 'Are you sure?', 
-              method: :delete %>
+              issue.repository.profile, issue.repository, issue), 
+              :method => :delete, :data => { :confirm => 'Are you sure?' } %>
     </p>
     <% end %>
   </div>

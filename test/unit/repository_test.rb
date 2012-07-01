@@ -25,14 +25,15 @@ class RepositoryTest < ActiveSupport::TestCase
   
   test 'no funky names' do
     ['$awesome', 'space name', 'quo"te', "more'quote", '-flag',
-     'loose-', '.hidden', 'confused.'].each do |name|
+     'loose-', '.hidden', 'confused.', 'awesome.git'].each do |name|
       @repo.name = name
       assert !@repo.valid?
     end
   end
   
   test 'valid names' do
-    ['awesome', 'great-idea', 'great.idea', "CamelCased"].each do |name|
+    ['awesome', 'great-idea', 'great.idea', 'CamelCased',
+     'awesome.gi'].each do |name|
       @repo.name = name
       assert @repo.valid?
     end    
