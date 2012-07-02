@@ -206,6 +206,7 @@ DEPENDENCIES
   mocha (>= 0.10.4)
   mysql2 (>= 0.3.11)
   net-ssh (>= 2.3.0)
+  posix-spawn (>= 0.3.6)
   railroady (>= 0.4.5)
   rails (>= 3.2.6)
   rbtree (>= 0.3.0)

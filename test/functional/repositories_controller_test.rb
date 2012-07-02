@@ -2,6 +2,7 @@ require 'test_helper'
 
 class RepositoriesControllerTest < ActionController::TestCase
   setup :mock_profile_paths
+  teardown :mock_profile_paths_undo
 
   setup do
     @repository = repositories(:dexter_ghost)

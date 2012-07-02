@@ -410,6 +410,62 @@ class Repository
   end
 end
 
+# :nodoc: support for http sync
+class Repository
+  # Path to a file inside the raw repository.
+  # 
+  # This should only be used to implement low-level functionality, such as
+  # git-over-http.
+  def internal_file_path(file)
+    File.join local_path, file
+  end
+
+  # The MIME type for a file inside a repository.
+  def internal_file_mime_type(file)
+    if file[0, 8] == 'objects/'
+      if file[8, 5] == 'pack/'
+        return 'application/x-git-packed-objects' if file[-5, 5] == '.pack'
+        return 'application/x-git-packed-objects-toc' if file[-4, 4] == '.idx'
+      elsif file[8, 5] == 'info/'
+        return 'text/plain; charset=utf-8' if file == 'objects/info/packs'
+      elsif /^objects\/[0-9a-f]+\/[0-9a-f]+$/ =~ file
+        return 'application/x-git-loose-object'
+      end
+    elsif file == 'info/refs'
+      return 'text/plain; charset=utf-8'
+    end
+    'text/plain'
+  end
+
+  # True if the given file inside a repository will never change.
+  # 
+  # This is intended to help make caching decisions.
+  def internal_file_immutable?(file)
+    # loose files
+    return true if /^objects\/[0-9a-f]+\/[0-9a-f]+$/ =~ file
+    # packs
+    return true if /^objects\/pack\// =~ file
+
+    false
+  end
+
+  # Runs a command inside the repository's directory.
+  #
+  # This method should be used for running low-level commands on the
+  # repository, such as git gc.
+  #
+  # @param [String] binary the program to be executed
+  # @param [Array<String>] args arguments for the program to be executed
+  # @return [String] the program's stdout
+  def run_command(binary, args = [])
+    child = POSIX::Spawn::Child.new binary, args
+    return child.out if child.status.success?
+
+    # TODO(pwnall): consider logging the command and stderr to some admin tool
+    raise "Non-zero exit code #{child.status.exitstatus} running #{binary} #{args.inspect}."
+  end
+end
+
 # :nodoc: access control
 class Repository
   # True if the user can read the repository.

@@ -36,6 +36,7 @@ gem 'grit', :git => 'https://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
 gem 'markdpwn', '>= 0.1.2'
 gem 'net-ssh', '>= 2.3.0', :require => 'net/ssh'
+gem 'posix-spawn', '>= 0.3.6'
 gem 'rbtree', '>= 0.3.0', :platform => :mri
 gem 'rbtree-pure', '>= 0.1.1', :require => 'rbtree',
                                :platforms => [:jruby, :rbx]

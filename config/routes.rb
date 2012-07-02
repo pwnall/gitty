@@ -67,6 +67,15 @@ Gitty::Application.routes.draw do
       delete ':repo_name(.:format)' => 'repositories#destroy'      
     end
   end
+
+  # HTTP fetch and push.
+  scope ':profile_name/:repo_name.git', :constraints => {
+      :profile_name => /[^_\/]+/, :repo_name => /[^\/]+/ } do
+    post 'git-upload-pack' => 'smart_http#upload_pack'
+    post 'git-receive-pack' => 'smart_http#receive_pack'
+    get 'info/refs' => 'smart_http#info_refs'
+    get '*path' => 'smart_http#git_file', :format => false
+  end
   
   scope ':profile_name/:repo_name',
       :constraints => { :profile_name => /[^_\/]+/, :repo_name => /[^\/]+/ } do

@@ -2,6 +2,7 @@ require 'test_helper'
 
 class RepositoryTest < ActiveSupport::TestCase
   setup :mock_profile_paths
+  teardown :mock_profile_paths_undo
 
   setup do
     @repo = Repository.new :name => 'awesome', :public => false,
@@ -406,7 +407,48 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Added tags'
     assert_equal ['unicorns'], delta[:tags][:changed].map(&:name),
                  'Changed tags'
-  end  
+  end
+
+  test 'internal_file_path' do
+    mock_repository_path @repo
+    path = @repo.internal_file_path('HEAD')
+    assert_equal "ref: refs/heads/master\n", File.read(path)
+  end
+
+  test 'internal_file_mime_type' do
+    [['info/refs', 'text/plain; charset=utf-8'],
+     ['objects/info/alternatives', 'text/plain'],
+     ['objects/info/http-alternatives', 'text/plain'],
+     ['objects/info/packs', 'text/plain; charset=utf-8'],
+     ['objects/info/whatever', 'text/plain'],
+     ['objects/1a/2b3c4d', 'application/x-git-loose-object'],
+     ['objects/pack/pack-1a2b3c.idx', 'application/x-git-packed-objects-toc'],
+     ['objects/pack/pack-1a2b3c.pack', 'application/x-git-packed-objects']
+    ].each do |file, golden_type|
+      assert_equal golden_type, @repo.internal_file_mime_type(file),
+        "MIME check for #{file}"
+    end
+  end
+
+  test 'internal_file_immutable?' do
+    [['info/refs', false],
+     ['objects/info/alternatives', false],
+     ['objects/info/http-alternatives', false],
+     ['objects/info/packs', false],
+     ['objects/info/whatever', false],
+     ['objects/1a/2b3c4d', true],
+     ['objects/pack/pack-1a2b3c.idx', true],
+     ['objects/pack/pack-1a2b3c.pack', true]
+    ].each do |file, golden|
+      assert_equal golden, @repo.internal_file_immutable?(file),
+        "Immutable content check for #{file}"
+    end
+  end
+
+  test 'run_command' do
+    mock_repository_path @repo
+    assert_equal "HEAD\n", @repo.run_command('ls' ['HEAD'])
+  end
     
   test 'acl for new repository' do
     @repo.save!

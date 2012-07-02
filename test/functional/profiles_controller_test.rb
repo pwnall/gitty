@@ -2,6 +2,7 @@ require 'test_helper'
 
 class ProfilesControllerTest < ActionController::TestCase
   setup :mock_profile_paths
+  teardown :mock_profile_paths_undo
   
   setup do
     @profile = profiles(:costan)

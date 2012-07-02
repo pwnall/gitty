@@ -2,6 +2,7 @@ require 'test_helper'
 
 class ProfileTest < ActiveSupport::TestCase
   setup :mock_profile_paths
+  teardown :mock_profile_paths_undo
   
   setup do
     @profile = Profile.new :name => 'awesome',
