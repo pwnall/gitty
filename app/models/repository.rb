@@ -497,6 +497,8 @@ class Repository
                                                            :chdir => chdir
       @input_io = input_io
       @buffer_size = buffer_size
+      @stdin.set_encoding Encoding::BINARY
+      @stdout.set_encoding Encoding::BINARY
     end
 
     # Communicates with the sub-process running the command.
