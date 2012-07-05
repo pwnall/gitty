@@ -492,31 +492,77 @@ class Repository
   # :nodoc: implements stream_command
   class StreamCommandWrapper
     # Launches a sub-process running the command.
-    def initialize(binary, args, chdir, input_io, buffer_size)
-      @pid, @stdin, @stdout, @stderr = POSIX::Spawn.popen4 binary, *args,
-                                                           :chdir => chdir
+    def initialize(binary, args, working_dir, input_io, buffer_size)
+      @binary = binary
+      @pid, @stdin, @stdout, @stderr =
+           POSIX::Spawn.popen4(binary, *args, { :chdir => working_dir })
       @input_io = input_io
       @buffer_size = buffer_size
       @stdin.set_encoding Encoding::BINARY
       @stdout.set_encoding Encoding::BINARY
+      @stderr.set_encoding Encoding::BINARY
     end
 
     # Communicates with the sub-process running the command.
-    def each
+    def each(&http_proc)
       if @input_io
-        until @input_io.eof?
-          @stdin.write @input_io.read(@buffer_size)
+        loop do
+          in_chunk = ''
+          begin
+            @input_io.readpartial @buffer_size, in_chunk
+          rescue Errno::EAGAIN, Errno::EINTR
+            next  # Try again.
+          rescue EOFError
+            break
+          end
+          begin
+            @stdin.write in_chunk unless in_chunk.empty?
+          rescue IOError  # Closed stream.
+            break
+          end
         end
-        @stdin.close
       end
 
-      until @stdout.eof?
-        yield @stdout.read @buffer_size
+      begin
+        @stdin.close
+      rescue IOError  # Closed stream, so we don't need to close it.
       end
-      @stdout.close
-      @stderr.read
-      @stderr.close
-      Process.wait @pid
+
+      loop do
+        out_chunk = ''
+        begin
+          @stdout.readpartial @buffer_size, out_chunk
+        rescue Errno::EAGAIN, Errno::EINTR
+          next  # Try again.
+        rescue IOError  # EOF or closed stream.
+          break
+        end
+        http_proc.call out_chunk unless out_chunk.empty?
+      end
+
+      stderr_text = ''
+      begin
+        unless @stderr.eof?
+          @stderr.read nil, stderr_text
+          # TODO(pwnall): consider logging stderr
+        end
+      rescue IOError  # Closed stream, so we don't need to close it.
+      end
+      
+      _, status = ::Process.wait2 @pid
+
+      begin
+        @stdout.close
+      rescue IOError  # Closed stream, so we don't need to close it.
+      end
+      begin
+        @stderr.close
+      rescue IOError  # Closed stream, so we don't need to close it.
+      end
+
+      if status && !status.success?
+        raise RuntimeError, "Non-zero #{@binary} exit code.\n#{stderr_text}"
+      end 
       self
     end
   end

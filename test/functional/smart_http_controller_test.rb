@@ -64,15 +64,38 @@ class SmartHttpControllerTest < ActionController::TestCase
                  response.headers['Content-Type']
   end
 
-  test 'upload-pack' do
-    @request.env['RAW_POST_DATA'] = "006fwant 88ca4433d478d6abb6558bebb9524fb72300457e multi_ack_detailed no-done side-band-64k thin-pack ofs-delta\n0032want 88ca4433d478d6abb6558bebb9524fb72300457e\n00000009done\n"
-    @request.headers['CONTENT-TYPE'] = 'application/x-git-receive-pack-request'
+  test 'null upload-pack' do
+    @request.env['RAW_POST_DATA'] = "0000"
+    @request.headers['CONTENT-TYPE'] = 'application/x-git-upload-pack-request'
     post :upload_pack, :profile_name => @profile.to_param,
                        :repo_name => @repo.to_param
     assert_response :success
-    assert_include response.body, 'Counting objects'
-    assert_include response.body, 'PACK'
+    assert_equal '', response.body
     assert_equal 'application/x-git-upload-pack-result',
+                 response.headers['Content-Type']
+  end
+
+  test 'upload-pack' do
+    @request.env['RAW_POST_DATA'] = "006fwant 88ca4433d478d6abb6558bebb9524fb72300457e multi_ack_detailed no-done side-band-64k thin-pack ofs-delta\n0032want 88ca4433d478d6abb6558bebb9524fb72300457e\n00000009done\n"
+    @request.headers['Content-Type'] = 'application/x-git-upload-pack-request'
+    post :upload_pack, :profile_name => @profile.to_param,
+                       :repo_name => @repo.to_param
+    assert_response :success
+    body = response.body
+    assert_include body, 'Counting objects'
+    assert_include body, 'PACK'
+    assert_equal 'application/x-git-upload-pack-result',
+                 response.headers['Content-Type']
+  end
+
+  test 'null receive-pack' do
+    @request.env['RAW_POST_DATA'] = '0000'
+    @request.headers['Content-Type'] = 'application/x-git-receive-pack-request'
+    post :receive_pack, :profile_name => @profile.to_param,
+                        :repo_name => @repo.to_param
+    assert_response :success
+    assert_equal '', response.body
+    assert_equal 'application/x-git-receive-pack-result',
                  response.headers['Content-Type']
   end
 

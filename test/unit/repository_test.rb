@@ -481,7 +481,9 @@ class RepositoryTest < ActiveSupport::TestCase
   end
 
   test 'stream_command buffering' do
-    in_data = "gitty truly owns " * 512
+    in_chunk = "gitty truly owns ".force_encoding(Encoding::BINARY) +
+      [0xDE, 0xAD, 0xBE, 0xEF].pack('C*').force_encoding(Encoding::BINARY)
+    in_data = in_chunk * 512
     mock_repository_path @repo
     streamer = @repo.stream_command 'cat', [], StringIO.new(in_data), 16
     output = ''
