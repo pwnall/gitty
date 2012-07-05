@@ -1,4 +1,7 @@
 class SmartHttpController < ApplicationController
+  # TODO(pwnall): figure out some CSRF protection
+  skip_before_filter :verify_authenticity_token
+  
   # TODO(pwnall): replace this with proper access check before shipping
   before_filter :fetch_repo
   def fetch_repo
@@ -9,35 +12,58 @@ class SmartHttpController < ApplicationController
 
   # GET costan/rails.git/info/refs
   def info_refs
-    unless params[:service]
-      # Using the dumb HTTP pr
+    command = git_command
+    unless command
+      # Using the dumb HTTP protocol.
       params[:path] = 'info/refs'
       return git_file
     end
 
-
+    output = @repository.run_command('git', [command, '--stateless-rpc',
+                                             '--advertise-refs', '.'])
+    git_header = "# service=#{params[:service]}\n"
+    data = ['%04x' % (git_header.length + 4), git_header, '0000',
+            output].join ''
+    send_data data, :type => "application/x-git-#{command}-advertisement"
   end
 
   # GET costan/rails.git/....
   def git_file
     file_path = @repository.internal_file_path params[:path]
     mime_type = @repository.internal_file_mime_type params[:path]
-    send_file file_path, :type => mime_type
+    if File.exist?(file_path)
+      send_file file_path, :type => mime_type
+    else
+      head :not_found
+    end
   end
 
   # POST costan/rails.git/git-upload-pack
   def upload_pack
+    self.headers['Content-Type'] = 'application/x-git-upload-pack-result'
+    self.response_body = @repository.stream_command 'git', ['upload-pack',
+        '--stateless-rpc', '--strict', '.'], request.body
   end
 
   # POST costan/rails.git/git-receive-pack
   def receive_pack
+    self.headers['Content-Type'] = 'application/x-git-receive-pack-result'
+    self.response_body = @repository.stream_command 'git', ['receive-pack',
+        '--stateless-rpc', '--strict', '.'], request.body
+
+    # TODO(pwnall): update repository state
   end
 
-  # Token that must be included in some GIT mime types.
-  def service_name
-    raw_service = params[:service]
-    return false unless raw_service && raw_service[0, 4] == 'git-'
-    raw_service[4..-1]
+  # The git command targeted by the HTTP request.
+  def git_command
+    case params[:service]
+    when 'git-receive-pack'
+      'receive-pack'
+    when 'git-upload-pack'
+      'upload-pack'
+    else
+      nil
+    end
   end
-  private :service_name
+  private :git_command
 end

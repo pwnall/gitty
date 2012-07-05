@@ -1,0 +1,11 @@
+ddf9d231a59d83803b3090fa93bb46a7fcd4ff8f	refs/heads/branch1
+93d00ea479394cd110116b29748538d16d9b931e	refs/heads/branch2
+88ca4433d478d6abb6558bebb9524fb72300457e	refs/heads/master
+effe47936c7557bf43116023b9729a2edc4ee19e	refs/tags/demo
+93d00ea479394cd110116b29748538d16d9b931e	refs/tags/demo^{}
+1d394a41b8fdf5046b19efd9cc1ed90e1e116112	refs/tags/unicorns
+ddf9d231a59d83803b3090fa93bb46a7fcd4ff8f	refs/tags/unicorns^{}
+456d282305542de6b6d2e649787e437e23c2ff93	refs/tags/v1.0
+09129da5a9d7b16d4f1245abf8ab35eb09a74bf6	refs/tags/v1.0^{}
+1074079141321c69617ac36b310c7e9ec134508a	refs/tags/v2.0
+88ca4433d478d6abb6558bebb9524fb72300457e	refs/tags/v2.0^{}

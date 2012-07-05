@@ -388,7 +388,7 @@ class RepositoryTest < ActiveSupport::TestCase
         end
       end
     end
-    
+
     assert_equal ['Easy mode', "Merge branch 'branch1'"],
                  delta[:commits].map(&:message).sort, 'New commits'
     assert_equal ['deleted'], delta[:branches][:deleted].map(&:name),
@@ -409,6 +409,15 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Changed tags'
   end
 
+  test 'integrate_changes updates http info' do
+    repo = repositories(:dexter_ghost)
+    mock_repository_path repo
+    http_info_path = File.join repo.local_path, 'info/refs'
+    File.delete http_info_path
+    repo.integrate_changes
+    assert File.exist?(http_info_path), 'HTTP file info/refs not regenerated'
+  end
+    
   test 'internal_file_path' do
     mock_repository_path @repo
     path = @repo.internal_file_path('HEAD')
@@ -447,7 +456,40 @@ class RepositoryTest < ActiveSupport::TestCase
 
   test 'run_command' do
     mock_repository_path @repo
-    assert_equal "HEAD\n", @repo.run_command('ls' ['HEAD'])
+    output = @repo.run_command 'ls', ['HEAD']
+    assert_equal "HEAD\n", output
+  end
+
+  test 'update_http_info' do
+    repo = repositories(:dexter_ghost)
+    mock_repository_path repo
+    http_info_path = File.join repo.local_path, 'info/refs'
+    packs_path = File.join repo.local_path, 'objects/pack'
+    File.delete http_info_path
+    FileUtils.rm_rf packs_path
+    repo.update_http_info
+    assert File.exist?(http_info_path), 'HTTP file info/refs not regenerated'
+    assert File.exist?(packs_path), 'Git packs not regenerated'
+  end
+
+  test 'stream_command working directory' do
+    mock_repository_path @repo
+    streamer = @repo.stream_command 'ls', ['HEAD']
+    output = ''
+    streamer.each { |data| output << data }
+    assert_equal "HEAD\n", output
+  end
+
+  test 'stream_command buffering' do
+    in_data = "gitty truly owns " * 512
+    mock_repository_path @repo
+    streamer = @repo.stream_command 'cat', [], StringIO.new(in_data), 16
+    output = ''
+    streamer.each do |data|
+      assert_operator data.length, :<=, 16, 'Buffering error'
+      output << data
+    end
+    assert_equal output, in_data
   end
     
   test 'acl for new repository' do

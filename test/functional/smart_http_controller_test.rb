@@ -12,8 +12,68 @@ class SmartHttpControllerTest < ActionController::TestCase
     get :git_file, :profile_name => @profile.to_param,
                    :repo_name => @repo.to_param, :path => 'HEAD'
     assert_response :success
-    assert_equal 'ref: refs/heads/master', response.body
+    assert_equal "ref: refs/heads/master\n", response.body
     assert_equal 'text/plain', response.headers['Content-Type']
+  end
+
+  test 'dumb git pack fetch' do
+    path = 'objects/pack/pack-7f67317db46e457c4fa046b22d8e87593c40a625.pack'
+    get :git_file, :profile_name => @profile.to_param,
+                   :repo_name => @repo.to_param, :path => path
+  
+    assert_response :success
+    assert_equal response.body[0, 4], 'PACK'
+    assert_equal 'application/x-git-packed-objects',
+                 response.headers['Content-Type']
+  end
+
+  test 'dumb info/refs' do
+    get :info_refs, :profile_name => @profile.to_param,
+                    :repo_name => @repo.to_param
+    assert_response :success
+    assert_includes response.body,
+        "88ca4433d478d6abb6558bebb9524fb72300457e\trefs/heads/master\n"
+    assert_equal 'text/plain; charset=utf-8', response.headers['Content-Type']
+  end
+
+  test 'smart info/refs for git-upload-pack' do
+    get :info_refs, :profile_name => @profile.to_param,
+                    :repo_name => @repo.to_param,
+                    :service => 'git-upload-pack'
+    assert_response :success
+    assert_equal "001e# service=git-upload-pack\n0000", response.body[0, 34],
+                 'Incorrect response header'
+    assert_includes response.body,
+        "003f88ca4433d478d6abb6558bebb9524fb72300457e refs/heads/master\n",
+        "Response doesn't include the master branch"
+    assert_equal 'application/x-git-upload-pack-advertisement',
+                 response.headers['Content-Type']
+  end
+
+  test 'smart info/refs for git-receive-pack' do
+    get :info_refs, :profile_name => @profile.to_param,
+                    :repo_name => @repo.to_param,
+                    :service => 'git-receive-pack'
+    assert_response :success
+    assert_equal "001f# service=git-receive-pack\n0000", response.body[0, 35],
+                 'Incorrect response header'
+    assert_includes response.body,
+        "003f88ca4433d478d6abb6558bebb9524fb72300457e refs/heads/master\n",
+        "Response doesn't include the master branch"
+    assert_equal 'application/x-git-receive-pack-advertisement',
+                 response.headers['Content-Type']
+  end
+
+  test 'upload-pack' do
+    @request.env['RAW_POST_DATA'] = "006fwant 88ca4433d478d6abb6558bebb9524fb72300457e multi_ack_detailed no-done side-band-64k thin-pack ofs-delta\n0032want 88ca4433d478d6abb6558bebb9524fb72300457e\n00000009done\n"
+    @request.headers['CONTENT-TYPE'] = 'application/x-git-receive-pack-request'
+    post :upload_pack, :profile_name => @profile.to_param,
+                       :repo_name => @repo.to_param
+    assert_response :success
+    assert_include response.body, 'Counting objects'
+    assert_include response.body, 'PACK'
+    assert_equal 'application/x-git-upload-pack-result',
+                 response.headers['Content-Type']
   end
 
   test 'smart http routes' do

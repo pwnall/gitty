@@ -338,6 +338,8 @@ class Repository
   #                 deleted: array of Tag models removed from the on-disk
   #                          repository
   def integrate_changes
+    self.update_http_info
+
     changes = {}
     
     branch_delta = self.branch_changes
@@ -458,11 +460,63 @@ class Repository
   # @param [Array<String>] args arguments for the program to be executed
   # @return [String] the program's stdout
   def run_command(binary, args = [])
-    child = POSIX::Spawn::Child.new binary, args
+    child = POSIX::Spawn::Child.new binary, *args, :chdir => local_path
     return child.out if child.status.success?
 
     # TODO(pwnall): consider logging the command and stderr to some admin tool
     raise "Non-zero exit code #{child.status.exitstatus} running #{binary} #{args.inspect}."
+  end
+
+  # Re-generates the files used by the dumb git-over-HTTP protocol.
+  def update_http_info
+    run_command 'git', ['repack']
+    run_command 'git', ['update-server-info']
+  end
+
+  # Runs a data-intensive command inside the repository's directory.
+  # 
+  # This method should be used for running low-level commands on the
+  # repository, such as git gc. The method is optimized for commands that
+  # consume or produce a lot of data.
+  #
+  # @param [String] binary the program to be executed
+  # @param [Array<String>] args arguments for the program to be executed
+  # @param [#read, #eof?] input_io IO-like object supplying the command's stdin
+  # @param [Integer] buffer_size the size of the read/write buffer to be used
+  #     for streaming data into and out of the sub-process running the command
+  # @return [#each] object implementing the Rails protocol for streaming output
+  def stream_command(binary, args = [], input_io = nil, buffer_size = 8192)
+    StreamCommandWrapper.new binary, args, local_path, input_io, buffer_size
+  end
+
+  # :nodoc: implements stream_command
+  class StreamCommandWrapper
+    # Launches a sub-process running the command.
+    def initialize(binary, args, chdir, input_io, buffer_size)
+      @pid, @stdin, @stdout, @stderr = POSIX::Spawn.popen4 binary, *args,
+                                                           :chdir => chdir
+      @input_io = input_io
+      @buffer_size = buffer_size
+    end
+
+    # Communicates with the sub-process running the command.
+    def each
+      if @input_io
+        until @input_io.eof?
+          @stdin.write @input_io.read(@buffer_size)
+        end
+        @stdin.close
+      end
+
+      until @stdout.eof?
+        yield @stdout.read @buffer_size
+      end
+      @stdout.close
+      @stderr.read
+      @stderr.close
+      Process.wait @pid
+      self
+    end
   end
 end
 
