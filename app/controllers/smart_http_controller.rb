@@ -53,9 +53,11 @@ class SmartHttpController < ApplicationController
   # POST costan/rails.git/git-receive-pack
   def receive_pack
     self.headers['Content-Type'] = 'application/x-git-receive-pack-result'
-    self.response_body = @repository.stream_command 'git', ['receive-pack',
-        '--stateless-rpc', '.'], request.body
-
+    command_streamer = @repository.stream_command 'git', ['receive-pack',
+        '--stateless-rpc', '.'], request.body do
+      @repository.record_push current_user
+    end
+    self.response_body = command_streamer
     # TODO(pwnall): update repository state
   end
 

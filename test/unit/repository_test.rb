@@ -409,6 +409,22 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Changed tags'
   end
 
+  test 'record_push' do
+    pusher = profiles(:costan)
+    repo = repositories(:dexter_ghost)
+    mock_repository_path repo
+    assert_difference 'Tag.count', 1 do
+      assert_difference 'Commit.count', 2 do
+        assert_difference 'FeedItem.count', 7 do
+          repo.record_push pusher.user
+        end
+      end
+    end
+
+    assert_equal pusher, repo.feed_items.last.author
+  end
+
+
   test 'integrate_changes updates http info' do
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
@@ -480,18 +496,24 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal "HEAD\n", output
   end
 
-  test 'stream_command buffering' do
-    in_chunk = "gitty truly owns ".force_encoding(Encoding::BINARY) +
-      [0xDE, 0xAD, 0xBE, 0xEF].pack('C*').force_encoding(Encoding::BINARY)
-    in_data = (in_chunk * 512).force_encoding Encoding::BINARY
+  test 'stream_command buffering and post-completion yield' do
+    binary = Encoding::BINARY
+    in_chunk = "gitty truly owns ".force_encoding(binary) +
+      [0xDE, 0xAD, 0xBE, 0xEF].pack('C*').force_encoding(binary)
+    in_data = (in_chunk * 15).force_encoding binary
     mock_repository_path @repo
-    streamer = @repo.stream_command 'cat', [], StringIO.new(in_data), 16
-    output = ''
+    done = false
+    streamer = @repo.stream_command 'cat', [], StringIO.new(in_data), 16 do
+      done = true
+    end
+    output = ''.force_encoding binary
     streamer.each do |data|
       assert_operator data.length, :<=, 16, 'Buffering error'
+      assert_equal false, done, 'Post-completion block yielded too early'
       output << data
     end
-    assert_equal output, in_data
+    assert_equal in_data, output, 'Sub-process data streaming error'
+    assert_equal true, done, 'Post-completion block not yielded'
   end
     
   test 'acl for new repository' do

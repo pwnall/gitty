@@ -410,6 +410,18 @@ class Repository
       :tags => { :added => new_tags, :changed => changed_tags,
                  :deleted => tag_delta[:deleted] } }
   end
+
+  # Updates all data structures to reflect a git push on this repository.
+  #
+  # This method sync the database information with the on-disk repository, and
+  # updates all the repository's feeds. The method is called for both
+  # git-over-ssh and git-over-http pushes.
+  #
+  # @param [User] user the user behind the push
+  def record_push(user)
+    changes = integrate_changes
+    publish_changes user.profile, changes
+  end
 end
 
 # :nodoc: support for http sync
@@ -484,30 +496,35 @@ class Repository
   # @param [#read, #eof?] input_io IO-like object supplying the command's stdin
   # @param [Integer] buffer_size the size of the read/write buffer to be used
   #     for streaming data into and out of the sub-process running the command
+  # @yield Yielded once, after the command has completed.
   # @return [#each] object implementing the Rails protocol for streaming output
-  def stream_command(binary, args = [], input_io = nil, buffer_size = 8192)
-    StreamCommandWrapper.new binary, args, local_path, input_io, buffer_size
+  def stream_command(binary, args = [], input_io = nil, buffer_size = 8192,
+                     &done_proc)
+    StreamCommandWrapper.new binary, args, local_path, input_io, buffer_size,
+                             done_proc
   end
 
   # :nodoc: implements stream_command
   class StreamCommandWrapper
     # Launches a sub-process running the command.
-    def initialize(binary, args, working_dir, input_io, buffer_size)
+    def initialize(binary, args, working_dir, input_io, buffer_size, done_proc)
       @binary = binary
-      @pid, @stdin, @stdout, @stderr =
-           POSIX::Spawn.popen4(binary, *args, { :chdir => working_dir })
       @input_io = input_io
       @buffer_size = buffer_size
-      @stdin.set_encoding Encoding::BINARY
-      @stdout.set_encoding Encoding::BINARY
-      @stderr.set_encoding Encoding::BINARY
+      @done_proc = done_proc
+
+      @pid, @stdin, @stdout, @stderr =
+           POSIX::Spawn.popen4(binary, *args, { :chdir => working_dir })
+      @stdin.set_encoding Encoding::BINARY, Encoding::BINARY
+      @stdout.set_encoding Encoding::BINARY, Encoding::BINARY
+      @stderr.set_encoding Encoding::BINARY, Encoding::BINARY
     end
 
     # Communicates with the sub-process running the command.
     def each(&http_proc)
       if @input_io
         loop do
-          in_chunk = ''
+          in_chunk = ''.force_encoding Encoding::BINARY
           begin
             @input_io.readpartial @buffer_size, in_chunk
           rescue Errno::EAGAIN, Errno::EINTR
@@ -529,7 +546,7 @@ class Repository
       end
 
       loop do
-        out_chunk = ''
+        out_chunk = ''.force_encoding Encoding::BINARY
         begin
           @stdout.readpartial @buffer_size, out_chunk
         rescue Errno::EAGAIN, Errno::EINTR
@@ -540,7 +557,7 @@ class Repository
         http_proc.call out_chunk unless out_chunk.empty?
       end
 
-      stderr_text = ''
+      stderr_text = ''.force_encoding Encoding::BINARY
       begin
         unless @stderr.eof?
           @stderr.read nil, stderr_text
@@ -562,7 +579,9 @@ class Repository
 
       if status && !status.success?
         raise RuntimeError, "Non-zero #{@binary} exit code.\n#{stderr_text}"
-      end 
+      end
+
+      @done_proc.call if @done_proc
       self
     end
   end

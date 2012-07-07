@@ -6,6 +6,7 @@ class SmartHttpControllerTest < ActionController::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
     @profile = @repo.profile
+    set_session_current_user @profile.user
   end
 
   test 'index' do
@@ -72,12 +73,17 @@ class SmartHttpControllerTest < ActionController::TestCase
   test 'null upload-pack' do
     @request.env['RAW_POST_DATA'] = "0000"
     @request.headers['CONTENT-TYPE'] = 'application/x-git-upload-pack-request'
-    post :upload_pack, :profile_name => @profile.to_param,
-                       :repo_name => @repo.to_param
-    assert_response :success
-    assert_equal '', response.body
-    assert_equal 'application/x-git-upload-pack-result',
-                 response.headers['Content-Type']
+    assert_no_difference 'Tag.count' do
+      assert_no_difference 'FeedItem.count' do
+        post :upload_pack, :profile_name => @profile.to_param,
+                           :repo_name => @repo.to_param
+        
+        assert_response :success
+        assert_equal '', response.body
+        assert_equal 'application/x-git-upload-pack-result',
+                     response.headers['Content-Type']
+      end
+    end
   end
 
   test 'upload-pack' do
@@ -96,12 +102,17 @@ class SmartHttpControllerTest < ActionController::TestCase
   test 'null receive-pack' do
     @request.env['RAW_POST_DATA'] = '0000'
     @request.headers['Content-Type'] = 'application/x-git-receive-pack-request'
-    post :receive_pack, :profile_name => @profile.to_param,
-                        :repo_name => @repo.to_param
-    assert_response :success
-    assert_equal '', response.body
-    assert_equal 'application/x-git-receive-pack-result',
-                 response.headers['Content-Type']
+    assert_difference 'Tag.count', 1 do
+      assert_difference 'FeedItem.count', 7 do
+        post :receive_pack, :profile_name => @profile.to_param,
+                            :repo_name => @repo.to_param
+
+        assert_response :success
+        assert_equal '', response.body
+        assert_equal 'application/x-git-receive-pack-result',
+                     response.headers['Content-Type']
+      end
+    end
   end
 
   test 'smart http routes' do

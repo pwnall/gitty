@@ -159,8 +159,7 @@ class RepositoriesController < ApplicationController
     @repository = Repository.find_by_ssh_path params[:repo_path]
 
     if @repository
-      changes = @repository.integrate_changes
-      @repository.publish_changes @ssh_key.user.profile, changes
+      @repository.record_push @ssh_key.user
       success = true
       message = 'OK'
     else

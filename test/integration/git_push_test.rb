@@ -127,4 +127,33 @@ END_SHELL
     assert Kernel.system('git push -q --tags origin master'),
            'Git push failed'
   end
+
+  test "repository http clone push and delete" do
+    FileUtils.rm_r @win_repository.local_path
+    FileUtils.cp_r @fixture_repo_path, @win_repository.local_path
+    FileUtils.chmod_R 0770, @win_repository.local_path    
+    
+    http_url = File.join ConfigVar['app_uri'],
+        git_over_http_path(@win_repository.profile, @win_repository) 
+
+    Dir.chdir @temp_dir do
+      assert Kernel.system("git clone -q #{http_url}"),
+             'Failed to clone repository'
+      FileUtils.cp 'git-ssh.sh', 'rwin'
+      Dir.chdir 'rwin' do
+        add_commit_push
+      end
+      
+      assert_equal 'Integration test commit',
+          @win_repository.branches.where(:name => 'master').first.commit.
+                          message, 'Pushed branches not assimilated'
+      assert_equal 'Integration test tag',
+          @win_repository.tags.where(:name => 'integration').first.message
+          'Pushed tags not assimilated'
+    end
+    @win_repository.destroy
+    assert !File.exist?(@win_repository.local_path),
+           'Failed to remove repository'
+  end
 end
+
