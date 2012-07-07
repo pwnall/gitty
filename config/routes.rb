@@ -46,6 +46,11 @@ Gitty::Application.routes.draw do
   end
       
   scope ':profile_name', :constraints => { :profile_name => /[^_][^\/]+/ } do
+    # Mis-used git-over http repository link.
+    get ':repo_name.git' => 'smart_http#index',
+        :constraints => { :repo_name => /[^\/]+/ }, :format => false,
+        :as => :git_over_http
+    
     # Repositories.
     get ':repo_name(.:format)' => 'repositories#show',
         :constraints => { :repo_name => /[^\/]+/ },

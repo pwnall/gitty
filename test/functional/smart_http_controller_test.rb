@@ -8,6 +8,11 @@ class SmartHttpControllerTest < ActionController::TestCase
     @profile = @repo.profile
   end
 
+  test 'index' do
+    get :index, :profile_name => @profile.to_param,
+                :repo_name => @repo.to_param
+  end
+
   test 'HEAD' do
     get :git_file, :profile_name => @profile.to_param,
                    :repo_name => @repo.to_param, :path => 'HEAD'
@@ -100,6 +105,9 @@ class SmartHttpControllerTest < ActionController::TestCase
   end
 
   test 'smart http routes' do
+    assert_routing({:path => '/costan/rails.git', :method => :get},
+                   {:controller => 'smart_http', :action => 'index',
+                    :profile_name => 'costan', :repo_name => 'rails'})
     assert_routing({:path => '/costan/rails.git/info/refs', :method => :get},
                    {:controller => 'smart_http', :action => 'info_refs',
                     :profile_name => 'costan', :repo_name => 'rails'})

@@ -10,6 +10,11 @@ class SmartHttpController < ApplicationController
   end
   private :fetch_repo
 
+  # GET costan/rails.git
+  def index
+    redirect_to profile_repository_path(@profile, @repository)
+  end
+
   # GET costan/rails.git/info/refs
   def info_refs
     command = git_command
