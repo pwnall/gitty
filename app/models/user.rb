@@ -7,6 +7,16 @@ class User < ActiveRecord::Base
   # Virtual password attribute, with confirmation validation.
   include Authpwn::UserExtensions::PasswordField
   
+  # Allow logging in by profile name.
+  def self.authenticate_signin(email, password)
+    unless email.index ?@
+      if profile = Profile.where(:name => email).first
+        email = profile.user.email
+      end
+    end
+    super email, password
+  end
+
   # Add your extensions to the User class here.
   
   # True if the given user can edit this user account.

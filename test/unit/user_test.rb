@@ -9,7 +9,17 @@ class UserTest < ActiveSupport::TestCase
   test 'setup' do
     assert @user.valid?
   end
+
+  test 'authenticate_signin with email/password' do
+    assert_equal users(:costan),
+        User.authenticate_signin('costan@gmail.com', 'password')
+  end
   
+  test 'authenticate_signin with profile name/password' do
+    assert_equal users(:costan),
+        User.authenticate_signin('costan', 'password')
+  end
+
   test 'name' do
     assert_equal 'costan@gmail.com', users(:costan).name
   end
@@ -27,7 +37,7 @@ class UserTest < ActiveSupport::TestCase
     @user.admin = nil
     assert !@user.valid?
   end
-  
+
   test 'can_read?' do
     assert users(:costan).can_read?(users(:costan)), 'same user'
     assert !users(:costan).can_read?(users(:dexter)), 'different users'
