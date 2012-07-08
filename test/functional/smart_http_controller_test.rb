@@ -73,7 +73,7 @@ class SmartHttpControllerTest < ActionController::TestCase
   test 'null upload-pack' do
     @request.env['RAW_POST_DATA'] = "0000"
     @request.headers['CONTENT-TYPE'] = 'application/x-git-upload-pack-request'
-    assert_no_difference 'Tag.count' do
+    assert_no_difference 'Tag.count', 'upload-pack recorded a push' do
       assert_no_difference 'FeedItem.count' do
         post :upload_pack, :profile_name => @profile.to_param,
                            :repo_name => @repo.to_param
