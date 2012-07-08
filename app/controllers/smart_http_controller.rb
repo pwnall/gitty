@@ -2,16 +2,21 @@ class SmartHttpController < ApplicationController
   # TODO(pwnall): figure out some CSRF protection
   skip_before_filter :verify_authenticity_token
   
-  # TODO(pwnall): replace this with proper access check before shipping
-  before_filter :fetch_repo
-  def fetch_repo
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-  end
-  private :fetch_repo
+  # Rejecting session cookies slightly mitigates the risk of CSRF. Users might
+  # still type their credentials into the auth window popped out by the
+  # browser, but we'll deal with that later.
+  skip_before_filter :authenticate_using_session, :except => :index
+
+  # Git is capable of using this to authenticate over HTTP.
+  authenticates_using_http_basic
+  
+  before_filter :http_user_can_read_repo, :except => [:index, :receive_pack]
+  before_filter :http_user_can_commit_to_repo, :only => [:receive_pack]
 
   # GET costan/rails.git
   def index
+    @profile = Profile.where(:name => params[:profile_name]).first
+    @repository = @profile.repositories.where(:name => params[:repo_name]).first
     redirect_to profile_repository_path(@profile, @repository)
   end
 

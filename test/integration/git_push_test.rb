@@ -135,6 +135,9 @@ END_SHELL
     
     http_url = File.join ConfigVar['app_uri'],
         git_over_http_path(@win_repository.profile, @win_repository) 
+    # Hacky way of embedding username:password.
+    user = @win_repository.profile.user
+    http_url.sub! '://', "://#{CGI.escape(user.email)}:pa55w0rd@"
 
     Dir.chdir @temp_dir do
       assert Kernel.system("git clone -q #{http_url}"),

@@ -6,10 +6,12 @@ class SmartHttpControllerTest < ActionController::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
     @profile = @repo.profile
-    set_session_current_user @profile.user
+    @user = @profile.user
+    set_http_basic_user @user
   end
 
-  test 'index' do
+  test 'index with no user' do
+    set_http_basic_user nil
     get :index, :profile_name => @profile.to_param,
                 :repo_name => @repo.to_param
   end
@@ -20,6 +22,21 @@ class SmartHttpControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal "ref: refs/heads/master\n", response.body
     assert_equal 'text/plain', response.headers['Content-Type']
+  end
+
+  test 'HEAD with no user' do
+    set_http_basic_user nil
+    get :git_file, :profile_name => @profile.to_param,
+                   :repo_name => @repo.to_param, :path => 'HEAD'
+    assert_response :unauthorized
+  end
+
+  test 'HEAD with session cookies' do
+    set_http_basic_user nil
+    set_session_current_user @user
+    get :git_file, :profile_name => @profile.to_param,
+                   :repo_name => @repo.to_param, :path => 'HEAD'
+    assert_response :unauthorized
   end
 
   test 'dumb git pack fetch' do
@@ -33,6 +50,23 @@ class SmartHttpControllerTest < ActionController::TestCase
                  response.headers['Content-Type']
   end
 
+  test 'dumb git pack fetch with no user' do
+    set_http_basic_user nil
+    path = 'objects/pack/pack-7f67317db46e457c4fa046b22d8e87593c40a625.pack'
+    get :git_file, :profile_name => @profile.to_param,
+                   :repo_name => @repo.to_param, :path => path
+    assert_response :unauthorized
+  end
+  
+  test 'dumb git pack fetch with session cookies' do
+    set_http_basic_user nil
+    set_session_current_user @user
+    path = 'objects/pack/pack-7f67317db46e457c4fa046b22d8e87593c40a625.pack'
+    get :git_file, :profile_name => @profile.to_param,
+                   :repo_name => @repo.to_param, :path => path
+    assert_response :unauthorized
+  end
+  
   test 'dumb info/refs' do
     get :info_refs, :profile_name => @profile.to_param,
                     :repo_name => @repo.to_param
@@ -40,6 +74,21 @@ class SmartHttpControllerTest < ActionController::TestCase
     assert_includes response.body,
         "88ca4433d478d6abb6558bebb9524fb72300457e\trefs/heads/master\n"
     assert_equal 'text/plain; charset=utf-8', response.headers['Content-Type']
+  end
+
+  test 'dumb info/refs with no user' do
+    set_http_basic_user nil
+    get :info_refs, :profile_name => @profile.to_param,
+                    :repo_name => @repo.to_param
+    assert_response :unauthorized
+  end
+
+  test 'dumb info/refs with session cookies' do
+    set_http_basic_user nil
+    set_session_current_user @user
+    get :info_refs, :profile_name => @profile.to_param,
+                    :repo_name => @repo.to_param
+    assert_response :unauthorized
   end
 
   test 'smart info/refs for git-upload-pack' do
@@ -86,7 +135,30 @@ class SmartHttpControllerTest < ActionController::TestCase
     end
   end
 
-  test 'upload-pack' do
+  test 'null upload-pack with no user' do
+    set_http_basic_user nil
+    @request.env['RAW_POST_DATA'] = "0000"
+    
+    @request.headers['CONTENT-TYPE'] = 'application/x-git-upload-pack-request'
+    post :upload_pack, :profile_name => @profile.to_param,
+                       :repo_name => @repo.to_param
+        
+    assert_response :unauthorized
+  end
+
+  test 'null upload-pack with session user' do
+    set_http_basic_user nil
+    set_session_current_user @user
+    @request.env['RAW_POST_DATA'] = "0000"
+    
+    @request.headers['CONTENT-TYPE'] = 'application/x-git-upload-pack-request'
+    post :upload_pack, :profile_name => @profile.to_param,
+                       :repo_name => @repo.to_param
+        
+    assert_response :unauthorized
+  end
+
+  test 'upload-pack with data' do
     @request.env['RAW_POST_DATA'] = "006fwant 88ca4433d478d6abb6558bebb9524fb72300457e multi_ack_detailed no-done side-band-64k thin-pack ofs-delta\n0032want 88ca4433d478d6abb6558bebb9524fb72300457e\n00000009done\n"
     @request.headers['Content-Type'] = 'application/x-git-upload-pack-request'
     post :upload_pack, :profile_name => @profile.to_param,
@@ -111,6 +183,41 @@ class SmartHttpControllerTest < ActionController::TestCase
         assert_equal '', response.body
         assert_equal 'application/x-git-receive-pack-result',
                      response.headers['Content-Type']
+      end
+    end
+  end
+
+  test 'null receive-pack with no user' do
+    set_http_basic_user nil
+
+    @request.env['RAW_POST_DATA'] = '0000'
+    @request.headers['Content-Type'] = 'application/x-git-receive-pack-request'
+    assert_no_difference 'Tag.count', 1 do
+      assert_no_difference 'FeedItem.count', 7 do
+        post :receive_pack, :profile_name => @profile.to_param,
+                            :repo_name => @repo.to_param
+
+        assert_response :unauthorized
+        # Make sure that any streamed git command completes
+        response.body
+      end
+    end
+  end
+
+  test 'null receive-pack with session user' do
+    set_http_basic_user nil
+    set_session_current_user @user
+
+    @request.env['RAW_POST_DATA'] = '0000'
+    @request.headers['Content-Type'] = 'application/x-git-receive-pack-request'
+    assert_no_difference 'Tag.count', 1 do
+      assert_no_difference 'FeedItem.count', 7 do
+        post :receive_pack, :profile_name => @profile.to_param,
+                            :repo_name => @repo.to_param
+
+        assert_response :unauthorized
+        # Make sure that any streamed git command completes
+        response.body
       end
     end
   end
