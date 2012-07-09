@@ -11,13 +11,13 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'authenticate_signin with email/password' do
-    assert_equal users(:costan),
-        User.authenticate_signin('costan@gmail.com', 'password')
+    assert_equal users(:dexter),
+        User.authenticate_signin('dexter@gmail.com', 'pa55w0rd')
   end
   
   test 'authenticate_signin with profile name/password' do
-    assert_equal users(:costan),
-        User.authenticate_signin('costan', 'password')
+    assert_equal users(:dexter),
+        User.authenticate_signin('dexter', 'pa55w0rd')
   end
 
   test 'name' do

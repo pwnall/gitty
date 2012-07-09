@@ -6,12 +6,12 @@ class FeedSubscriptionsController < ApplicationController
   def set_subject_from_params
     return if @subject
     
-    profile = Profile.where(:name => params[:profile_name]).first
+    profile = Profile.where(:name => params[:profile_name]).first!
     if params[:repo_name].blank?
       @subject = profile
     else
       @subject = profile &&
-                 profile.repositories.where(:name => params[:repo_name]).first
+                 profile.repositories.where(:name => params[:repo_name]).first!
     end
     
     # TODO(costan): 404 handling

@@ -3,9 +3,11 @@ class IssuesController < ApplicationController
       :only => [:index, :new, :create]
       
   def current_user_can_read_issue
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-    @issue = @repository.issues.where(:number => params[:issue_number]).first
+    @profile = Profile.where(:name => params[:profile_name]).first!
+    @repository = @profile.repositories.where(:name => params[:repo_name]).
+                           first!
+    @issue = @repository.issues.where(:number => params[:issue_number]).
+                         first!
     bounce_user unless @issue.can_read? current_user
   end
   private :current_user_can_read_issue
@@ -13,9 +15,12 @@ class IssuesController < ApplicationController
       :only => [:show]
       
   def current_user_can_edit_issue
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
-    @issue = @repository.issues.where(:number => params[:issue_number]).first
+    @profile = Profile.where(:name => params[:profile_name]).
+                       first!
+    @repository = @profile.repositories.where(:name => params[:repo_name]).
+                           first!
+    @issue = @repository.issues.where(:number => params[:issue_number]).
+                         first!
     bounce_user unless @issue.can_edit? current_user
   end
   private :current_user_can_edit_issue

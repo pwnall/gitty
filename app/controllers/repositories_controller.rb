@@ -6,7 +6,7 @@ class RepositoriesController < ApplicationController
   # before_filter that validates the repository's profile
   def current_user_can_charge_repo_profile
     profile_name = params[:repository][:profile_name]
-    profile = Profile.where(:name => profile_name).first    
+    profile = Profile.where(:name => profile_name).first
     bounce_user unless profile && profile.can_charge?(current_user)
   end
   private :current_user_can_charge_repo_profile

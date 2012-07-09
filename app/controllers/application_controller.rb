@@ -19,8 +19,9 @@ class ApplicationController < ActionController::Base
   
   # Implements the current_user_can_*_repo filters.
   def _current_user_can_x_repo(message)
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @profile = Profile.where(:name => params[:profile_name]).first!
+    @repository = @profile.repositories.where(:name => params[:repo_name]).
+                           first!
     
     bounce_user unless @repository.send message, current_user
   end
@@ -37,8 +38,9 @@ class ApplicationController < ActionController::Base
   
   # Implements the http_user_can_*_repo filters.
   def _http_user_can_x_repo(message)
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @profile = Profile.where(:name => params[:profile_name]).first!
+    @repository = @profile.repositories.where(:name => params[:repo_name]).
+                           first!
     
     bounce_to_http_basic unless @repository.send message, current_user
   end

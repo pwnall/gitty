@@ -1,7 +1,7 @@
 class ProfilesController < ApplicationController
   # before_filter verifying that the current user is authorized to do changes
   def current_user_can_edit_profile
-    @profile = Profile.where(:name => params[:profile_name]).first
+    @profile = Profile.where(:name => params[:profile_name]).first!
     bounce_user unless @profile.can_edit? current_user
   end
   private :current_user_can_edit_profile
@@ -29,7 +29,7 @@ class ProfilesController < ApplicationController
   # GET /costan
   # GET /costan.xml
   def show
-    @profile = Profile.where(:name => params[:profile_name]).first
+    @profile = Profile.where(:name => params[:profile_name]).first!
 
     respond_to do |format|
       format.html # show.html.erb

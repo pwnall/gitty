@@ -15,8 +15,9 @@ class SmartHttpController < ApplicationController
 
   # GET costan/rails.git
   def index
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @profile = Profile.where(:name => params[:profile_name]).first!
+    @repository = @profile.repositories.where(:name => params[:repo_name]).
+                           first!
     redirect_to profile_repository_path(@profile, @repository)
   end
 
