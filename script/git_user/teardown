@@ -32,7 +32,7 @@ if RUBY_PLATFORM =~ /darwin/
   git_home = "/Users/#{git_user}"
 else
   # Linux.
-  delete_user_command = ['userdel', git_user]
+  delete_user_command = ['userdel', '--remove', git_user]
   git_home = "/home/#{git_user}"
 end
 
@@ -40,7 +40,7 @@ end
 unless Kernel.system(*delete_user_command)
   puts "Failed to destroy user #{git_user}"
   exit 1
-end  
+end
 
 # Blow up the git user's homedir.
-FileUtils.rm_r git_home
+FileUtils.rm_r git_home if File.exist?(git_home)

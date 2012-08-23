@@ -3,7 +3,7 @@ require 'net/http'
 
 class GitPushTest < ActionDispatch::IntegrationTest
   fixtures :all
-  
+
   self.use_transactional_fixtures = false
 
   def setup
@@ -23,7 +23,7 @@ class GitPushTest < ActionDispatch::IntegrationTest
     setup_script = @user_scripts_path.join('setup').to_s
     Kernel.system 'sudo', setup_script, ConfigVar['git_user'], Etc.getlogin
     SshKey.write_keyfile
-  
+
     @win_repository = Repository.new :name => 'rwin'
     @win_repository.profile = profiles(:dexter)
     @win_repository.save!
@@ -36,7 +36,8 @@ class GitPushTest < ActionDispatch::IntegrationTest
     ssh_wrapper = @temp_dir.join('git-ssh.sh').to_s
     File.open ssh_wrapper, 'w' do |f|
       options = '-o PasswordAuthentication=no -o PubkeyAuthentication=yes ' +
-                '-o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no'
+                '-o UserKnownHostsFile=/dev/null ' +
+                '-o StrictHostKeyChecking=no -o LogLevel=ERROR'
       f.write <<END_SHELL
 #!/bin/sh
 exec ssh -i "#{@keyfile}" #{options} "$@"
@@ -44,8 +45,8 @@ END_SHELL
     end
     File.chmod 0755, ssh_wrapper
     @old_env_git_ssh = ENV['GIT_SSH']
-    ENV['GIT_SSH'] = ssh_wrapper 
-    
+    ENV['GIT_SSH'] = ssh_wrapper
+
     @fixture_repo_path = Rails.root.join 'test', 'fixtures', 'repo.git'
 
     wait_for_server_start
@@ -67,21 +68,21 @@ END_SHELL
       end
     end
   end
-  
+
   def teardown
     if @webapp_pid_file
       Kernel.system 'thin', 'stop', '--pid', @webapp_pid_file.to_s
     end
-    
+
     FileUtils.rm_r @temp_dir.to_s
     ENV['GIT_SSH'] = @old_env_git_ssh
-    
+
     teardown_script = @user_scripts_path.join('teardown').to_s
     Kernel.system teardown_script, ConfigVar['git_user'], Etc.getlogin
   end
 
   test "initial repository push and delete" do
-    Dir.chdir @temp_dir do      
+    Dir.chdir @temp_dir do
       assert Kernel.system('git init -q'), 'Failed to initialize repository'
       assert Kernel.system("git remote add origin #{@win_repository.ssh_uri}"),
              'Failed to add remote'
@@ -95,9 +96,9 @@ END_SHELL
   test "repository clone push and delete" do
     FileUtils.rm_r @win_repository.local_path
     FileUtils.cp_r @fixture_repo_path, @win_repository.local_path
-    FileUtils.chmod_R 0770, @win_repository.local_path    
-    
-    
+    FileUtils.chmod_R 0770, @win_repository.local_path
+
+
     Dir.chdir @temp_dir do
       assert Kernel.system("git clone -q #{@win_repository.ssh_uri}"),
              'Failed to clone repository'
@@ -105,7 +106,7 @@ END_SHELL
       Dir.chdir 'rwin' do
         add_commit_push
       end
-      
+
       assert_equal 'Integration test commit',
           @win_repository.branches.where(:name => 'master').first.commit.
                           message, 'Pushed branches not assimilated'
@@ -119,7 +120,7 @@ END_SHELL
   end
 
   def add_commit_push
-    assert Kernel.system('git add .'), 'Failed to add initial content'
+    assert Kernel.system('git add -A'), 'Failed to add initial content'
     assert Kernel.system('git commit -a -q -m "Integration test commit"'),
            'Failed to make test commit'
     assert Kernel.system('git tag -m "Integration test tag" integration'),
@@ -131,10 +132,10 @@ END_SHELL
   test "repository http clone push and delete" do
     FileUtils.rm_r @win_repository.local_path
     FileUtils.cp_r @fixture_repo_path, @win_repository.local_path
-    FileUtils.chmod_R 0770, @win_repository.local_path    
-    
+    FileUtils.chmod_R 0770, @win_repository.local_path
+
     http_url = File.join ConfigVar['app_uri'],
-        git_over_http_path(@win_repository.profile, @win_repository) 
+        git_over_http_path(@win_repository.profile, @win_repository)
     # Hacky way of embedding username:password.
     user = @win_repository.profile.user
     http_url.sub! '://', "://#{CGI.escape(user.email)}:pa55w0rd@"
@@ -146,7 +147,7 @@ END_SHELL
       Dir.chdir 'rwin' do
         add_commit_push
       end
-      
+
       assert_equal 'Integration test commit',
           @win_repository.branches.where(:name => 'master').first.commit.
                           message, 'Pushed branches not assimilated'
