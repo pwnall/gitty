@@ -2,7 +2,7 @@ require 'test_helper'
 
 class SmartHttpControllerTest < ActionController::TestCase
   setup :mock_any_repository_path
-  
+
   setup do
     @repo = repositories(:dexter_ghost)
     @profile = @repo.profile
@@ -43,7 +43,7 @@ class SmartHttpControllerTest < ActionController::TestCase
     path = 'objects/pack/pack-7f67317db46e457c4fa046b22d8e87593c40a625.pack'
     get :git_file, :profile_name => @profile.to_param,
                    :repo_name => @repo.to_param, :path => path
-  
+
     assert_response :success
     assert_equal response.body[0, 4], 'PACK'
     assert_equal 'application/x-git-packed-objects',
@@ -57,7 +57,7 @@ class SmartHttpControllerTest < ActionController::TestCase
                    :repo_name => @repo.to_param, :path => path
     assert_response :unauthorized
   end
-  
+
   test 'dumb git pack fetch with session cookies' do
     set_http_basic_user nil
     set_session_current_user @user
@@ -66,7 +66,7 @@ class SmartHttpControllerTest < ActionController::TestCase
                    :repo_name => @repo.to_param, :path => path
     assert_response :unauthorized
   end
-  
+
   test 'dumb info/refs' do
     get :info_refs, :profile_name => @profile.to_param,
                     :repo_name => @repo.to_param
@@ -126,7 +126,7 @@ class SmartHttpControllerTest < ActionController::TestCase
       assert_no_difference 'FeedItem.count' do
         post :upload_pack, :profile_name => @profile.to_param,
                            :repo_name => @repo.to_param
-        
+
         assert_response :success
         assert_equal '', response.body
         assert_equal 'application/x-git-upload-pack-result',
@@ -138,11 +138,11 @@ class SmartHttpControllerTest < ActionController::TestCase
   test 'null upload-pack with no user' do
     set_http_basic_user nil
     @request.env['RAW_POST_DATA'] = "0000"
-    
+
     @request.headers['CONTENT-TYPE'] = 'application/x-git-upload-pack-request'
     post :upload_pack, :profile_name => @profile.to_param,
                        :repo_name => @repo.to_param
-        
+
     assert_response :unauthorized
   end
 
@@ -150,11 +150,11 @@ class SmartHttpControllerTest < ActionController::TestCase
     set_http_basic_user nil
     set_session_current_user @user
     @request.env['RAW_POST_DATA'] = "0000"
-    
+
     @request.headers['CONTENT-TYPE'] = 'application/x-git-upload-pack-request'
     post :upload_pack, :profile_name => @profile.to_param,
                        :repo_name => @repo.to_param
-        
+
     assert_response :unauthorized
   end
 
@@ -165,8 +165,8 @@ class SmartHttpControllerTest < ActionController::TestCase
                        :repo_name => @repo.to_param
     assert_response :success
     body = response.body
-    assert_include body, 'Counting objects'
-    assert_include body, 'PACK'
+    assert_includes body, 'Counting objects'
+    assert_includes body, 'PACK'
     assert_equal 'application/x-git-upload-pack-result',
                  response.headers['Content-Type']
   end
