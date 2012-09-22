@@ -1,23 +1,24 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>gitty</title>
-  <%= csrf_meta_tag %>
-  <%= favicon_link_tag %>
-  <%= stylesheet_link_tag 'application' %>
-  <%= javascript_include_tag 'application' %>
+<title><%= config_vars_app_name %></title>
+<%= csrf_meta_tag %>
+<%= favicon_link_tag %>
+<%= stylesheet_link_tag 'application' %>
+<%= javascript_include_tag 'application' %>
 </head>
 <body>
-  <div id="page_wrapper">  
-    <%= render 'layouts/header' -%>
+<%= render 'layouts/header' %>
 
-    <div id="content_wrapper">
-      <div id="contents">
-        <%= yield %>
-      </div>
-    </div>
+<div id="real-body">
+<%= render 'layouts/status_bar' %>
+<div id="content-wrapper">
+<article id="main">
+<%= yield %>
+</article>
+</div>
+</div>
 
-    <%= render 'layouts/footer' -%>
-  </div>
+<%= render 'layouts/footer' %>
 </body>
 </html>

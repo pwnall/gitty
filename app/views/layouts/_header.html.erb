@@ -1,38 +1,20 @@
-<header>
-  <h1><%= link_to 'Gitty', root_url %></h1>
-  
-  <% if current_user %>
-  <ol>
-    <li>
-      <%= header_user_image current_user %>
-      <% if current_user.profile %>
-      <%= link_to current_user.profile.name, current_user.profile %>
+<header id="header">
+  <nav id="main-menu">
+    <ol>
+      <li>
+        <%= link_to root_path do %>
+          <h1>
+            <span class="app-name">
+              Gitty
+            </span>
+          </h1>
+        <% end %>
+      </li>
+      <% if current_user %>
+      <%= render 'layouts/menu' %>
       <% else %>
-      <%= current_user.email %>
+      <li> </li>
       <% end %>
-    </li>
-    
-    <li>
-      <%= link_to 'Account', change_password_session_path %>
-    </li>
-    <li>
-      <%= link_to 'Dashboard', session_path %>
-    </li>
-    <li>
-      <%= link_to 'Log out', session_path, :method => :delete %>
-    </li>
-  </ol>
-  <% else %>
-  <ol>
-    <li>
-      <%= link_to 'Home', root_path %>
-    </li>
-    <li>
-      <%= link_to 'Sign up', new_user_path %>
-    </li>
-    <li>
-      <%= link_to 'Log in', new_session_path %>
-    </li>
-  </ol>
-  <% end %>
+    </ol>
+  </nav>
 </header>

@@ -1,0 +1,23 @@
+<li>
+  <%= link_to 'Dashboard', session_path %>
+</li>
+
+<li>
+  <% if current_user.profile %>
+    <%= link_to current_user.profile do %>
+      <%= header_user_image current_user %>
+      <%= current_user.profile.name %>
+    <% end %>
+  <% else %>
+    <%= link_to current_user.email, session_path %>
+  <% end %>
+  <ol>
+    <li>
+      <%= link_to 'Account', change_password_session_path %>
+    </li>
+    <li>
+      <%= link_to 'Log out', session_path, :method => :delete %>
+    </li>
+  </ol>
+</li>
+

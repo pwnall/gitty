@@ -1,0 +1,30 @@
+<% if flash[:alert] %>
+<p class="status-bar error" data-pwnfx-hide-positive="status-bar">
+  <%= flash[:alert] %>
+
+  <span class="actions">
+  <%= link_to 'Hide', '#', 'data-pwnfx-hide' => 'status-bar' %>
+  </span>
+</p>
+<% elsif flash[:errors] && flash[:errors].any? %>
+<div class="status-bar error" data-pwnfx-hide-positive="status-bar">
+  <%= pluralize(flash[:errors].count, "error") %> occurred:
+  <span class="actions">
+  <%= link_to 'Hide', '#', 'data-pwnfx-hide' => 'status-bar' %>
+  </span>
+
+  <ul>
+  <% flash[:errors].full_messages.each do |msg| %>
+    <li><%= msg %></li>
+  <% end %>
+  </ul>
+</div>
+<% elsif flash[:notice] %>
+<p class="status-bar notice" data-pwnfx-hide-positive="status-bar">
+  <%= flash[:notice] %>
+
+  <span class="actions">
+  <%= link_to 'Hide', '#', 'data-pwnfx-hide' => 'status-bar' %>
+  </span>
+</p>
+<% end %>

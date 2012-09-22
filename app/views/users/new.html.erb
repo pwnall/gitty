@@ -1,36 +1,6 @@
-<h2>Sign up</h2>
+<article id="main">
+  <h2>Sign up</h2>
 
-<%= form_for(@user) do |f| %>
-  <% if @user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+<%= render 'users/new', :users => @user %>
+</article>
 
-      <ul>
-      <% @user.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :email, 'Email Address' %>
-    <%= f.email_field :email, :required => true,
-            :placeholder => 'your@email.com' %>
-  </div>
-  
-  <div class="field">
-    <%= f.label :password %>
-    <%= f.password_field :password, :required => true,
-          :placeholder => 'be clever' %>
-  </div>
-  <div class="field">
-    <%= f.label :password_confirmation, 'Confirm Password' %>
-    <%= f.password_field :password_confirmation, :required => true,
-          :placeholder => 'type it again' %>
-  </div>
-  
-  <div class="actions">
-    <%= f.submit 'Create Account' %>
-  </div>
-<% end %>
