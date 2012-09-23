@@ -47,7 +47,7 @@ gem 'topological_sort', '>= 0.1.1'
 # and rake tasks are available in development mode:
 group :development, :test do
   gem 'railroady', '>= 0.4.5'
-  gem 'thin', '>= 1.4.1'
+  gem 'thin', '>= 1.5.0'
 end
 
 group :test do
