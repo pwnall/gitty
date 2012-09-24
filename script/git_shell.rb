@@ -19,6 +19,13 @@ rescue LoadError
         YAML.load data
       end
     end
+    if defined? YAML::ParserError
+      JSON::JSONError = YAML::ParserError
+    elsif defined? YAML::SyntaxError
+      JSON::JSONError = YAML::SyntaxError
+    else
+      JSON::JSONError = RuntimeError
+    end
   end
 end
 
