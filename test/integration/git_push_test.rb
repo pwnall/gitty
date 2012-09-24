@@ -71,7 +71,7 @@ END_SHELL
 
   def teardown
     if @webapp_pid_file
-      Kernel.system 'thin', 'stop', '--pid', @webapp_pid_file.to_s
+      Kernel.system 'thin', 'stop', '--quiet', '--pid', @webapp_pid_file.to_s
     end
 
     FileUtils.rm_r @temp_dir.to_s
