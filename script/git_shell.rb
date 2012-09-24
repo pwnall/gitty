@@ -11,21 +11,13 @@ rescue LoadError
     require 'rubygems'
     require 'json'
   rescue LoadError
-    # If the JSON gem is not available, use the built-in yaml parser.
-    # Little-known fact: JSON is a subset of YAML.
-    require 'yaml'
+    # If the JSON gem is not available, use a hack that mostly works.
     module JSON
       def self.parse(data)
-        YAML.load data
+        eval data.gsub('":', '"=>')
       end
     end
-    if defined? YAML::ParserError
-      JSON::JSONError = YAML::ParserError
-    elsif defined? YAML::SyntaxError
-      JSON::JSONError = YAML::SyntaxError
-    else
-      JSON::JSONError = RuntimeError
-    end
+    JSON::JSONError = SyntaxError
   end
 end
 
