@@ -7,8 +7,19 @@ begin
   require 'json'
 rescue LoadError
   # Ruby 1.8
-  require 'rubygems'
-  require 'json'
+  begin
+    require 'rubygems'
+    require 'json'
+  rescue LoadError
+    # If the JSON gem is not available, use the built-in yaml parser.
+    # Little-known fact: JSON is a subset of YAML.
+    require 'yaml'
+    module JSON
+      def self.parse(data)
+        YAML.load data
+      end
+    end
+  end
 end
 
 load File.expand_path('../../lib/git_shell_executor.rb', __FILE__)
