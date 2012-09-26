@@ -7,7 +7,7 @@ class BlobsHelperTest < ActionView::TestCase
     @blob = blobs(:lib_ghost_hello_rb)
     @gid = @commit.gitid
   end
-  
+
   test 'blob_path with branch' do
     assert_equal '/dexter/ghost/blob/master/lib/ghost/hello.rb',
                  blob_path(@branch, '/lib/ghost/hello.rb')
@@ -21,7 +21,7 @@ class BlobsHelperTest < ActionView::TestCase
     assert_equal "/dexter/ghost/raw/#{@gid}/lib/ghost/hello.rb",
                  raw_blob_path(@commit, 'lib/ghost/hello.rb')
   end
-  
+
   test 'raw_blob_path with branch' do
     assert_equal '/dexter/ghost/blob/master/lib/ghost/hello.rb',
                  blob_path(@branch, '/lib/ghost/hello.rb')
@@ -35,7 +35,7 @@ class BlobsHelperTest < ActionView::TestCase
     assert html.html_safe?, 'output not marked as html_safe'
     assert_match(/<div class="markdpwn-parsed-code">/, html)
     assert_no_match(/<div class="markdpwn-off-code">/, html)
-    assert_match "<div class=\"markdpwn-parsed-code\"><span class=\"no\">STDOUT</span><span class=\"o\">.</span><span class=\"n\">puts</span> <span class=\"o\">[</span><span class=\"ss\">:Hello</span><span class=\"p\">,</span> <span class=\"ss\">:World</span><span class=\"o\">].</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"s1\">&#39; &#39;</span><span class=\"p\">)</span>\n</div>", html
+    assert_match "<div class=\"markdpwn-parsed-code\"><span class=\"no\">STDOUT</span><span class=\"o\">.</span><span class=\"n\">puts</span> <span class=\"o\">[</span><span class=\"ss\">:Hello</span><span class=\"p\">,</span> <span class=\"ss\">:World</span><span class=\"o\">].</span><span class=\"n\">join</span><span class=\"p\">(</span><span class=\"s1\">&#39; &#39;</span><span class=\"p\">)</span></div>", html
   end
 
   test 'marked_up_blob with markdpwn=disabled' do

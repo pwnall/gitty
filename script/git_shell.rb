@@ -14,7 +14,8 @@ rescue LoadError
     # If the JSON gem is not available, use a hack that mostly works.
     module JSON
       def self.parse(data)
-        eval data.gsub('":', '"=>')
+        raise SyntaxError, 'Not JSON' unless data[0] == ?{ && data[-1] == ?}
+        eval data.gsub(/([^\\])":/, '\\1"=>')
       end
     end
     JSON::JSONError = SyntaxError
