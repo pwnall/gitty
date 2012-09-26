@@ -2,31 +2,31 @@ require 'test_helper'
 
 class CommitDiffTest < ActiveSupport::TestCase
   setup do
-    @diff = CommitDiff.new :commit => commits(:hello), 
+    @diff = CommitDiff.new :commit => commits(:hello),
         :old_path => '/lib/ghost/hello.rb', :new_path => '/lib/ghost.rb',
         :old_object => blobs(:lib_ghost_hello_rb),
         :new_object => blobs(:lib_ghost_rb)
     @repo = @diff.commit.repository
   end
-  
+
   test 'setup' do
     assert @diff.valid?
   end
-  
+
   test 'commit must be set' do
     @diff.commit = nil
     assert !@diff.valid?
   end
-  
+
   test 'old_blob can be nil iff old_path is nil' do
     @diff.old_object = nil
     assert !@diff.valid?
-    
+
     @diff.old_path = nil
     @diff.save!
     assert @diff.valid?
   end
-    
+
   test 'new_object can be nil iff new_path is nil' do
     @diff.new_object = nil
     assert !@diff.valid?
@@ -41,21 +41,21 @@ class CommitDiffTest < ActiveSupport::TestCase
                             :old_object => @diff.old_object
     assert !@diff.valid?
   end
-  
+
   test 'new_path must be unique within a commit' do
     @diff.new_path = @diff.commit.diffs.first.new_path
     assert !@diff.valid?
   end
-  
+
   test 'new_path can match old_path' do
     @diff.new_path = @diff.old_path
   end
-  
+
   test 'resolve_object' do
     mock_repository_path @repo
     git_repo = @repo.grit_repo
     git_commit = git_repo.commit(commits(:require).gitid)
-  
+
     assert_equal nil, CommitDiff.resolve_object(nil, 'lib/ghost/hello.rb',
                                                 @diff.commit)
     assert_equal blobs(:lib_ghost_hello_rb), CommitDiff.resolve_object(
@@ -66,8 +66,12 @@ class CommitDiffTest < ActiveSupport::TestCase
         Grit::Blob.create(git_repo, :id => submodules(:markdpwn_012).gitid,
                                     :size => 0),
         'lib/markdpwn', @diff.commit)
+    assert_equal nil, CommitDiff.resolve_object(Grit::Blob.new, nil,
+                                                @diff.commit)
+    assert_equal nil, CommitDiff.resolve_object(Grit::Blob.new, '',
+                                                @diff.commit)
   end
-  
+
   test 'from_git_commit with invalid commit' do
     mock_repository_path @repo
     git_commit = @repo.grit_repo.commit(commits(:require).gitid)
@@ -75,15 +79,15 @@ class CommitDiffTest < ActiveSupport::TestCase
       CommitDiff.from_git_commit git_commit, commits(:hello)
     end
   end
-  
+
   test 'from_git_commit' do
     mock_any_repository_path
     commit = @diff.commit
-    g_commit = @repo.grit_repo.commit(commit.gitid)
+    g_commit = @repo.grit_repo.commit commit.gitid
     diffs = CommitDiff.from_git_commit g_commit, commit
-    
-    assert_equal 3, diffs.length, '3 diff'
-    
+
+    assert_equal 3, diffs.length, '3 diffs'
+
     # Add .gitmodules
     diff = diffs.keys[0]
     assert_equal commit, diff.commit
@@ -112,10 +116,41 @@ class CommitDiffTest < ActiveSupport::TestCase
     assert_equal 'lib/markdpwn', diff.new_path
     assert_equal submodules(:markdpwn_012), diff.new_object, 'new_object'
     assert_equal 1, diffs[diff].length, '1 diff hunk'
-    
+
     # Smoke test to ensure the diff is really valid.
     commit.diffs.destroy_all
     assert commit.valid?
     commit.save!
+  end
+
+  test "from_git_commit doesn't crash on bad diff in root commit" do
+    mock_any_repository_path
+    commit = commits(:hello)
+    g_commit = @repo.grit_repo.commit commit.gitid
+
+    # Mimic a grit bug that returns blank diffs every once in a while.
+    g_diffs = g_commit.diffs
+    g_commit.stubs(:diffs).returns g_diffs
+    g_diffs[0].stubs(:a_blob).returns Grit::Blob.new
+
+    diffs = CommitDiff.from_git_commit g_commit, commit
+    assert_equal 3, diffs.length, '3 diffs'
+  end
+
+  test "from_git_commit ignores bad diff" do
+    mock_any_repository_path
+    commit = @diff.commit
+    g_commit = @repo.grit_repo.commit commit.gitid
+
+    # Mimic a grit bug that returns blank diffs every once in a while.
+    g_diffs = g_commit.diffs
+    g_commit.stubs(:diffs).returns g_diffs
+    g_diffs[0].stubs(:a_blob).returns Grit::Blob.new
+    g_diffs[0].stubs(:a_path).returns ''
+    g_diffs[0].stubs(:b_blob).returns Grit::Blob.new
+    g_diffs[0].stubs(:b_path).returns ''
+
+    diffs = CommitDiff.from_git_commit g_commit, commit
+    assert_equal 2, diffs.length, '3 diffs minus a bad diff'
   end
 end
