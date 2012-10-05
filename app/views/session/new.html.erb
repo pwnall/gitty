@@ -16,20 +16,24 @@
 <%= form_tag session_path do %>
   <div class="field">
     <%= label_tag :email, 'Email Address' %><br />
-    <%= email_field_tag :email, @email, :autofocus => true, :required => true,
-          :placeholder => 'your@email.com' %>
+    <span class="value">
+      <%= email_field_tag :email, @email, :autofocus => true,
+            :required => true, :placeholder => 'your@email.com' %>
+    </span>
   </div>
-  
+
   <div class="field">
     <%= label_tag :password %><br />
-    <%= password_field_tag :password %>
+    <span class="value">
+      <%= password_field_tag :password %>
+    </span>
   </div>
-  
+
   <div class="actions">
     <%= button_tag 'Log in', :name => 'login', :value => 'requested' %>
     <%= button_tag 'Reset Password', :name => 'reset_password',
           :value => 'requested', :formaction => reset_password_session_path %>
-    
+
     <% if @redirect_url %>
     <%= hidden_field_tag :redirect_url, @redirect_url %>
     <% end %>

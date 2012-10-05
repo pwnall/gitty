@@ -6,7 +6,7 @@ class UsersControllerTest < ActionController::TestCase
     admin = users(:dexter)
 
     User.class_eval do
-      (class <<self; self; end).class_eval do      
+      (class <<self; self; end).class_eval do
         alias_method :real_can_list_users?, :can_list_users?
         define_method :can_list_users? do |user|
           user == admin
@@ -14,7 +14,7 @@ class UsersControllerTest < ActionController::TestCase
       end
     end
   end
-  
+
   teardown do
     User.class_eval do
       (class <<self; self; end).class_eval do
@@ -22,7 +22,7 @@ class UsersControllerTest < ActionController::TestCase
         alias_method :can_list_users?, :real_can_list_users?
         undef real_can_list_users?
       end
-    end    
+    end
   end
 
   test "should get index" do
@@ -42,11 +42,12 @@ class UsersControllerTest < ActionController::TestCase
     attributes = { :email => 'costan2@gmail.com', :password => 'passw0rd',
                    :password_confirmation => 'passw0rd'}
     assert_difference 'User.count' do
-      assert_difference 'Credentials::Token.count', 1,
+      assert_difference 'Tokens::EmailVerification.count', 1,
                         'E-mail verification token' do
         post :create, :user => attributes
       end
     end
+    assert_redirected_to new_session_path
 
     assert_nil session_current_user,
                "A new user should not be logged in without e-mail verification"
@@ -54,7 +55,6 @@ class UsersControllerTest < ActionController::TestCase
            "A new user's e-mail should not be verified"
     assert !ActionMailer::Base.deliveries.empty?,
            "E-mail verification e-mail not sent"
-    assert_redirected_to new_session_path
   end
 
   test "should create user when email checking is disabled" do
@@ -63,19 +63,19 @@ class UsersControllerTest < ActionController::TestCase
     attributes = { :email => 'costan2@gmail.com', :password => 'passw0rd',
                    :password_confirmation => 'passw0rd'}
     assert_difference 'User.count' do
-      assert_no_difference 'Credentials::Token.count',
+      assert_no_difference 'Tokens::EmailVerification.count',
                            'No e-mail verification token' do
         post :create, :user => attributes
       end
     end
 
+    assert_redirected_to root_url
     assert_equal session_current_user, assigns(:user),
            'The new user should be logged on'
     assert assigns(:user).email_credential.verified?,
            "The new user's e-mail should be verified"
     assert ActionMailer::Base.deliveries.empty?,
            "No verification e-mail"
-    assert_redirected_to root_url
   end
 
   test "should show user" do
@@ -92,7 +92,7 @@ class UsersControllerTest < ActionController::TestCase
 
     assert_redirected_to users_path
   end
-  
+
   test "another user should not be able to change account" do
     set_session_current_user users(:dexter)
 
@@ -104,7 +104,7 @@ class UsersControllerTest < ActionController::TestCase
     end
     assert_response :forbidden
   end
-  
+
   test "random users should not be able to list accounts" do
     set_session_current_user users(:costan)
     get :index

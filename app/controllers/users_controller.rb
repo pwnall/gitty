@@ -6,7 +6,7 @@ class UsersController < ApplicationController
   end
   private :current_user_can_edit_user
   before_filter :current_user_can_edit_user, :only => [:edit, :update, :destroy]
-  
+
   # before_filter that validates the current user's ability to see an account
   def current_user_can_read_user
     @user = User.find_by_param(params[:user_param])
@@ -14,20 +14,20 @@ class UsersController < ApplicationController
   end
   private :current_user_can_read_user
   before_filter :current_user_can_read_user, :only => [:show]
-  
-  # before_filter that validates the current user's ability to list accounts  
+
+  # before_filter that validates the current user's ability to list accounts
   def current_user_can_list_users
     bounce_user unless User.can_list_users? current_user
   end
   private :current_user_can_list_users
   before_filter :current_user_can_list_users, :only => [:index]
-  
+
   before_filter :set_profile
   def set_profile
     @profile = current_user && current_user.profile
   end
   private :set_profile
-  
+
   # GET /users
   # GET /users.xml
   def index
@@ -69,7 +69,7 @@ class UsersController < ApplicationController
         if ConfigVar['signup.email_check'] == 'enabled'
           token = Tokens::EmailVerification.random_for @user.email_credential
           SessionMailer.email_verification_email(token, root_url).deliver
-        
+
           format.html do
             redirect_to new_session_url,
                 :notice => 'Please check your e-mail to verify your account.'
@@ -78,10 +78,10 @@ class UsersController < ApplicationController
           email_credential = @user.email_credential
           email_credential.verified = true
           email_credential.save!
-          self.current_user = @user
+          set_session_current_user @user
           format.html { redirect_to root_url }
         end
-        
+
         format.json do
           render :json => @user, :status => :created, :location => @user
         end

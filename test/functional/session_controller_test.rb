@@ -25,6 +25,18 @@ class SessionControllerTest < ActionController::TestCase
     assert_equal user.email, assigns(:profile).display_email
   end
 
+  test "user login works and purges old sessions" do
+    old_token = credentials(:costan_session_token)
+    old_token.updated_at = Time.now - 1.year
+    old_token.save!
+    email_credential = credentials(:dexter_email)
+    post :create, :email => email_credential.email, :password => 'pa55w0rd'
+    assert_redirected_to session_url
+    assert_equal users(:dexter), session_current_user, 'session'
+    assert_nil Credentials::Token.with_code(old_token.code),
+               'old session not purged'
+  end
+
   test "user logged in JSON request" do
     set_session_current_user @user
     get :show, :format => 'json'
@@ -49,7 +61,7 @@ class SessionControllerTest < ActionController::TestCase
     assert_equal({}, ActiveSupport::JSON.decode(response.body))
   end
 
-  test "user signup page" do
+  test "user login page" do
     get :new
     assert_template :new
 
@@ -74,7 +86,6 @@ class SessionControllerTest < ActionController::TestCase
     assert_nil Credential.where(:id => password_credential.id).first,
                'Password not cleared'
   end
-
 
   test "password change form" do
     set_session_current_user @user

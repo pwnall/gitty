@@ -102,8 +102,8 @@ ActiveRecord::Schema.define(:version => 20120420051746) do
     t.string   "type",       :limit => 32,                     :null => false
     t.string   "name",       :limit => 128
     t.boolean  "verified",                  :default => false, :null => false
-    t.datetime "updated_at",                                   :null => false
     t.binary   "key"
+    t.datetime "updated_at",                                   :null => false
   end
 
   add_index "credentials", ["type", "name"], :name => "index_credentials_on_type_and_name", :unique => true
