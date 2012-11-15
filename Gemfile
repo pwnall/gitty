@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 3.2.6'
+gem 'rails', '>= 3.2.9'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git',
@@ -15,7 +15,7 @@ group :assets do
   gem 'coffee-rails', '>= 3.2.2'
   gem 'uglifier', '>= 1.2.6'
 
-  gem 'therubyracer', '>= 0.10.1'
+  gem 'therubyracer', '>= 0.10.2'
 end
 
 gem 'jquery-rails', '>= 2.0.2'
@@ -51,5 +51,5 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha', '>= 0.12.0'
+  gem 'mocha', '>= 0.13.0', :require => 'mocha/setup'
 end
