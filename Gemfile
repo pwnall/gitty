@@ -13,12 +13,13 @@ gem 'sqlite3', '>= 1.3.6'
 group :assets do
   gem 'sass-rails', '>= 3.2.5'
   gem 'coffee-rails', '>= 3.2.2'
-  gem 'uglifier', '>= 1.2.6'
+  gem 'uglifier', '>= 1.3.0'
 
-  gem 'therubyracer', '>= 0.10.2'
+  gem 'libv8', '>= 3.11.8.4', :platform => :ruby
+  gem 'therubyracer', '>= 0.11.0'
 end
 
-gem 'jquery-rails', '>= 2.0.2'
+gem 'jquery-rails', '>= 2.1.4'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -51,5 +52,5 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha', '>= 0.13.0', :require => 'mocha/setup'
+  gem 'mocha', '>= 0.13.1', :require => 'mocha/setup'
 end
