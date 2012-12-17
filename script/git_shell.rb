@@ -3,6 +3,13 @@
 # This is invoked by sshd when the git user logs in.
 
 require 'net/http'
+
+begin
+  require 'net/https'
+rescue LoadError
+  # Ruby 1.8 without OpenSSL support built in.
+end
+
 begin
   require 'json'
 rescue LoadError
