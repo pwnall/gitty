@@ -10,7 +10,7 @@ tmp
 *.sw*
 
 # Production configuration.
-config/rails_pwnerer/*
+config/rails_pwnerer
 
 # Auto-generated class diagrams.
 doc/controllers_brief.svg
