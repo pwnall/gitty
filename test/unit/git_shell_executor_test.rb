@@ -8,7 +8,7 @@ class GitShellExecutorTest < ActiveSupport::TestCase
   class GitExitError < RuntimeError; end
   class AccessExitError < RuntimeError; end
   class BackendExitError < RuntimeError; end
-  
+
   setup do
     @executor = GitShellExecutor.new
     # Mock the error method.
@@ -26,7 +26,7 @@ class GitShellExecutorTest < ActiveSupport::TestCase
         end
       end
     end
-    
+
     @key_id = ssh_keys(:rsa).to_param
     @server = 'http://test:1234/'
     @backend = 'http://test:1234/_'
@@ -34,41 +34,41 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     @repo_path = @repo.profile.name + '/' + @repo.name + '.git'
     @repo_dir = 'repos/' + @repo_path
   end
-  
+
   test 'invalid command' do
     assert_raise ShellExitError do
       @executor.run [@key_id, @server, 'ls', '-l']
     end
   end
-  
+
   test 'garbage parameters' do
     assert_raise ShellExitError do
       @executor.run [@key_id, @server, 'git-upload-pack', @repo_path, '--bsbs']
     end
   end
-  
+
   test 'access denied pull' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=false"
     @executor.expects(:app_request).with(nil, @backend, app_req).
         returns('{"access": false, "message": "no such repository"}').once
-        
+
     assert_raise AccessExitError do
       @executor.run [@key_id, @server, 'git-upload-pack', @repo_path]
     end
   end
-  
+
   test 'access denied push' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=true"
     @executor.expects(:app_request).with(nil, @backend, app_req).
         returns('{"access": false, "message": "no such repository"}').once
-        
+
     assert_raise AccessExitError do
       @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]
     end
   end
-  
+
   test 'successful pull' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=false"
@@ -92,11 +92,11 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     File.expects(:umask).once.with(0002).returns(0666)
     File.expects(:umask).once.with(0666).returns(0002)
 
-    assert_raise GitExitError do        
+    assert_raise GitExitError do
       @executor.run [@key_id, @server, 'git-upload-archive', @repo_path]
     end
   end
-  
+
   test 'successful push' do
     app_req = "check_access.json?repo_path=#{@repo_path}&" +
               "ssh_key_id=#{@key_id}&commit=true"
@@ -128,34 +128,66 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     File.expects(:umask).once.with(0666).returns(0002)
     assert_raise BackendExitError do
       @executor.run [@key_id, @server, 'git-receive-pack', @repo_path]
-    end    
+    end
   end
-  
+
   test 'app request get' do
-    @server = 'http://test:1234'
-    Net::HTTP.expects(:get).with(URI.parse("http://test:1234/_/g.json?p=true")).
-              returns('HTTP response').once
+    response_mock = mock()
+    response_mock.expects(:body).returns('HTTP response').once
+    http_mock = mock()
+    http_mock.expects(:start).yields.once
+    http_mock.expects(:get).with('/_/g.json?p=true').returns(response_mock).
+              once
+    Net::HTTP.expects(:new).with('test', 1234).returns(http_mock).once
     assert_equal 'HTTP response',
                   @executor.app_request(false, @backend, 'g.json?p=true')
   end
 
-  test 'app request broken get' do
-    @server = 'http://test:1234'
-    Net::HTTP.expects(:get).
-              with(URI.parse("http://test:1234/_/get.json?p=true")).
-              raises(RuntimeError).once
+  test 'app request get with https' do
+    @backend = 'https://test/_'
+    response_mock = mock()
+    response_mock.expects(:body).returns('HTTP response').once
+    http_mock = mock()
+    http_mock.expects(:use_ssl=).with(true).once
+    http_mock.expects(:start).yields.once
+    http_mock.expects(:get).with('/_/g.json?p=true').returns(response_mock).
+              once
+    Net::HTTP.expects(:new).with('test', 443).returns(http_mock).once
+    assert_equal 'HTTP response',
+                  @executor.app_request(false, @backend, 'g.json?p=true')
+  end
+
+  test 'app request get with broken connection' do
+    http_mock = mock()
+    http_mock.expects(:start).raises(RuntimeError).once
+    Net::HTTP.expects(:new).with('test', 1234).returns(http_mock).once
     assert_raise BackendExitError do
       @executor.app_request(nil, @backend, 'get.json?p=true')
     end
   end
 
+  test 'app request get with broken transmission' do
+    http_mock = mock()
+    http_mock.expects(:start).yields.once
+    http_mock.expects(:get).with('/_/g.json?p=true').raises(RuntimeError).once
+    Net::HTTP.expects(:new).with('test', 1234).returns(http_mock).once
+    assert_raise BackendExitError do
+      @executor.app_request(nil, @backend, 'g.json?p=true')
+    end
+  end
+
   test 'app request post' do
-    response = Object.new
-    response.expects(:body).returns('HTTP response').once
-    Net::HTTP.expects(:post_form).once.
-              with(URI.parse("http://test:1234/_/check_access.json"), {}).
-              returns(response)
+    response_mock = mock()
+    response_mock.expects(:body).returns('HTTP response').once
+    request_mock = mock()
+    request_mock.expects(:form_data=).with({}).once
+    http_mock = mock()
+    http_mock.expects(:start).yields.once
+    http_mock.expects(:request).with(request_mock).returns(response_mock).once
+    Net::HTTP.expects(:new).with('test', 1234).returns(http_mock).once
+    Net::HTTP::Post.expects(:new).with('/_/check_access.json').
+                    returns(request_mock).once
     assert_equal 'HTTP response',
                   @executor.app_request({}, @backend, 'check_access.json')
-  end  
+  end
 end
