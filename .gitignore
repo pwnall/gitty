@@ -9,6 +9,10 @@ tmp
 *.rbc
 *.sw*
 
+# Production configuration.
+config/rails_pwnerer/*
+
+# Auto-generated class diagrams.
 doc/controllers_brief.svg
 doc/controllers_complete.svg
 doc/models_brief.svg
