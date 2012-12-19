@@ -30,7 +30,7 @@ gem 'jquery-rails', '>= 2.1.4'
 # To use debugger
 # gem 'ruby-debug'
 
-gem 'authpwn_rails', '>= 0.13.1'
+gem 'authpwn_rails', '>= 0.13.3'
 gem 'configvars_rails', '>= 0.5.2'
 gem 'gravatar-ultimate', '>= 1.0.3'
 gem 'grit', :git => 'https://github.com/pwnall/grit.git', :branch => 'hunks'

@@ -40,9 +40,9 @@ GEM
       i18n (~> 0.6)
       multi_json (~> 1.0)
     arel (3.0.2)
-    authpwn_rails (0.13.2)
+    authpwn_rails (0.13.3)
       fbgraph_rails (>= 0.2.2)
-      rails (>= 3.2.8)
+      rails (>= 3.2.9)
     builder (3.0.4)
     coffee-rails (3.2.2)
       coffee-script (>= 2.2.0)
@@ -194,7 +194,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  authpwn_rails (>= 0.13.1)
+  authpwn_rails (>= 0.13.3)
   coffee-rails (>= 3.2.2)
   configvars_rails (>= 0.5.2)
   gravatar-ultimate (>= 1.0.3)
