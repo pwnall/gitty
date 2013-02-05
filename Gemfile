@@ -11,15 +11,15 @@ gem 'sqlite3', '>= 1.3.6'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', '>= 3.2.5'
+  gem 'sass-rails', '>= 3.2.6'
   gem 'coffee-rails', '>= 3.2.2'
   gem 'uglifier', '>= 1.3.0'
 
-  gem 'libv8', '>= 3.11.8.4', :platform => :ruby
-  gem 'therubyracer', '>= 0.11.0'
+  gem 'libv8', '>= 3.11.8.13', :platform => :ruby
+  gem 'therubyracer', '>= 0.11.3'
 end
 
-gem 'jquery-rails', '>= 2.1.4'
+gem 'jquery-rails', '>= 2.2.0'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -30,13 +30,13 @@ gem 'jquery-rails', '>= 2.1.4'
 # To use debugger
 # gem 'ruby-debug'
 
-gem 'authpwn_rails', '>= 0.13.3'
+gem 'authpwn_rails', '>= 0.13.4'
 gem 'configvars_rails', '>= 0.5.2'
 gem 'gravatar-ultimate', '>= 1.0.3'
 gem 'grit', :git => 'https://github.com/pwnall/grit.git', :branch => 'hunks'
 gem 'json', :platforms => [:mri_18, :jruby]
 gem 'markdpwn', '>= 0.1.5'
-gem 'net-ssh', '>= 2.3.0', :require => 'net/ssh'
+gem 'net-ssh', '>= 2.6.3', :require => 'net/ssh'
 gem 'posix-spawn', '>= 0.3.6'
 gem 'rbtree', '>= 0.3.0', :platform => :mri
 gem 'rbtree-pure', '>= 0.1.1', :require => 'rbtree',
@@ -52,5 +52,5 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha', '>= 0.13.1', :require => 'mocha/setup'
+  gem 'mocha', '>= 0.13.2', :require => 'mocha/setup'
 end

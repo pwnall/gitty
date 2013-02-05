@@ -98,11 +98,10 @@ ActiveRecord::Schema.define(:version => 20120420051746) do
   add_index "config_vars", ["name"], :name => "index_config_vars_on_name", :unique => true
 
   create_table "credentials", :force => true do |t|
-    t.integer  "user_id",                                      :null => false
-    t.string   "type",       :limit => 32,                     :null => false
+    t.integer  "user_id",                   :null => false
+    t.string   "type",       :limit => 32,  :null => false
     t.string   "name",       :limit => 128
-    t.boolean  "verified",                  :default => false, :null => false
-    t.datetime "updated_at",                                   :null => false
+    t.datetime "updated_at",                :null => false
     t.binary   "key"
   end
 

@@ -5,7 +5,6 @@ class CreateCredentials < ActiveRecord::Migration
       t.string :type, :limit => 32, :null => false
       t.string :name, :limit => 128, :null => true
 
-      t.boolean :verified, :null => false, :default => false
       t.timestamp :updated_at, :null => false
 
       t.binary :key, :limit => 2.kilobytes, :null => true
