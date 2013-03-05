@@ -13,10 +13,11 @@ gem 'sqlite3', '>= 1.3.6'
 group :assets do
   gem 'sass-rails', '>= 3.2.6'
   gem 'coffee-rails', '>= 3.2.2'
+  gem 'coffee-script-source', '>= 1.6.1'
   gem 'uglifier', '>= 1.3.0'
 
   gem 'libv8', '>= 3.11.8.13', :platform => :ruby
-  gem 'therubyracer', '>= 0.11.3'
+  gem 'therubyracer', '>= 0.11.4'
 end
 
 gem 'jquery-rails', '>= 2.2.0'
@@ -42,6 +43,9 @@ gem 'rbtree', '>= 0.3.0', :platform => :mri
 gem 'rbtree-pure', '>= 0.1.1', :require => 'rbtree',
                                :platforms => [:jruby, :rbx]
 gem 'topological_sort', '>= 0.1.1'
+
+# Bundler can't do decent dependency resolution.
+gem 'rdoc', '~> 3.12'
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
