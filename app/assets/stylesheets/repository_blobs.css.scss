@@ -1,0 +1,42 @@
+.repository_blob {
+  margin: 5px 0;
+  padding: 0;  
+  border: 1px solid #BECFA2;
+  border-radius: 4px;
+  background: #E7F5D0;
+  overflow: hidden;
+
+  .metadata {
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid #BECFA2;
+    display: table;
+    width: 100%;
+
+    .type {
+      display: table-cell;
+      padding: 5px 0 2px 1em;  
+      width: -webkit-calc(100% - 18em - 2px);
+      width: calc(100% - 20em - 2px);
+    }
+    .size {
+      display: table-cell;
+      padding: 5px 1em 2px 0;  
+      width: 10em;
+      border-left: 1px solid #D6E8B6;
+      text-align: right;
+    }
+    .actions {
+      display: table-cell;
+      padding: 5px 1em 2px 0;  
+      width: 10em;
+      border-left: 1px solid #D6E8B6;
+      text-align: right;
+    }
+  }
+
+  .contents {
+    margin: 0;
+    padding: 0;
+  }
+}

@@ -44,6 +44,20 @@ class BlobsControllerTest < ActionController::TestCase
     assert_equal 'lib/ghost/hello.rb', assigns(:blob_path)
     assert_equal blobs(:lib_ghost_hello_rb), assigns(:blob)
   end
+
+  test "should send raw blob with commit sha" do
+    get :raw, :commit_gid => @commit.to_param,
+              :repo_name => @commit.repository.to_param,
+              :profile_name => @commit.repository.profile.to_param,
+              :path => 'lib/ghost/hello.rb'
+    assert_response :success
+    assert_equal @commit, assigns(:blob_reference)
+    assert_equal 'lib/ghost/hello.rb', assigns(:blob_path)
+    assert_equal blobs(:lib_ghost_hello_rb), assigns(:blob)
+
+    assert_equal blobs(:lib_ghost_hello_rb).data, response.body
+    assert_equal 'application/ruby', response.content_type
+  end
   
   test "should grant read access to participating user" do
     set_session_current_user users(:costan)

@@ -12,7 +12,7 @@ class BlobsController < ApplicationController
   # GET /costan/rails/raw/master/doc/README
   def raw
     process_params
-    render :file => File.basename(@blob_path), :content_type => @blob.mime_type
+    render :text => @blob.data, :content_type => @blob.mime_type
   end
   
   def process_params

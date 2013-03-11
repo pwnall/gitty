@@ -6,6 +6,9 @@
   <span class="size">
     <%= number_to_human_size blob.size %>
   </span>
+  <span class="actions">
+    <%= link_to 'Download', raw_blob_path(blob_reference, blob_path) %>
+  </span>
 </p>
 
 <section class="contents">
