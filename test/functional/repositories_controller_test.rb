@@ -48,6 +48,18 @@ class RepositoriesControllerTest < ActionController::TestCase
                :profile_name => @repository.profile.to_param
     assert_response :success
   end
+
+  test "should show repository with a README" do
+    mock_any_repository_path
+
+    tree = @repository.default_branch.commit.tree
+    TreeEntry.create! :tree => tree, :name => 'README.rb',
+                      :child => blobs(:lib_ghost_rb)
+    get :show, :repo_name => @repository.to_param,
+               :profile_name => @repository.profile.to_param
+    assert_response :success
+  end
+  
   
   test "should show public repository without logged in user" do
     set_session_current_user nil
