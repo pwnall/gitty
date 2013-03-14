@@ -131,6 +131,7 @@
   <% raise "Unimplemented verb #{feed_item.verb}"%>
 <% end %>
   <span class="time">
-    <%= time_ago_in_words(feed_item.created_at, true) %> ago
+    <%= time_ago_in_words(feed_item.created_at, :include_seconds => true) %>
+    ago
   </span>
 </li>

@@ -55,7 +55,7 @@ class ProfilesController < ApplicationController
   # POST /_/profiles
   # POST /_/profiles.xml
   def create
-    @profile = Profile.new(params[:profile])
+    @profile = Profile.new profile_params[:profile]
 
     respond_to do |format|
       if @profile.save
@@ -80,7 +80,7 @@ class ProfilesController < ApplicationController
   # PUT /costan.xml
   def update
     respond_to do |format|
-      if @profile.update_attributes(params[:profile])
+      if @profile.update_attributes profile_params[:profile]
         format.html { redirect_to(@profile, :notice => 'Profile was successfully updated.') }
         format.xml  { head :ok }
       else
@@ -89,6 +89,13 @@ class ProfilesController < ApplicationController
         format.xml  { render :xml => @profile.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+  # Paramaters for profile create/update.
+  def profile_params
+    params.permit :profile_name,  # Used instead of profile id.
+                  :profile => [:name, :display_name, :display_email, :blog,
+                                 :company, :city, :language, :about]
   end
 
   # DELETE /costan

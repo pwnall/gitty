@@ -10,6 +10,6 @@ class CreateFeedItems < ActiveRecord::Migration
       t.datetime :created_at
     end
     # Delete all the feed items of a profile.
-    add_index :feed_items, :author_id, :unique => false, :null => false
+    add_index :feed_items, :author_id, :unique => false
   end
 end

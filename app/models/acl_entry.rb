@@ -12,7 +12,6 @@ class AclEntry < ActiveRecord::Base
 
   # The type of operation that the subject is allowed to perform.
   validates :role, :presence => true, :length => 1..16
-  attr_accessible :role
   
   # Virtual field that we use so we don't expose principal_id.
   def principal_name=(new_principal_name)
@@ -27,7 +26,6 @@ class AclEntry < ActiveRecord::Base
   def principal_name
     @principal_name ||= principal && principal.name
   end
-  attr_accessible :principal_name
   
   # Sets principal_id if principal_name= is called before principal_type=.
   def principal_type=(new_principal_type)

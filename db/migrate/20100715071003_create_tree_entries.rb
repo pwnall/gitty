@@ -6,6 +6,6 @@ class CreateTreeEntries < ActiveRecord::Migration
       t.integer :child_id, :null => false
       t.string :name, :limit => 128, :null => false
     end
-    add_index :tree_entries, [:tree_id, :name], :null => false, :unique => true
+    add_index :tree_entries, [:tree_id, :name]
   end
 end

@@ -9,8 +9,8 @@ class CreateCommitDiffHunks < ActiveRecord::Migration
       t.text :context, :null => true, :length => 1.kilobyte
       t.text :summary, :null => true, :length => 32.kilobytes
     end
-    add_index :commit_diff_hunks, :diff_id, :unique => false, :null => false
+    add_index :commit_diff_hunks, :diff_id, :unique => false
     add_index :commit_diff_hunks, [:diff_id, :old_start, :new_start],
-              :unique => true, :null => false
+              :unique => true
   end
 end

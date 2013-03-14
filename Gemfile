@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 3.2.12'
+gem 'rails', '>= 4.0.0.beta1'
 
 # Bundle edge Rails instead:
 # gem 'rails', :git => 'git://github.com/rails/rails.git',
@@ -11,12 +11,11 @@ gem 'sqlite3', '>= 1.3.6'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', '>= 3.2.6'
-  gem 'coffee-rails', '>= 3.2.2'
+  gem 'sass-rails', '>= 4.0.0.beta1'
+  gem 'coffee-rails', '>= 4.0.0.beta1'
   gem 'coffee-script-source', '>= 1.6.1'
   gem 'uglifier', '>= 1.3.0'
 
-  gem 'libv8', '>= 3.11.8.13', :platform => :ruby
   gem 'therubyracer', '>= 0.11.4'
 end
 
@@ -31,7 +30,7 @@ gem 'jquery-rails', '>= 2.2.0'
 # To use debugger
 # gem 'ruby-debug'
 
-gem 'authpwn_rails', '>= 0.13.4'
+gem 'authpwn_rails', '>= 0.14.0'
 gem 'configvars_rails', '>= 0.5.2'
 gem 'gravatar-ultimate', '>= 1.0.3'
 gem 'grit', :git => 'https://github.com/pwnall/grit.git', :branch => 'hunks'
@@ -51,6 +50,8 @@ gem 'rdoc', '~> 3.12'
 # put test-only gems in this group so their generators
 # and rake tasks are available in development mode:
 group :development, :test do
+  gem 'better_errors'
+  gem 'binding_of_caller'
   gem 'railroady', '>= 0.4.5'
   gem 'thin', '>= 1.5.0'
 end

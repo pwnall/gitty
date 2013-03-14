@@ -13,7 +13,6 @@ class Repository < ActiveRecord::Base
         Profile.where(:name => new_profile_name).first    
     @profile_name = profile && profile.name
   end
-  attr_accessible :profile_name
   
   # Branch information cached from the on-disk repository.
   has_many :branches, :dependent => :destroy, :inverse_of => :repository
@@ -44,17 +43,14 @@ class Repository < ActiveRecord::Base
       record.errors.add attr, "Don't use .git in the repository name."
     end
   end
-  attr_accessible :name
 
   # Usually a blog post introducing the repository's contents, or a development site.
   validates :url, :length => { :in => 1..256, :allow_nil => true },
                   :format => { :with => /\Ahttps?:\/\//, :allow_nil => true,
                                :message => 'must be a http or https URL' }
-  attr_accessible :url
 
   # Public repositories grant read access to anyone.
   validates :public, :inclusion => [true, false]
-  attr_accessible :public
     
   def url=(new_url)
     new_url = nil if new_url.blank?
@@ -67,7 +63,6 @@ class Repository < ActiveRecord::Base
     new_description = nil if new_description.blank?
     super new_description
   end
-  attr_accessible :description
 
   # The repository's location on disk.
   def local_path
@@ -196,7 +191,7 @@ class Repository
   #              commit pointers have changed
   def branch_changes
     delta = {:added => [], :deleted => [], :changed => {}}    
-    db_branches = self.branches.all.index_by(&:name)
+    db_branches = self.branches.index_by(&:name)
     grit_repo.branches.each do |git_branch|
       if branch = db_branches.delete(git_branch.name)
         if branch.commit.gitid != git_branch.commit.id
@@ -219,7 +214,7 @@ class Repository
   #              commit pointers have changed
   def tag_changes
     delta = {:added => [], :deleted => [], :changed => {}}    
-    db_tags = self.tags.all.index_by(&:name)
+    db_tags = self.tags.index_by(&:name)
     grit_repo.tags.each do |git_tag|
       if tag = db_tags.delete(git_tag.name)
         if tag.commit.gitid != git_tag.commit.id ||

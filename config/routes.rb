@@ -3,9 +3,9 @@ Gitty::Application.routes.draw do
   scope '_' do
     authpwn_session
     config_vars
-    
+
     resources :ssh_keys
-    
+
     # Users.
     get '/users' => 'users#index', :as => :users
     post '/users' => 'users#create'
@@ -21,12 +21,12 @@ Gitty::Application.routes.draw do
   end
 
   scope '_' do
-    match 'check_access.:format' => 'repositories#check_access',
+    get 'check_access.:format' => 'repositories#check_access',
           :as => :repository_check_access
     post 'change_notice.:format' => 'repositories#change_notice',
          :as => :repository_change_notice
   end
-  
+
   # Profiles.
   get '/:profile_name(.:format)' => 'profiles#show', :as => :profile,
       :constraints => { :profile_name => /[^_][^\/]+/ }
@@ -41,16 +41,16 @@ Gitty::Application.routes.draw do
       get ':profile_name/edit(.:format)' => 'profiles#edit',
           :as => :edit_profile
       put ':profile_name(.:format)' => 'profiles#update'
-      delete ':profile_name(.:format)' => 'profiles#destroy'    
+      delete ':profile_name(.:format)' => 'profiles#destroy'
     end
   end
-      
+
   scope ':profile_name', :constraints => { :profile_name => /[^_][^\/]+/ } do
     # Mis-used git-over http repository link.
     get ':repo_name.git' => 'smart_http#index',
         :constraints => { :repo_name => /[^\/]+/ }, :format => false,
         :as => :git_over_http
-    
+
     # Repositories.
     get ':repo_name(.:format)' => 'repositories#show',
         :constraints => { :repo_name => /[^\/]+/ },
@@ -58,7 +58,7 @@ Gitty::Application.routes.draw do
     put ':repo_name(.:format)' => 'repositories#update',
         :constraints => { :repo_name => /[^\/]+/ }
     delete ':repo_name(.:format)' => 'repositories#destroy',
-           :constraints => { :repo_name => /[^\/]+/ }    
+           :constraints => { :repo_name => /[^\/]+/ }
     get ':repo_name/edit(.:format)' => 'repositories#edit',
         :constraints => { :repo_name => /[^\/]+/ },
         :as => :edit_profile_repository
@@ -69,7 +69,7 @@ Gitty::Application.routes.draw do
       get ':repo_name(.:format)' => 'repositories#show'
       get ':repo_name/edit(.:format)' => 'repositories#edit'
       put ':repo_name(.:format)' => 'repositories#update'
-      delete ':repo_name(.:format)' => 'repositories#destroy'      
+      delete ':repo_name(.:format)' => 'repositories#destroy'
     end
   end
 
@@ -81,7 +81,7 @@ Gitty::Application.routes.draw do
     get 'info/refs' => 'smart_http#info_refs'
     get '*path' => 'smart_http#git_file', :format => false
   end
-  
+
   scope ':profile_name/:repo_name',
       :constraints => { :profile_name => /[^_\/]+/, :repo_name => /[^\/]+/ } do
     # Feed.
@@ -90,7 +90,7 @@ Gitty::Application.routes.draw do
     post 'subscribers(.:format)' => 'feed_subscriptions#create'
     delete 'subscribers(.:format)' => 'feed_subscriptions#destroy'
     get 'feed(.:format)' => 'repositories#feed',
-        :as => :feed_profile_repository    
+        :as => :feed_profile_repository
 
     # Commits.
     get 'commits(/:ref_name)' => 'commits#index',
@@ -98,7 +98,7 @@ Gitty::Application.routes.draw do
         :constraints => {:ref_name => /[^\/]+/ }
     get 'commit/:commit_gid(.:format)' => 'commits#show',
         :as => :profile_repository_commit
-  
+
     # Branches.
     get 'branches' => 'branches#index', :as => :profile_repository_branches
     get 'branch/:branch_name(.:format)' => 'branches#show',
@@ -130,14 +130,14 @@ Gitty::Application.routes.draw do
     get 'issues' => 'issues#index', :as => :profile_repository_issues
     get 'issues/new' => 'issues#new', :as => :new_profile_repository_issue
     get 'issues/:issue_number' => 'issues#show', :as => :profile_repository_issue
-    get 'issues/:issue_number/edit(.:format)' => 'issues#edit', 
+    get 'issues/:issue_number/edit(.:format)' => 'issues#edit',
         :as => :edit_profile_repository_issue
     put 'issues/:issue_number' => 'issues#update'
     delete 'issues/:issue_number' => 'issues#destroy'
-        
+
     # Admin.
     get 'edit' => 'repositories#edit', :as => :edit_profile_repository
-    
+
     # ACLs.
     get 'acl_entries' => 'acl_entries#index', :as => :profile_repository_acl_entries
     post 'acl_entries' => 'acl_entries#create'
@@ -147,7 +147,7 @@ Gitty::Application.routes.draw do
     delete 'acl_entries/:principal_name' => 'acl_entries#destroy',
         :constraints => { :principal_name => /[^_][^\/]+/ }
   end
-  
+
   # Profile sub-resources. (must follow repository sub-resources)
   scope '_' do
     scope 'profiles/:profile_name',
@@ -168,6 +168,6 @@ Gitty::Application.routes.draw do
       delete 'subscribers(.:format)' => 'feed_subscriptions#destroy'
     end
   end
-  
+
   root :to => "session#show"
 end

@@ -6,7 +6,7 @@ class SshKeysController < ApplicationController
   end
   private :user_owns_ssh_key
   before_filter :user_owns_ssh_key, :except => [:index, :new, :create]
-  
+
   # GET /ssh_keys
   # GET /ssh_keys.xml
   def index
@@ -18,7 +18,7 @@ class SshKeysController < ApplicationController
   def show
     @ssh_key = SshKey.find(params[:id])
     unless @ssh_key.user_id == current_user.id
-      bounce_user 
+      bounce_user
       return
     end
 
@@ -47,7 +47,7 @@ class SshKeysController < ApplicationController
   # POST /ssh_keys
   # POST /ssh_keys.xml
   def create
-    @ssh_key = SshKey.new(params[:ssh_key])
+    @ssh_key = SshKey.new ssh_key_params[:ssh_key]
     @ssh_key.user = current_user
 
     respond_to do |format|
@@ -65,10 +65,9 @@ class SshKeysController < ApplicationController
   # PUT /ssh_keys/1.xml
   def update
     @ssh_key = SshKey.find(params[:id])
-    params[:ssh_key][:user_id] = current_user.id
 
     respond_to do |format|
-      if @ssh_key.update_attributes(params[:ssh_key])
+      if @ssh_key.update_attributes ssh_key_params[:ssh_key]
         format.html { redirect_to(@ssh_key, :notice => 'Ssh key was successfully updated.') }
         format.xml  { head :ok }
       else
@@ -76,6 +75,11 @@ class SshKeysController < ApplicationController
         format.xml  { render :xml => @ssh_key.errors, :status => :unprocessable_entity }
       end
     end
+  end
+
+  # Parameters for SSH key create / update.
+  def ssh_key_params
+    params.permit :id, :ssh_key => [:name, :key_line]
   end
 
   # DELETE /ssh_keys/1

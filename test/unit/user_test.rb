@@ -136,14 +136,4 @@ class UserTest < ActiveSupport::TestCase
       user.save!
     end
   end
-
-  test 'mass-assignment protection' do
-    {
-      :profile_id => 42, :profile => profiles(:csail),
-    }.each do |attr, value|
-      assert_raise ActiveModel::MassAssignmentSecurity::Error, attr.inspect do
-        user = User.new attr => value
-      end
-    end
-  end
 end

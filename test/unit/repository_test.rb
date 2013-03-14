@@ -250,11 +250,9 @@ class RepositoryTest < ActiveSupport::TestCase
                       'Topological sort failed'
     end
     
-    branch1 = @repo.grit_repo.branches.find { |b| b.name == 'branch1' }
     commit_ids = @repo.commits_added([branches['branch1']]).map(&:id)
     assert_equal [commit_a, commit_b1], commit_ids, 'Added commits on branch1'
 
-    branch2 = @repo.grit_repo.branches.find { |b| b.name == 'branch2' }
     commit_ids = @repo.commits_added([branches['branch2']]).map(&:id)
     assert_equal [commit_a, commit_b2], commit_ids, 'Added commits on branch2'
   
@@ -284,11 +282,9 @@ class RepositoryTest < ActiveSupport::TestCase
     commit_ids = repo.commits_added([branches['master']]).map(&:id)
     assert_equal [commit_b2, commit_c], commit_ids, 'Added commits on master'
     
-    branch1 = repo.grit_repo.branches.find { |b| b.name == 'branch1' }
     commit_ids = repo.commits_added([branches['branch1']]).map(&:id)
     assert_equal [], commit_ids, 'Added commits on branch1'
 
-    branch2 = repo.grit_repo.branches.find { |b| b.name == 'branch2' }
     commit_ids = repo.commits_added([branches['branch2']]).map(&:id)
     assert_equal [commit_b2], commit_ids, 'Added commits on branch2'
   
@@ -611,16 +607,6 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal branches(:master), repositories(:dexter_ghost).default_branch    
   end
   
-  test 'mass-assignment protection' do
-    {
-      :profile_id => 42
-    }.each do |attr, value|
-      assert_raise ActiveModel::MassAssignmentSecurity::Error, attr.inspect do
-        repository = Repository.new attr => value
-      end
-    end
-  end
-
   test 'profile creation publishing' do    
     item = nil
     repository = repositories(:csail_ghost)

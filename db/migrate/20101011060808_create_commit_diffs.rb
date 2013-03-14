@@ -9,6 +9,6 @@ class CreateCommitDiffs < ActiveRecord::Migration
       t.string :old_path, :null => true, :length => 1.kilobyte
       t.string :new_path, :null => true, :length => 1.kilobyte
     end
-    add_index :commit_diffs, :commit_id, :unique => false, :null => false
+    add_index :commit_diffs, :commit_id, :unique => false
   end
 end

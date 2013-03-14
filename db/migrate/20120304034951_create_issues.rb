@@ -11,11 +11,9 @@ class CreateIssues < ActiveRecord::Migration
 
       t.timestamps
     end
-    
-    add_index :issues, [:author_id, :open], :unique => false, :null => false
-    add_index :issues, [:repository_id, :number], :unique => true,
-                                                  :null => false
-    add_index :issues, [:repository_id, :open, :number], :unique => true,
-                                                         :null => false
+
+    add_index :issues, [:author_id, :open], :unique => false
+    add_index :issues, [:repository_id, :number], :unique => true
+    add_index :issues, [:repository_id, :open, :number], :unique => true
   end
 end

@@ -4,6 +4,6 @@ class CreateTrees < ActiveRecord::Migration
       t.integer :repository_id
       t.string :gitid, :limit => 64, :null => false
     end
-    add_index :trees, [:repository_id, :gitid], :unique => true, :null => false
+    add_index :trees, [:repository_id, :gitid], :unique => true
   end
 end

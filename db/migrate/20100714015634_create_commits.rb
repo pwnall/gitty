@@ -11,10 +11,9 @@ class CreateCommits < ActiveRecord::Migration
       t.string :committer_email, :limit => 128, :null => false
       t.datetime :authored_at, :null => false
       t.datetime :committed_at, :null => false
-      
+
       t.text :message, :limit => 1.kilobyte, :null => false
     end
-    add_index :commits, [:repository_id, :gitid], :unique => true,
-              :null => false
+    add_index :commits, [:repository_id, :gitid], :unique => true
   end
 end

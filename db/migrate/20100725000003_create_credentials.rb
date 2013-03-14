@@ -11,12 +11,10 @@ class CreateCredentials < ActiveRecord::Migration
     end
 
     # All the credentials (maybe of a specific type) belonging to a user.
-    add_index :credentials, [:user_id, :type], :unique => false,
-                                               :null => false
+    add_index :credentials, [:user_id, :type], :unique => false
     # A specific credential, to find out what user it belongs to.
-    add_index :credentials, [:type, :name], :unique => true, :null => true
+    add_index :credentials, [:type, :name], :unique => true
     # Expired credentials (particularly useful for tokens).
-    add_index :credentials, [:type, :updated_at], :unique => false,
-                                                  :null => false
+    add_index :credentials, [:type, :updated_at], :unique => false
   end
 end

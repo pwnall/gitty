@@ -4,7 +4,6 @@ class CreateCommitParents < ActiveRecord::Migration
       t.integer :commit_id, :null => false
       t.integer :parent_id, :null => false
     end
-    add_index :commit_parents, [:commit_id, :parent_id], :unique => true,
-              :null => false
+    add_index :commit_parents, [:commit_id, :parent_id], :unique => true
   end
 end

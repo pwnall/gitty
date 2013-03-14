@@ -9,7 +9,6 @@ class CreateRepositories < ActiveRecord::Migration
 
       t.timestamps
     end
-    add_index :repositories, [:profile_id, :name], :unique => true,
-                             :null => false
+    add_index :repositories, [:profile_id, :name], :unique => true
   end
 end

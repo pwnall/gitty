@@ -5,7 +5,6 @@ class CreateBranches < ActiveRecord::Migration
       t.integer :repository_id, :null => false
       t.integer :commit_id, :null => false
     end
-    add_index :branches, [:repository_id, :name], :unique => true,
-              :null => false
+    add_index :branches, [:repository_id, :name], :unique => true
   end
 end

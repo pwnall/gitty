@@ -7,9 +7,9 @@ class AclEntriesControllerTest < ActionController::TestCase
 
     @profile = profiles(:csail)
     @profile_acl_entry = acl_entries(:costan_csail)
-    
+
     @session_user = @repository.profile.user
-    set_session_current_user @session_user    
+    set_session_current_user @session_user
   end
 
   test "should get index for repository" do
@@ -35,7 +35,7 @@ class AclEntriesControllerTest < ActionController::TestCase
     }
     assert_difference 'AclEntry.count' do
       post :create, :profile_name => @repository.profile.name,
-                    :repo_name => @repository.to_param, :acl_entry => attributes
+           :repo_name => @repository.to_param, :acl_entry => attributes
     end
 
     assert_redirected_to acl_entries_path(@repository)
@@ -48,7 +48,8 @@ class AclEntriesControllerTest < ActionController::TestCase
       :role => 'charge'
     }
     assert_difference 'AclEntry.count' do
-      post :create, :profile_name => @profile.to_param, :acl_entry => attributes
+      post :create, :profile_name => @profile.to_param,
+                    :acl_entry => attributes
     end
 
     assert_redirected_to acl_entries_path(@profile)
@@ -91,14 +92,14 @@ class AclEntriesControllerTest < ActionController::TestCase
 
     assert_redirected_to acl_entries_path(@profile)
   end
-  
+
   test "should deny access to non-admins for repository" do
     set_session_current_user users(:costan)
 
     get :index, :profile_name => @repository.profile.to_param,
                 :repo_name => @repository.to_param
     assert_response :forbidden
-    
+
     attributes = {
       :principal_name => users(:costan).profile.to_param,
       :role => 'commit'
@@ -128,7 +129,7 @@ class AclEntriesControllerTest < ActionController::TestCase
 
     get :index, :profile_name => @profile.to_param
     assert_response :forbidden
-    
+
 
     attributes = {
       :principal_name => users(:dexter).to_param,
@@ -150,7 +151,7 @@ class AclEntriesControllerTest < ActionController::TestCase
     end
     assert_response :forbidden
   end
-  
+
   test "profile routes" do
     assert_routing({:path => '/_/profiles/costan/acl_entries', :method => :get},
                    {:controller => 'acl_entries', :action => 'index',
@@ -168,7 +169,7 @@ class AclEntriesControllerTest < ActionController::TestCase
                    {:controller => 'acl_entries', :action => 'destroy',
                     :profile_name => 'costan',
                     :principal_name => 'costan@gmail.com'})
-  end  
+  end
 
   test "repository routes" do
     assert_routing({:path => '/costan/rails/acl_entries', :method => :get},
@@ -176,7 +177,7 @@ class AclEntriesControllerTest < ActionController::TestCase
                     :profile_name => 'costan', :repo_name => 'rails'})
     assert_routing({:path => '/costan/rails/acl_entries', :method => :post},
                    {:controller => 'acl_entries', :action => 'create',
-                    :profile_name => 'costan', :repo_name => 'rails'})                    
+                    :profile_name => 'costan', :repo_name => 'rails'})
     assert_routing({:path => '/costan/rails/acl_entries/dexter',
                     :method => :put},
                    {:controller => 'acl_entries', :action => 'update',
@@ -187,5 +188,5 @@ class AclEntriesControllerTest < ActionController::TestCase
                    {:controller => 'acl_entries', :action => 'destroy',
                     :profile_name => 'costan', :repo_name => 'rails',
                     :principal_name => 'dexter'})
-  end  
+  end
 end

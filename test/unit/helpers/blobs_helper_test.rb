@@ -45,6 +45,6 @@ class BlobsHelperTest < ActionView::TestCase
     assert html.html_safe?, 'output not marked as html_safe'
     assert_match(/<div class="markdpwn-off-code">/, html)
     assert_no_match(/<div class="markdpwn-parsed-code">/, html)
-    assert_match "<div class=\"markdpwn-off-code\">STDOUT.puts [:Hello, :World].join(&#x27; &#x27;)\n</div>", html
+    assert_match "<div class=\"markdpwn-off-code\">STDOUT.puts [:Hello, :World].join(&#39; &#39;)\n</div>", html
   end
 end

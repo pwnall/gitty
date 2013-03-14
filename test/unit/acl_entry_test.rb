@@ -107,15 +107,4 @@ class AclEntryTest < ActiveSupport::TestCase
     entry = acl_entries(:costan_csail)
     assert_equal entry, AclEntry.for(entry.principal, entry.subject)
   end
-  
-  test 'mass-assignment protection' do
-    {
-      :principal_id => 37, :principal_type => 'Profile',
-      :subject_id => 42, :subject_type => 'Repository'
-    }.each do |attr, value|
-      assert_raise ActiveModel::MassAssignmentSecurity::Error, attr.inspect do
-        entry = AclEntry.new attr => value
-      end
-    end
-  end
 end

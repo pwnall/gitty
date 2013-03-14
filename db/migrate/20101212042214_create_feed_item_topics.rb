@@ -9,12 +9,11 @@ class CreateFeedItemTopics < ActiveRecord::Migration
     end
     # Display the feed for a topic.
     add_index :feed_item_topics, [:topic_id, :topic_type, :created_at],
-                                 :unique => false, :null => false
+                                 :unique => false
     # Enforce uniqueness constraint.
     add_index :feed_item_topics, [:topic_id, :topic_type, :feed_item_id],
-                                 :unique => true, :null => false,
-                                 :name => :index_feed_item_topics_on_topic_item
+        :unique => true, :name => :index_feed_item_topics_on_topic_item
     # Delete a feed item.
-    add_index :feed_item_topics, :feed_item_id, :unique => false, :null => false
+    add_index :feed_item_topics, :feed_item_id, :unique => false
   end
 end

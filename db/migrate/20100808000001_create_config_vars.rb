@@ -4,6 +4,6 @@ class CreateConfigVars < ActiveRecord::Migration
       t.string :name, :length => 64, :null => false
       t.binary :value, :length => 1024, :null => false
     end
-    add_index :config_vars, :name, :unique => true, :null => false
+    add_index :config_vars, :name, :unique => true
   end
 end

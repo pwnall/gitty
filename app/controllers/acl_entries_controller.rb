@@ -1,14 +1,14 @@
 class AclEntriesController < ApplicationController
   include AclEntriesHelper
-  
+
   before_filter :set_subject_from_params
   before_filter :set_acl_entry_from_params, :only => [:update, :destroy]
-  before_filter :current_user_can_edit_subject  
-  
+  before_filter :current_user_can_edit_subject
+
   # Sets @subject (the subject for ACL entries) based on URL params.
   def set_subject_from_params
     return if @subject
-    
+
     profile = Profile.where(:name => params[:profile_name]).first!
     if params[:repo_name].blank?
       @subject = profile
@@ -16,10 +16,10 @@ class AclEntriesController < ApplicationController
       @subject = profile &&
                  profile.repositories.where(:name => params[:repo_name]).first!
     end
-    
+
     # TODO(costan): 404 handling
   end
-  
+
   # Sets @acl_entry based on URL params.
   def set_acl_entry_from_params
     set_subject_from_params unless @subject
@@ -27,8 +27,8 @@ class AclEntriesController < ApplicationController
     principal = principal_class.find_by_name params[:principal_name]
     @acl_entry = AclEntry.for principal, @subject
   end
-  
-  # before_filter verifying the current user's access to the subject in params.  
+
+  # before_filter verifying the current user's access to the subject in params.
   #
   # Assumes @subject has been set by a previous call to set_subject_from_params.
   def current_user_can_edit_subject
@@ -38,7 +38,7 @@ class AclEntriesController < ApplicationController
     end
     bounce_user if @subject.kind_of?(Profile) && @subject.user
   end
-  
+
   # GET /acl_entries
   # GET /acl_entries.json
   def index
@@ -55,7 +55,7 @@ class AclEntriesController < ApplicationController
   # POST /acl_entries
   # POST /acl_entries.json
   def create
-    @acl_entry = AclEntry.new params[:acl_entry]
+    @acl_entry = AclEntry.new acl_entry_params[:acl_entry]
     @acl_entry.principal_type = @subject.class.acl_principal_class.name
     @acl_entry.subject = @subject
 
@@ -82,7 +82,7 @@ class AclEntriesController < ApplicationController
   # PUT /acl_entries/1.json
   def update
     respond_to do |format|
-      if @acl_entry.update_attributes params[:acl_entry]
+      if @acl_entry.update_attributes acl_entry_params[:acl_entry]
         Rails.logger.error [acl_entries_path(@subject), @subject].inspect
         format.html do
           redirect_to acl_entries_path(@subject),
@@ -96,6 +96,13 @@ class AclEntriesController < ApplicationController
         end
       end
     end
+  end
+
+  # Parameters for ACL entry create / update.
+  def acl_entry_params
+    params.permit :profile_name, :repo_name,  # Used instead of subject id.
+                  :principal_name,  # Used instead of acl entry id.
+                  :acl_entry => [:principal_name, :role]
   end
 
   # DELETE /acl_entries/1

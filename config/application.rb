@@ -45,8 +45,5 @@ module Gitty
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-    
-    # Enable the AR identity map
-    config.active_record.identity_map = true
   end
 end

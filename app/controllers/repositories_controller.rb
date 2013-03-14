@@ -51,7 +51,7 @@ class RepositoriesController < ApplicationController
   # POST /_/repositories
   # POST /_/repositories
   def create
-    @repository = Repository.new(params[:repository])
+    @repository = Repository.new repository_params[:repository]
 
     respond_to do |format|
       if @repository.save
@@ -79,7 +79,7 @@ class RepositoriesController < ApplicationController
   # PUT /costan/rails.xml
   def update
     respond_to do |format|
-      if @repository.update_attributes(params[:repository])        
+      if @repository.update_attributes repository_params[:repository]
         format.html do
           redirect_to profile_repository_url(@repository.profile, @repository),
                       :notice => 'Repository was successfully updated.'
@@ -93,6 +93,14 @@ class RepositoriesController < ApplicationController
         end
       end
     end
+  end
+
+  # Parameters for repository create / update.
+  def repository_params
+    params.permit :profile_name, :repo_name,  # Used instead of repository id. 
+                  :issue_number,   # Used instead of issue id.
+                  :repository => [:profile_name, :name, :url, :public,
+                                  :description]
   end
   
   # GET /costan/rails/feed
@@ -108,8 +116,9 @@ class RepositoriesController < ApplicationController
   # DELETE /costan/rails
   # DELETE /costan/rails.xml
   def destroy
-    @profile = Profile.where(:name => params[:profile_name]).first
-    @repository = @profile.repositories.where(:name => params[:repo_name]).first
+    @profile = Profile.where(:name => params[:profile_name]).first!
+    @repository = @profile.repositories.where(:name => params[:repo_name]).
+        first!
     @repository.destroy
     @repository.publish_deletion current_user.profile
 

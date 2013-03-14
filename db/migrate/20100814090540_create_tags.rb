@@ -10,6 +10,6 @@ class CreateTags < ActiveRecord::Migration
 
       t.text :message, :limit => 2.kilobytes, :null => false
     end
-    add_index :tags, [:repository_id, :name], :unique => true, :null => false
+    add_index :tags, [:repository_id, :name], :unique => true
   end
 end
