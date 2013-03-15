@@ -11,7 +11,9 @@ rescue LoadError
 end
 
 begin
-  require 'json'
+  unless defined? JSON
+    require 'json'
+  end
 rescue LoadError
   # Ruby 1.8
   begin
@@ -21,11 +23,15 @@ rescue LoadError
     # If the JSON gem is not available, use a hack that mostly works.
     module JSON
       def self.parse(data)
-        raise SyntaxError, 'Not JSON' unless data[0] == ?{ && data[-1] == ?}
+        unless data[0] == ?{ && data[-1] == ?}
+          raise JSON::JSONError, 'Not JSON'
+        end
         eval data.gsub(/([^\\])":/, '\\1"=>')
       end
     end
-    JSON::JSONError = SyntaxError
+    unless defined? JSON::JSONError
+      JSON::JSONError = SyntaxError
+    end
   end
 end
 

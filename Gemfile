@@ -33,7 +33,7 @@ gem 'jquery-rails', '>= 2.2.0'
 gem 'authpwn_rails', '>= 0.14.0'
 gem 'configvars_rails', '>= 0.5.2'
 gem 'gravatar-ultimate', '>= 1.0.3'
-gem 'grit', :git => 'https://github.com/pwnall/grit.git', :branch => 'hunks'
+gem 'grit', :git => 'https://github.com/pwnall/grit.git', :branch => 'gitty'
 gem 'json', :platforms => [:mri_18, :jruby]
 gem 'markdpwn', '>= 0.1.5'
 gem 'net-ssh', '>= 2.6.3', :require => 'net/ssh'

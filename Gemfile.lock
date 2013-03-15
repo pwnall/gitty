@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/pwnall/grit.git
-  revision: a61253bd78ac289122e5110f26c591007a40b7c3
-  branch: hunks
+  revision: 750045fdc460905e4ada315a3cf13623b6c8c362
+  branch: gitty
   specs:
     grit (2.5.0)
       diff-lcs (~> 1.1)
@@ -92,7 +92,7 @@ GEM
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
     json (1.7.7)
-    jwt (0.1.7)
+    jwt (0.1.8)
       multi_json (>= 1.5)
     libv8 (3.11.8.13)
     mail (2.5.3)
