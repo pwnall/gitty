@@ -11,9 +11,9 @@ module UsersHelper
       alt = subject.email
     end
 
-    url = Gravatar.new(email).image_url :size => 30, :secure => true,
-                                        :default => :mm
-    image_tag url, :alt => "gravatar for #{alt}",
-                   :style => 'width: 30px; height: 30px;'
+    url = Gravatar.new(email).image_url size: 30, secure: true,
+                                        default: :mm
+    image_tag url, alt: "gravatar for #{alt}",
+                   style: 'width: 30px; height: 30px;'
   end
 end

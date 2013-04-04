@@ -24,10 +24,10 @@ class GitPushTest < ActionDispatch::IntegrationTest
     Kernel.system 'sudo', setup_script, ConfigVar['git_user'], Etc.getlogin
     SshKey.write_keyfile
 
-    @win_repository = Repository.new :name => 'rwin'
+    @win_repository = Repository.new name: 'rwin'
     @win_repository.profile = profiles(:dexter)
     @win_repository.save!
-    @fail_repository = Repository.new :name => 'rfail'
+    @fail_repository = Repository.new name: 'rfail'
     @fail_repository.profile = profiles(:dexter)
     @fail_repository.save!
 
@@ -108,10 +108,10 @@ END_SHELL
       end
 
       assert_equal 'Integration test commit',
-          @win_repository.branches.where(:name => 'master').first.commit.
+          @win_repository.branches.where(name: 'master').first.commit.
                           message, 'Pushed branches not assimilated'
       assert_equal 'Integration test tag',
-          @win_repository.tags.where(:name => 'integration').first.message
+          @win_repository.tags.where(name: 'integration').first.message
           'Pushed tags not assimilated'
     end
     @win_repository.destroy
@@ -149,10 +149,10 @@ END_SHELL
       end
 
       assert_equal 'Integration test commit',
-          @win_repository.branches.where(:name => 'master').first.commit.
+          @win_repository.branches.where(name: 'master').first.commit.
                           message, 'Pushed branches not assimilated'
       assert_equal 'Integration test tag',
-          @win_repository.tags.where(:name => 'integration').first.message
+          @win_repository.tags.where(name: 'integration').first.message
           'Pushed tags not assimilated'
     end
     @win_repository.destroy

@@ -2,9 +2,9 @@ require 'test_helper'
 
 class CommitDiffHunkTest < ActiveSupport::TestCase
   setup do
-    @hunk = CommitDiffHunk.new :diff => commit_diffs(:hello_lib_ghost_hello_rb),
-        :old_start => 1, :old_count => 5, :new_start => 3, :new_count => 6,
-        :summary => ' 2-2+3 1'
+    @hunk = CommitDiffHunk.new diff: commit_diffs(:hello_lib_ghost_hello_rb),
+        old_start: 1, old_count: 5, new_start: 3, new_count: 6,
+        summary: ' 2-2+3 1'
     @repo = @hunk.diff.commit.repository
   end
   
@@ -141,7 +141,7 @@ Third base line.
 Not in patch 3B.
 Not in patch 4B.
 END_DATA
-    diff = CommitDiff.new :old_object => old_blob, :new_object => new_blob
+    diff = CommitDiff.new old_object: old_blob, new_object: new_blob
     @hunk.diff = diff
     lines = @hunk.patch_lines
     
@@ -180,7 +180,7 @@ First base line.
 Added line 1.
 Third base line.
 END_DATA
-    diff = CommitDiff.new :old_object => old_blob, :new_object => new_blob
+    diff = CommitDiff.new old_object: old_blob, new_object: new_blob
     @hunk.summary = ' 1-1+1 1\\1'
     @hunk.diff = diff
     lines = @hunk.patch_lines

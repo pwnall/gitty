@@ -1,13 +1,13 @@
 class CommitsController < ApplicationController
-  before_filter :current_user_can_read_repo, :except => :destroy
+  before_filter :current_user_can_read_repo, except: :destroy
 
   # GET /costan/rails/commits
   # GET /costan/rails/commits.xml
   def index
     if params[:ref_name]
-      if ref = @repository.branches.where(:name => params[:ref_name]).first
+      if ref = @repository.branches.where(name: params[:ref_name]).first
         @branch = ref
-      elsif ref = @repository.tags.where(:name => params[:ref_name]).first!
+      elsif ref = @repository.tags.where(name: params[:ref_name]).first!
         @tag = ref
       end        
     else
@@ -24,18 +24,18 @@ class CommitsController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @commits }
+      format.xml  { render xml: @commits }
     end
   end
 
   # GET /costan/rails/commits/12345
   # GET /costan/rails/commits/12345.xml
   def show
-    @commit = @repository.commits.where(:gitid => params[:commit_gid]).first
+    @commit = @repository.commits.where(gitid: params[:commit_gid]).first
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @commit }
+      format.xml  { render xml: @commit }
     end
   end
 end

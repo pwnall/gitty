@@ -7,7 +7,7 @@ class TagsHelperTest < ActionView::TestCase
   end
   
   test 'tag_switcher with no tag branch' do
-    render :text => tag_switcher(@repository, nil)
+    render text: tag_switcher(@repository, nil)
     
     assert_select 'div[class="dropdown"]' do
       assert_select 'ul' do
@@ -21,7 +21,7 @@ class TagsHelperTest < ActionView::TestCase
   end
   
   test 'tag_switcher with tag and preset label' do
-    render :text => tag_switcher(@repository, @tag, 'Other text')
+    render text: tag_switcher(@repository, @tag, 'Other text')
 
     assert_select 'div[class="dropdown"]' do
       assert_select 'p', 'Other text'

@@ -5,7 +5,7 @@ class UsersController < ApplicationController
     bounce_user unless @user && @user.can_edit?(current_user)
   end
   private :current_user_can_edit_user
-  before_filter :current_user_can_edit_user, :only => [:edit, :update, :destroy]
+  before_filter :current_user_can_edit_user, only: [:edit, :update, :destroy]
 
   # before_filter that validates the current user's ability to see an account
   def current_user_can_read_user
@@ -13,14 +13,14 @@ class UsersController < ApplicationController
     bounce_user unless @user && @user.can_read?(current_user)
   end
   private :current_user_can_read_user
-  before_filter :current_user_can_read_user, :only => [:show]
+  before_filter :current_user_can_read_user, only: [:show]
 
   # before_filter that validates the current user's ability to list accounts
   def current_user_can_list_users
     bounce_user unless User.can_list_users? current_user
   end
   private :current_user_can_list_users
-  before_filter :current_user_can_list_users, :only => [:index]
+  before_filter :current_user_can_list_users, only: [:index]
 
   before_filter :set_profile
   def set_profile
@@ -35,7 +35,7 @@ class UsersController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @users }
+      format.xml  { render xml: @users }
     end
   end
 
@@ -44,7 +44,7 @@ class UsersController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @user }
+      format.xml  { render xml: @user }
     end
   end
 
@@ -54,7 +54,7 @@ class UsersController < ApplicationController
     @user = User.new
 
     respond_to do |format|
-      format.json  { render :json => @user }
+      format.json  { render json: @user }
       format.html # new.html.erb
     end
   end
@@ -72,7 +72,7 @@ class UsersController < ApplicationController
 
           format.html do
             redirect_to new_session_url,
-                :notice => 'Please check your e-mail to verify your account.'
+                notice: 'Please check your e-mail to verify your account.'
           end
         else
           email_credential = @user.email_credential
@@ -83,20 +83,20 @@ class UsersController < ApplicationController
         end
 
         format.json do
-          render :json => @user, :status => :created, :location => @user
+          render json: @user, status: :created, location: @user
         end
       else
         format.json do
-          render :json => @user.errors, :status => :unprocessable_entity
+          render json: @user.errors, status: :unprocessable_entity
         end
-        format.html { render :action => :new }
+        format.html { render action: :new }
       end
     end
   end
 
   # Parameters for user signup.
   def user_params
-    params.permit :user => [:email, :password, :password_confirmation]
+    params.permit user: [:email, :password, :password_confirmation]
   end
 
   # DELETE /users/1

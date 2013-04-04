@@ -5,14 +5,14 @@ class ProfileTest < ActiveSupport::TestCase
   teardown :mock_profile_paths_undo
   
   setup do
-    @profile = Profile.new :name => 'awesome',
-                           :display_name => 'Awesome Profile',
-                           :display_email => 'profile@gmail.com',
-                           :blog => 'http://www.awesomeblog.com/me',
-                           :company => 'Cool Inc.',
-                           :city => 'Anytown, USA',
-                           :language => 'Favorite Coding Language',
-                           :about => 'I\'m a little teapot short and stout.'
+    @profile = Profile.new name: 'awesome',
+                           display_name: 'Awesome Profile',
+                           display_email: 'profile@gmail.com',
+                           blog: 'http://www.awesomeblog.com/me',
+                           company: 'Cool Inc.',
+                           city: 'Anytown, USA',
+                           language: 'Favorite Coding Language',
+                           about: 'I\'m a little teapot short and stout.'
   end
   
   test 'local_path' do
@@ -139,7 +139,7 @@ class ProfileTest < ActiveSupport::TestCase
     assert File.exist?('tmp/test_git_root/awesome'),
            'Profile directory not created on disk'
         
-    @profile.update_attributes! :name => 'pwnage'
+    @profile.update_attributes! name: 'pwnage'
     assert !File.exist?('tmp/test_git_root/awesome'),
            'Old directory not deleted on rename'
     assert File.exist?('tmp/test_git_root/pwnage'),

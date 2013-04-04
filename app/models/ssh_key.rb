@@ -1,15 +1,15 @@
 # Public SSL key used to connect to the repositories via git+ssh.
 class SshKey < ActiveRecord::Base
   # The user that uses the SSH key to authenticate.
-  belongs_to :user, :inverse_of => :ssh_keys
-  validates :user, :presence => true
+  belongs_to :user, inverse_of: :ssh_keys
+  validates :user, presence: true
   
   # The key's SSH fingerprint.
-  validates :fprint, :presence => true, :length => 1..128, :uniqueness => true
+  validates :fprint, presence: true, length: 1..128, uniqueness: true
   # A user-friendly name for the key.
-  validates :name, :presence => true, :length => 1..128
+  validates :name, presence: true, length: 1..128
   # The authorized_keys line for the key.
-  validates :key_line, :presence => true, :length => 1..(1.kilobyte)
+  validates :key_line, presence: true, length: 1..(1.kilobyte)
 
   # Updates the fingerprint automatically when the key line changes.  
   def key_line=(new_key_line)

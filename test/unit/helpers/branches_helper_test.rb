@@ -13,7 +13,7 @@ class BranchesHelperTest < ActionView::TestCase
   end
   
   test 'branch_switcher with no current branch' do
-    render :text => branch_switcher(@repository, nil)
+    render text: branch_switcher(@repository, nil)
     
     assert_select 'div[class="dropdown"]' do
       assert_select 'ul' do
@@ -27,7 +27,7 @@ class BranchesHelperTest < ActionView::TestCase
   end
   
   test 'branch_switcher with branch and preset label' do
-    render :text => branch_switcher(@repository, @branch, 'Other text')
+    render text: branch_switcher(@repository, @branch, 'Other text')
     assert_select 'div[class="dropdown"]' do
       assert_select 'p', 'Other text'
       assert_select 'ul' do

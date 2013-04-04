@@ -4,7 +4,7 @@ class FeedSubscriptionTest < ActiveSupport::TestCase
   setup do
     @profile = profiles(:mit)
     @repo = repositories(:dexter_ghost)
-    @subscription = FeedSubscription.new :profile => @profile, :topic => @repo
+    @subscription = FeedSubscription.new profile: @profile, topic: @repo
   end
   
   test 'setup' do

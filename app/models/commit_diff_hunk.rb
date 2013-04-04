@@ -1,30 +1,30 @@
 # A continuous block of lines (hunk) in a diff between two blob versions.
 class CommitDiffHunk < ActiveRecord::Base
   # The diff that this hunk is a part of. 
-  belongs_to :diff, :class_name => 'CommitDiff'
-  validates :diff, :presence => true
+  belongs_to :diff, class_name: 'CommitDiff'
+  validates :diff, presence: true
   
   # The first line in the file's old (pre-change) version.
-  validates :old_start, :numericality => { :greater_than_or_equal_to => 0 },
-                        :presence => true
+  validates :old_start, numericality: { greater_than_or_equal_to: 0 },
+                        presence: true
 
   # The size (in lines) in file's the old (pre-change) version.
-  validates :old_count, :numericality => { :greater_than_or_equal_to => 0 },
-                        :presence => true
+  validates :old_count, numericality: { greater_than_or_equal_to: 0 },
+                        presence: true
 
   # The first line in the file's new (post-change) version.
-  validates :new_start, :numericality => { :greater_than_or_equal_to => 0 },
-                        :presence => true,
-                        :uniqueness => { :scope => [:diff_id, :old_start] }
+  validates :new_start, numericality: { greater_than_or_equal_to: 0 },
+                        presence: true,
+                        uniqueness: { scope: [:diff_id, :old_start] }
 
   # The size (in lines) in file's the new (post-change) version.
-  validates :new_count, :numericality => { :greater_than_or_equal_to => 0 },
-                        :presence => true
+  validates :new_count, numericality: { greater_than_or_equal_to: 0 },
+                        presence: true
 
   # The patch context (first line with no blank spaces preceding the patch).
   #
   # This can be nil if the patch lines aren't indented.
-  validates :context, :length => { :maximum => 1.kilobyte, :allow_nil => true }
+  validates :context, length: { maximum: 1.kilobyte, allow_nil: true }
 
   # A compressed version of the patch text produced by git's diff algorithm.
   #
@@ -33,7 +33,7 @@ class CommitDiffHunk < ActiveRecord::Base
   #
   # For large and complex patches, this field will be set to nil. It's unlikely
   # that a human would be able to review such patches with a conventional UI.
-  validates :summary, :presence => true, :length => 1..32.kilobytes
+  validates :summary, presence: true, length: 1..32.kilobytes
   
   # An array of parsed lines making up the hunk's patch.
   #
@@ -98,10 +98,10 @@ class CommitDiffHunk < ActiveRecord::Base
       new_count ||= diff.new_object ? diff.new_object.data_line_count : 0
       context = git_hunk.context.blank? ? nil : git_hunk.context
       
-      hunk = self.new :diff => diff, :old_start => old_start,
-          :new_start => new_start, :old_count => old_count,
-          :new_count => new_count, :context => context,
-          :summary => patch_summary(git_hunk.diff)
+      hunk = self.new diff: diff, old_start: old_start,
+          new_start: new_start, old_count: old_count,
+          new_count: new_count, context: context,
+          summary: patch_summary(git_hunk.diff)
     end
   end
   

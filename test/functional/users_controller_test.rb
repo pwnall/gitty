@@ -39,12 +39,12 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should create user" do
     ActionMailer::Base.deliveries = []
-    attributes = { :email => 'costan2@gmail.com', :password => 'passw0rd',
-                   :password_confirmation => 'passw0rd'}
+    attributes = { email: 'costan2@gmail.com', password: 'passw0rd',
+                   password_confirmation: 'passw0rd'}
     assert_difference 'User.count' do
       assert_difference 'Tokens::EmailVerification.count', 1,
                         'E-mail verification token' do
-        post :create, :user => attributes
+        post :create, user: attributes
       end
     end
     assert_redirected_to new_session_path
@@ -60,12 +60,12 @@ class UsersControllerTest < ActionController::TestCase
   test "should create user when email checking is disabled" do
     ConfigVar['signup.email_check'] = 'disabled'
     ActionMailer::Base.deliveries = []
-    attributes = { :email => 'costan2@gmail.com', :password => 'passw0rd',
-                   :password_confirmation => 'passw0rd'}
+    attributes = { email: 'costan2@gmail.com', password: 'passw0rd',
+                   password_confirmation: 'passw0rd'}
     assert_difference 'User.count' do
       assert_no_difference 'Tokens::EmailVerification.count',
                            'No e-mail verification token' do
-        post :create, :user => attributes
+        post :create, user: attributes
       end
     end
 
@@ -80,14 +80,14 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should show user" do
     set_session_current_user users(:costan)
-    get :show, :user_param => @user.to_param
+    get :show, user_param: @user.to_param
     assert_response :success
   end
 
   test "should destroy user" do
     set_session_current_user users(:costan)
     assert_difference('User.count', -1) do
-      delete :destroy, :user_param => @user.to_param
+      delete :destroy, user_param: @user.to_param
     end
 
     assert_redirected_to users_path
@@ -96,11 +96,11 @@ class UsersControllerTest < ActionController::TestCase
   test "another user should not be able to change account" do
     set_session_current_user users(:dexter)
 
-    get :show, :user_param => @user.to_param
+    get :show, user_param: @user.to_param
     assert_response :forbidden
 
     assert_no_difference 'User.count' do
-      delete :destroy, :user_param => @user.to_param
+      delete :destroy, user_param: @user.to_param
     end
     assert_response :forbidden
   end

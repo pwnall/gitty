@@ -2,19 +2,19 @@ class AclEntriesController < ApplicationController
   include AclEntriesHelper
 
   before_filter :set_subject_from_params
-  before_filter :set_acl_entry_from_params, :only => [:update, :destroy]
+  before_filter :set_acl_entry_from_params, only: [:update, :destroy]
   before_filter :current_user_can_edit_subject
 
   # Sets @subject (the subject for ACL entries) based on URL params.
   def set_subject_from_params
     return if @subject
 
-    profile = Profile.where(:name => params[:profile_name]).first!
+    profile = Profile.where(name: params[:profile_name]).first!
     if params[:repo_name].blank?
       @subject = profile
     else
       @subject = profile &&
-                 profile.repositories.where(:name => params[:repo_name]).first!
+                 profile.repositories.where(name: params[:repo_name]).first!
     end
 
     # TODO(costan): 404 handling
@@ -42,13 +42,13 @@ class AclEntriesController < ApplicationController
   # GET /acl_entries
   # GET /acl_entries.json
   def index
-    @acl_entry = AclEntry.new :role => @subject.class.acl_roles.first
+    @acl_entry = AclEntry.new role: @subject.class.acl_roles.first
     @acl_entry.subject = @subject
     @acl_entry.principal_type = @subject.class.acl_principal_class.name
 
     respond_to do |format|
       format.html # index.html.erb
-      format.json { render :json => @acl_entries }
+      format.json { render json: @acl_entries }
     end
   end
 
@@ -63,16 +63,15 @@ class AclEntriesController < ApplicationController
       if @acl_entry.save
         format.html do
           redirect_to acl_entries_path(@subject),
-                      :notice => 'Acl entry was successfully created.'
+                      notice: 'Acl entry was successfully created.'
         end
         format.json do
-          render :json => @acl_entry, :status => :created,
-                 :location => @acl_entry
+          render json: @acl_entry, status: :created, location: @acl_entry
         end
       else
-        format.html { render :action => :index }
+        format.html { render action: :index }
         format.json do
-          render :json => @acl_entry.errors, :status => :unprocessable_entity
+          render json: @acl_entry.errors, status: :unprocessable_entity
         end
       end
     end
@@ -86,13 +85,13 @@ class AclEntriesController < ApplicationController
         Rails.logger.error [acl_entries_path(@subject), @subject].inspect
         format.html do
           redirect_to acl_entries_path(@subject),
-                      :notice => 'Acl entry was successfully updated.'
+                      notice: 'Acl entry was successfully updated.'
         end
         format.json { head :ok }
       else
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
         format.json do
-          render :xml => @acl_entry.errors, :status => :unprocessable_entity
+          render xml: @acl_entry.errors, status: :unprocessable_entity
         end
       end
     end
@@ -102,7 +101,7 @@ class AclEntriesController < ApplicationController
   def acl_entry_params
     params.permit :profile_name, :repo_name,  # Used instead of subject id.
                   :principal_name,  # Used instead of acl entry id.
-                  :acl_entry => [:principal_name, :role]
+                  acl_entry: [:principal_name, :role]
   end
 
   # DELETE /acl_entries/1

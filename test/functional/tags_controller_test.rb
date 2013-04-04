@@ -8,16 +8,16 @@ class TagsControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    get :index, :repo_name => @tag.repository.to_param,
-                :profile_name => @tag.repository.profile.to_param
+    get :index, repo_name: @tag.repository.to_param,
+                profile_name: @tag.repository.profile.to_param
     assert_response :success
     assert_not_nil assigns(:tags)
   end
 
   test "should show tag" do
-    get :show, :tag_name => @tag.to_param,
-               :repo_name => @tag.repository.to_param,
-               :profile_name => @tag.repository.profile.to_param
+    get :show, tag_name: @tag.to_param,
+               repo_name: @tag.repository.to_param,
+               profile_name: @tag.repository.profile.to_param
     assert_response :success
   end
   
@@ -25,37 +25,37 @@ class TagsControllerTest < ActionController::TestCase
     set_session_current_user users(:costan)
     AclEntry.set(users(:costan).profile, @tag.repository, :participate)
 
-    get :index, :repo_name => @tag.repository.to_param,
-                :profile_name => @tag.repository.profile.to_param
+    get :index, repo_name: @tag.repository.to_param,
+                profile_name: @tag.repository.profile.to_param
     assert_response :success
     
-    get :show, :tag_name => @tag.to_param,
-               :repo_name => @tag.repository.to_param,
-               :profile_name => @tag.repository.profile.to_param
+    get :show, tag_name: @tag.to_param,
+               repo_name: @tag.repository.to_param,
+               profile_name: @tag.repository.profile.to_param
     assert_response :success
   end
 
   test "should deny access to guests" do
     set_session_current_user nil
     
-    get :index, :repo_name => @tag.repository.to_param,
-                :profile_name => @tag.repository.profile.to_param
+    get :index, repo_name: @tag.repository.to_param,
+                profile_name: @tag.repository.profile.to_param
     assert_response :forbidden
     
-    get :show, :tag_name => @tag.to_param,
-               :repo_name => @tag.repository.to_param,
-               :profile_name => @tag.repository.profile.to_param
+    get :show, tag_name: @tag.to_param,
+               repo_name: @tag.repository.to_param,
+               profile_name: @tag.repository.profile.to_param
     assert_response :forbidden
   end  
 
   test "tag routes" do
-    assert_routing({:path => '/costan/rails/tags', :method => :get},
-                   {:controller => 'tags', :action => 'index',
-                    :profile_name => 'costan', :repo_name => 'rails'})
-    assert_routing({:path => '/costan/rails/tag/v1.0',
-                    :method => :get},
-                   {:controller => 'tags', :action => 'show',
-                    :profile_name => 'costan', :repo_name => 'rails',
-                    :tag_name => 'v1.0'})
+    assert_routing({path: '/costan/rails/tags', method: :get},
+                   {controller: 'tags', action: 'index',
+                    profile_name: 'costan', repo_name: 'rails'})
+    assert_routing({path: '/costan/rails/tag/v1.0',
+                    method: :get},
+                   {controller: 'tags', action: 'show',
+                    profile_name: 'costan', repo_name: 'rails',
+                    tag_name: 'v1.0'})
   end
 end

@@ -1,17 +1,17 @@
 class RepositoriesController < ApplicationController
   before_filter :current_user_can_read_repo,
-      :only => [:show, :feed, :subscribers, :subscribe, :unsubscribe]
-  before_filter :current_user_can_edit_repo, :only => [:edit, :update, :destroy]
-  
+      only: [:show, :feed, :subscribers, :subscribe, :unsubscribe]
+  before_filter :current_user_can_edit_repo, only: [:edit, :update, :destroy]
+
   # before_filter that validates the repository's profile
   def current_user_can_charge_repo_profile
     profile_name = params[:repository][:profile_name]
-    profile = Profile.where(:name => profile_name).first
+    profile = Profile.where(name: profile_name).first
     bounce_user unless profile && profile.can_charge?(current_user)
   end
   private :current_user_can_charge_repo_profile
   before_filter :current_user_can_charge_repo_profile,
-      :only => [:create, :update]
+      only: [:create, :update]
 
   # GET /_/repositories
   # GET /_/repositories.json
@@ -19,7 +19,7 @@ class RepositoriesController < ApplicationController
     @repositories = current_user.repositories
     respond_to do |format|
       format.html { redirect_to session_url }
-      format.json { render :json => @repositories }
+      format.json { render json: @repositories }
     end
   end
 
@@ -28,7 +28,7 @@ class RepositoriesController < ApplicationController
   def show
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @repository }
+      format.xml  { render xml: @repository }
     end
   end
 
@@ -40,7 +40,7 @@ class RepositoriesController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @repository }
+      format.xml  { render xml: @repository }
     end
   end
 
@@ -57,19 +57,19 @@ class RepositoriesController < ApplicationController
       if @repository.save
         @repository.publish_creation current_user.profile
         FeedSubscription.add current_user.profile, @repository
-        
+
         format.html do
           redirect_to profile_repository_url(@repository.profile, @repository),
-                      :notice => 'Repository was successfully created.'
+                      notice: 'Repository was successfully created.'
         end
         format.xml do
-          render :xml => @repository, :status => :created,
-                 :location => [@repository.profile, @repository]
+          render xml: @repository, status: :created,
+                 location: [@repository.profile, @repository]
         end
       else
-        format.html { render :action => "new" }
+        format.html { render action: "new" }
         format.xml do
-          render :xml => @repository.errors, :status => :unprocessable_entity
+          render xml: @repository.errors, status: :unprocessable_entity
         end
       end
     end
@@ -82,14 +82,14 @@ class RepositoriesController < ApplicationController
       if @repository.update_attributes repository_params[:repository]
         format.html do
           redirect_to profile_repository_url(@repository.profile, @repository),
-                      :notice => 'Repository was successfully updated.'
+                      notice: 'Repository was successfully updated.'
         end
         format.xml  { head :ok }
       else
         @original_repository = Repository.find(@repository.id)
-        format.html { render :action => "edit" }
+        format.html { render action: "edit" }
         format.xml do
-          render :xml => @repository.errors, :status => :unprocessable_entity
+          render xml: @repository.errors, status: :unprocessable_entity
         end
       end
     end
@@ -97,27 +97,27 @@ class RepositoriesController < ApplicationController
 
   # Parameters for repository create / update.
   def repository_params
-    params.permit :profile_name, :repo_name,  # Used instead of repository id. 
+    params.permit :profile_name, :repo_name,  # Used instead of repository id.
                   :issue_number,   # Used instead of issue id.
-                  :repository => [:profile_name, :name, :url, :public,
-                                  :description]
+                  repository: [:profile_name, :name, :url, :public,
+                               :description]
   end
-  
+
   # GET /costan/rails/feed
   # GET /costan/rails/feed.json
   def feed
     @feed_items = @repository.recent_feed_items
     respond_to do |format|
       format.html  # feed.html.erb
-      format.json { render :json => @feed_items }
+      format.json { render json: @feed_items }
     end
   end
-  
+
   # DELETE /costan/rails
   # DELETE /costan/rails.xml
   def destroy
-    @profile = Profile.where(:name => params[:profile_name]).first!
-    @repository = @profile.repositories.where(:name => params[:repo_name]).
+    @profile = Profile.where(name: params[:profile_name]).first!
+    @repository = @profile.repositories.where(name: params[:repo_name]).
         first!
     @repository.destroy
     @repository.publish_deletion current_user.profile
@@ -127,13 +127,14 @@ class RepositoriesController < ApplicationController
       format.xml  { head :ok }
     end
   end
-  
+
   # GET /_/check_access.json?repo_path=costan/rails.git&ssh_key_id=1&commit_access=true
   def check_access
     @repository = Repository.find_by_ssh_path params[:repo_path]
-    ssh_key = SshKey.where(:id => params[:ssh_key_id]).first
+    ssh_key = SshKey.where(id: params[:ssh_key_id]).first
     @user = ssh_key && ssh_key.user
-    @commit_access = params[:commit_access] && params[:commit_access] != 'false'
+    @commit_access = params[:commit_access] &&
+                     params[:commit_access] != 'false'
 
     message = nil
     if @repository
@@ -144,7 +145,8 @@ class RepositoriesController < ApplicationController
           access = @repository.can_read? @user
         end
         unless access
-          message = "You cannot #{@commit_access ? 'commit to' : 'read from'}" +
+          message = "You cannot " +
+              (@commit_access ? 'commit to' : 'read from') +
               " #{params[:repo_path]}. Ask the owner for access."
         end
       else
@@ -153,16 +155,15 @@ class RepositoriesController < ApplicationController
     else
       message = "Repository #{params[:repo_path]} not found."
     end
-    
-    response = message ? { :access => false, :message => message } :
-        { :access => true }
+
+    response = message ? { access: false, message: message } : { access: true }
     respond_to do |format|
-      format.json { render :json => response }
+      format.json { render json: response }
     end
   end
-  
+
   # POST /_/change_notice.json?repo_path=costan/rails.git&ssh_key_id=1
-  protect_from_forgery :except => :change_notice
+  protect_from_forgery except: :change_notice
   def change_notice
     @ssh_key = SshKey.find(params[:ssh_key_id])
     @repository = Repository.find_by_ssh_path params[:repo_path]
@@ -175,10 +176,10 @@ class RepositoriesController < ApplicationController
       success = false
       message = "No git repository at #{params[:repo_path]}"
     end
-    
+
     respond_to do |format|
       format.json do
-        render :json => { :success => success, :message => message }
+        render json: { success: success, message: message }
       end
     end
   end

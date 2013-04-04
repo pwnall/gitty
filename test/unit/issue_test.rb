@@ -3,9 +3,9 @@ require 'test_helper'
 class IssueTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:costan_ghost)
-    @issue = Issue.new :repository => @repo, :author => profiles(:dexter),
-        :open => true, :sensitive => false, :title => 'Crashes on OSX',
-        :description => 'Running Lion 10.7'
+    @issue = Issue.new repository: @repo, author: profiles(:dexter),
+        open: true, sensitive: false, title: 'Crashes on OSX',
+        description: 'Running Lion 10.7'
   end
 
   test 'setup' do

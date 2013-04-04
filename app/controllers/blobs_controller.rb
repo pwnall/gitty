@@ -12,21 +12,21 @@ class BlobsController < ApplicationController
   # GET /costan/rails/raw/master/doc/README
   def raw
     process_params
-    render :text => @blob.data, :content_type => @blob.mime_type
+    render text: @blob.data, content_type: @blob.mime_type
   end
   
   def process_params
-    commit = @repository.commits.where(:gitid => params[:commit_gid]).first
+    commit = @repository.commits.where(gitid: params[:commit_gid]).first
     # Fallback to a branch if there's no commit with the desired name.
     if commit
       @blob_reference = commit
     else
-      @branch = @repository.branches.where(:name => params[:commit_gid]).first
+      @branch = @repository.branches.where(name: params[:commit_gid]).first
       if @branch
         @blob_reference = @branch
         commit = @branch.commit
       else
-        @tag = @repository.tags.where(:name => params[:commit_gid]).first!
+        @tag = @repository.tags.where(name: params[:commit_gid]).first!
         @blob_reference = @tag
         commit = @tag.commit
       end

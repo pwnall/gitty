@@ -1,23 +1,22 @@
 class SmartHttpController < ApplicationController
   # TODO(pwnall): figure out some CSRF protection
   skip_before_filter :verify_authenticity_token
-  
+
   # Rejecting session cookies slightly mitigates the risk of CSRF. Users might
   # still type their credentials into the auth window popped out by the
   # browser, but we'll deal with that later.
-  skip_before_filter :authenticate_using_session, :except => :index
+  skip_before_filter :authenticate_using_session, except: :index
 
   # Git is capable of using this to authenticate over HTTP.
   authenticates_using_http_basic
-  
-  before_filter :http_user_can_read_repo, :except => [:index, :receive_pack]
-  before_filter :http_user_can_commit_to_repo, :only => [:receive_pack]
+
+  before_filter :http_user_can_read_repo, except: [:index, :receive_pack]
+  before_filter :http_user_can_commit_to_repo, only: [:receive_pack]
 
   # GET costan/rails.git
   def index
-    @profile = Profile.where(:name => params[:profile_name]).first!
-    @repository = @profile.repositories.where(:name => params[:repo_name]).
-                           first!
+    @profile = Profile.where(name: params[:profile_name]).first!
+    @repository = @profile.repositories.where(name: params[:repo_name]).first!
     redirect_to profile_repository_path(@profile, @repository)
   end
 
@@ -35,7 +34,7 @@ class SmartHttpController < ApplicationController
     git_header = "# service=#{params[:service]}\n"
     data = ['%04x' % (git_header.length + 4), git_header, '0000',
             output].join ''
-    send_data data, :type => "application/x-git-#{command}-advertisement"
+    send_data data, type: "application/x-git-#{command}-advertisement"
   end
 
   # GET costan/rails.git/....
@@ -43,7 +42,7 @@ class SmartHttpController < ApplicationController
     file_path = @repository.internal_file_path params[:path]
     mime_type = @repository.internal_file_mime_type params[:path]
     if File.exist?(file_path)
-      send_file file_path, :type => mime_type
+      send_file file_path, type: mime_type
     else
       head :not_found
     end

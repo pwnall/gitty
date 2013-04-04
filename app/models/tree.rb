@@ -3,15 +3,15 @@ class Tree < ActiveRecord::Base
   include GitObjectModel
   
   # The repository that this tree is a part of.
-  belongs_to :repository, :inverse_of => :trees
-  validates :repository, :presence => true
+  belongs_to :repository, inverse_of: :trees
+  validates :repository, presence: true
   
   # The git object id (sha of the object's data).
-  validates :gitid, :length => 1..64, :presence => true,
-                    :uniqueness => { :scope => :repository_id }  
+  validates :gitid, length: 1..64, presence: true,
+                    uniqueness: { scope: :repository_id }  
 
   # The tree's contents.
-  has_many :entries, :class_name => 'TreeEntry', :inverse_of => :tree
+  has_many :entries, class_name: 'TreeEntry', inverse_of: :tree
   
   # Tree model for an on-disk tree (directory).
   #
@@ -22,7 +22,7 @@ class Tree < ActiveRecord::Base
   # Returns an unsaved Tree model. It needs to be saved before child links to it
   # are created by calling TreeEntry#from_git_tree.
   def self.from_git_tree(git_tree, repository)
-    self.new :repository => repository, :gitid => git_tree.id
+    self.new repository: repository, gitid: git_tree.id
   end
   
   # Use git SHAs instead of IDs.
@@ -35,7 +35,7 @@ class Tree < ActiveRecord::Base
     object = self
     path.split('/').each do |segment|
       next if segment.empty?
-      entry = object.entries.where(:name => segment).first
+      entry = object.entries.where(name: segment).first
       return nil unless entry
       object = entry.child
     end

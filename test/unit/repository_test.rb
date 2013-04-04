@@ -5,25 +5,25 @@ class RepositoryTest < ActiveSupport::TestCase
   teardown :mock_profile_paths_undo
 
   setup do
-    @repo = Repository.new :name => 'awesome', :public => false,
-                           :description => 'yeah', :url => 'http://something'
+    @repo = Repository.new name: 'awesome', public: false,
+                           description: 'yeah', url: 'http://something'
     @repo.profile = profiles(:dexter)
   end
-    
+
   test 'setup' do
     assert @repo.valid?
   end
-  
+
   test 'profile has to be set' do
     @repo.profile = nil
     assert !@repo.valid?
   end
-  
+
   test 'name has to be unique' do
     @repo.name = repositories(:dexter_ghost).name
     assert !@repo.valid?
   end
-  
+
   test 'no funky names' do
     ['$awesome', 'space name', 'quo"te', "more'quote", '-flag',
      'loose-', '.hidden', 'confused.', 'awesome.git'].each do |name|
@@ -31,20 +31,20 @@ class RepositoryTest < ActiveSupport::TestCase
       assert !@repo.valid?
     end
   end
-  
+
   test 'valid names' do
     ['awesome', 'great-idea', 'great.idea', 'CamelCased',
      'awesome.gi'].each do |name|
       @repo.name = name
       assert @repo.valid?
-    end    
+    end
   end
-  
+
   test 'description can be missing' do
     @repo.description = nil
     assert @repo.valid?
   end
-    
+
   test 'description will never be empty' do
     @repo.description = ''
     assert_nil @repo.description
@@ -54,12 +54,12 @@ class RepositoryTest < ActiveSupport::TestCase
     @repo.url = nil
     assert @repo.valid?
   end
-    
+
   test 'url will never be empty' do
     @repo.url = ''
     assert_nil @repo.url
   end
-  
+
   test 'url must be http or https' do
     ['htt://google', 'ftp://google.com', 'javascript:alert()',
      'httpsx://www.google.com'].each do |bad_url|
@@ -67,7 +67,7 @@ class RepositoryTest < ActiveSupport::TestCase
       assert !@repo.valid?, bad_url
     end
   end
-  
+
   test 'public cannot be missing' do
     @repo.public = nil
     assert !@repo.valid?
@@ -76,7 +76,7 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'profile_name' do
     assert_equal 'dexter', @repo.profile_name
   end
-  
+
   test 'profile_name set to nil' do
     @repo.profile_name  # Uncover any caching issues.
     @repo.profile
@@ -85,7 +85,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal nil, @repo.profile_name, 'profile_name'
     assert_equal nil, @repo.profile, 'profile association'
   end
-  
+
   test 'profile_name set' do
     @repo.profile_name  # Uncover any caching issues.
     @repo.profile
@@ -94,7 +94,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal 'costan', @repo.profile_name
     assert_equal profiles(:costan), @repo.profile
   end
-  
+
   test 'local_path' do
     mock_profile_paths_undo
     if RUBY_PLATFORM =~ /darwin/
@@ -102,12 +102,12 @@ class RepositoryTest < ActiveSupport::TestCase
     else
       assert_equal '/home/git-test/repos/dexter/awesome.git', @repo.local_path
     end
-  end  
-  
+  end
+
   test 'ssh_uri' do
     assert_equal 'git-test@localhost:dexter/awesome.git', @repo.ssh_uri
   end
-  
+
   test 'ssh_path' do
     assert_equal 'dexter/awesome.git', @repo.ssh_path
   end
@@ -120,11 +120,11 @@ class RepositoryTest < ActiveSupport::TestCase
       assert_equal nil, Repository.find_by_ssh_path(path), "Bad path #{path}"
     end
   end
-  
+
   test 'parse_ssh_path' do
-    assert_equal({ :profile_name => 'dexter', :repo_name => 'ghost' },
+    assert_equal({ profile_name: 'dexter', repo_name: 'ghost' },
                  Repository.parse_ssh_path('dexter/ghost.git'))
-    assert_equal({ :profile_name => 'dexter', :repo_name => 'gh-o_s.t' },
+    assert_equal({ profile_name: 'dexter', repo_name: 'gh-o_s.t' },
                  Repository.parse_ssh_path('dexter/gh-o_s.t.git'))
     assert_equal nil,
                  Repository.parse_ssh_path('../something/else.git'),
@@ -136,14 +136,14 @@ class RepositoryTest < ActiveSupport::TestCase
                  Repository.parse_ssh_path('dexter/ghost/more.git'),
                  'too many slashes in path'
   end
-  
-  test 'model-repository lifetime sync' do    
+
+  test 'model-repository lifetime sync' do
     @repo.save!
     assert File.exist?('tmp/test_git_root/dexter/awesome.git/objects'),
            'Repository not created on disk'
-    assert @repo.grit_repo.branches, 
+    assert @repo.grit_repo.branches,
            'The Grit repository object is broken after creation'
-        
+
     @repo.name = 'pwnage'
     @repo.save!
     assert !File.exist?('tmp/test_git_root/dexter/awesome.git/objects'),
@@ -167,22 +167,22 @@ class RepositoryTest < ActiveSupport::TestCase
            'Old repository not deleted on rename'
     assert !@repo.grit_repo, 'The Grit repository object exists after deletion'
   end
-    
+
   test 'branch_changes with an empty db' do
     @repo.save!
     mock_repository_path @repo
-    
+
     changes = @repo.branch_changes
     assert changes[:deleted].empty?, 'No branches were deleted'
     assert changes[:changed].empty?, 'No branches were changed'
     assert_equal ['branch1', 'branch2', 'master'],
                  changes[:added].map(&:name).sort, 'Added branches'
   end
-  
+
   test 'branch_changes with fixtures' do
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
-    
+
     changes = repo.branch_changes
     assert_equal [branches(:deleted)], changes[:deleted], 'Deleted branches'
     assert_equal [branches(:master)], changes[:changed].keys,
@@ -192,22 +192,22 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal ['branch2'],
                  changes[:added].map(&:name).sort, 'Added branches'
   end
-  
+
   test 'tag_changes with an empty db' do
     @repo.save!
     mock_repository_path @repo
-    
+
     changes = @repo.tag_changes
     assert changes[:deleted].empty?, 'No tags were deleted'
     assert changes[:changed].empty?, 'No tags were changed'
     assert_equal ['demo', 'unicorns', 'v1.0', 'v2.0'],
                  changes[:added].map(&:name).sort, 'Added branches'
   end
-  
+
   test 'tag_changes with fixtures' do
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
-    
+
     changes = repo.tag_changes
     assert_equal [tags(:ci_request)], changes[:deleted], 'Deleted tags'
     assert_equal [tags(:unicorns)], changes[:changed].keys,
@@ -225,15 +225,15 @@ class RepositoryTest < ActiveSupport::TestCase
     commit_b1 = commits(:require).gitid
     commit_b2 = '93d00ea479394cd110116b29748538d16d9b931e'
     commit_c = '88ca4433d478d6abb6558bebb9524fb72300457e'
-    
+
     branches = @repo.grit_repo.branches.index_by(&:name)
     tags = @repo.grit_repo.tags.index_by(&:name)
-    
+
     commit_ids = @repo.commits_added([branches['master']]).map(&:id)
     assert_equal [commit_a, commit_b1, commit_b2, commit_c].sort,
                  commit_ids.sort, 'Added commits on master'
     [
-      [commit_a, commit_b1], [commit_b1, commit_c], [commit_b2, commit_c]     
+      [commit_a, commit_b1], [commit_b1, commit_c], [commit_b2, commit_c]
     ].each do |parent, child|
       assert_operator commit_ids.index(parent), :<, commit_ids.index(child),
                       'Topological sort failed'
@@ -244,22 +244,22 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal [commit_a, commit_b1, commit_b2, commit_c].sort,
                  commit_ids.sort, 'Added commits on master'
     [
-      [commit_a, commit_b1], [commit_b1, commit_c], [commit_b2, commit_c]     
+      [commit_a, commit_b1], [commit_b1, commit_c], [commit_b2, commit_c]
     ].each do |parent, child|
       assert_operator commit_ids.index(parent), :<, commit_ids.index(child),
                       'Topological sort failed'
     end
-    
+
     commit_ids = @repo.commits_added([branches['branch1']]).map(&:id)
     assert_equal [commit_a, commit_b1], commit_ids, 'Added commits on branch1'
 
     commit_ids = @repo.commits_added([branches['branch2']]).map(&:id)
     assert_equal [commit_a, commit_b2], commit_ids, 'Added commits on branch2'
-  
+
     # NOTE: branch orders here are dependent on an implementation detail, which
     #       is that branches are processed in turn; the test is robust against
     #       Grit changes, but possibly not against DFS implementation changes
-    
+
     commit_ids = @repo.commits_added([branches['branch1'],
                                       branches['branch2']]).map(&:id)
     assert_equal [commit_a, commit_b1, commit_b2], commit_ids,
@@ -274,33 +274,33 @@ class RepositoryTest < ActiveSupport::TestCase
   test 'commits_added with fixtures' do
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
-    
+
     commit_b2 = '93d00ea479394cd110116b29748538d16d9b931e'
     commit_c = '88ca4433d478d6abb6558bebb9524fb72300457e'
-    
+
     branches = repo.grit_repo.branches.index_by(&:name)
     commit_ids = repo.commits_added([branches['master']]).map(&:id)
     assert_equal [commit_b2, commit_c], commit_ids, 'Added commits on master'
-    
+
     commit_ids = repo.commits_added([branches['branch1']]).map(&:id)
     assert_equal [], commit_ids, 'Added commits on branch1'
 
     commit_ids = repo.commits_added([branches['branch2']]).map(&:id)
     assert_equal [commit_b2], commit_ids, 'Added commits on branch2'
-  
+
     commit_ids = repo.commits_added([branches['branch1'], branches['master'],
                                      branches['branch2']]).map(&:id)
     assert_equal [commit_b2, commit_c], commit_ids,
                  'Added commits on all branches'
   end
-  
+
   test 'contents_added with empty db' do
     @repo.save!
     mock_repository_path @repo
-    
+
     commit_a = @repo.grit_repo.commit(commits(:hello).gitid)
     commit_b1 = @repo.grit_repo.commit(commits(:require).gitid)
-    
+
     # NOTE: order dependent on topological sort implementation details, but not
     #       on Grit implementation
 
@@ -308,10 +308,10 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal [blobs(:lib_ghost_hello_rb), blobs(:gitmodules)].map(&:gitid),
                  bits[:blobs].map(&:id), 'Blobs for commit Hello'
     assert_equal [trees(:lib_ghost), trees(:hello_lib), trees(:hello_root)].
-                 map(&:gitid), bits[:trees].map(&:id), 'Trees for commit Hello'    
+                 map(&:gitid), bits[:trees].map(&:id), 'Trees for commit Hello'
     assert_equal [submodules(:markdpwn_012).gitid], bits[:submodules].map(&:id),
                  'Submodules for commit Hello'
-  
+
     bits = @repo.contents_added([commit_a, commit_b1])
     assert_equal [blobs(:gitmodules), blobs(:lib_ghost_hello_rb),
                   blobs(:lib_ghost_rb)].map(&:gitid).sort,
@@ -322,7 +322,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal [submodules(:markdpwn_012).gitid], bits[:submodules].map(&:id),
                  'Submodules for commit Require'
   end
-  
+
   test 'contents_added with fixtures' do
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
@@ -340,12 +340,12 @@ class RepositoryTest < ActiveSupport::TestCase
     easy_vendored_gitty = '796087fe7706929726f7163e9b39369cc8ea3053'
     merge_root = 'cdf8b819e316b50817592526c1a5c5b7a120c363'
     merge_lib = 'deddf356258c2943ad586557ade40b6e29876937'
-    
+
     bits = repo.contents_added([commit_a, commit_b1])
     assert_equal [], bits[:blobs], 'No new blobs in commit Require'
     assert_equal [], bits[:submodules], 'No new submodules for commit Require'
     assert_equal [], bits[:trees], 'No new trees for commit Require'
-    
+
     bits = repo.contents_added([commit_a, commit_b1, commit_b2])
     assert_equal [lib_easy_rb, easy_gitmodules], bits[:blobs].map(&:id),
                  'Blobs for commit Easy'
@@ -354,7 +354,7 @@ class RepositoryTest < ActiveSupport::TestCase
                  'Submodules for commit Easy'
     assert_equal [easy_lib_ghost, easy_lib, easy_root],
                  bits[:trees].map(&:id), 'Trees for commit Easy'
-    
+
     bits = repo.contents_added([commit_a, commit_b1, commit_c, commit_b2])
     assert_equal [lib_easy_rb, easy_gitmodules], bits[:blobs].map(&:id),
                  'Blobs for merge commit'
@@ -364,18 +364,18 @@ class RepositoryTest < ActiveSupport::TestCase
                   easy_root],
                  bits[:trees].map(&:id), 'Trees for merge commit'
   end
-  
+
   test 'integrate_changes' do
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
     delta = nil
-    assert_no_difference 'Branch.count' do
-      assert_difference 'Tag.count', 1 do
-        assert_difference 'Commit.count', 2 do
-          assert_difference 'CommitParent.count', 3 do
-            assert_difference 'CommitDiff.count', 4 do
-              assert_difference 'CommitDiffHunk.count', 4 do
-                assert_difference 'TreeEntry.count', 15 do
+    assert_difference 'CommitDiffHunk.count', 4 do
+      assert_difference 'CommitDiff.count', 4 do
+        assert_difference 'CommitParent.count', 3 do
+          assert_difference 'TreeEntry.count', 15 do
+            assert_difference 'Commit.count', 2 do
+              assert_difference 'Tag.count', 1 do
+                assert_no_difference 'Branch.count' do
                   delta = repo.integrate_changes
                 end
               end
@@ -429,7 +429,7 @@ class RepositoryTest < ActiveSupport::TestCase
     repo.integrate_changes
     assert File.exist?(http_info_path), 'HTTP file info/refs not regenerated'
   end
-    
+
   test 'internal_file_path' do
     mock_repository_path @repo
     path = @repo.internal_file_path('HEAD')
@@ -511,7 +511,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal in_data, output, 'Sub-process data streaming error'
     assert_equal true, done, 'Post-completion block not yielded'
   end
-    
+
   test 'acl for new repository' do
     @repo.save!
     assert_equal :edit, AclEntry.get(@repo.profile, @repo)
@@ -522,15 +522,15 @@ class RepositoryTest < ActiveSupport::TestCase
     assert !@repo.can_commit?(users(:costan)), 'unrelated user'
     assert !@repo.can_edit?(users(:costan)), 'unrelated user'
   end
-  
-  test 'acl for repository profile change' do 
+
+  test 'acl for repository profile change' do
     repo = repositories(:costan_ghost)
     FileUtils.mkdir_p repo.local_path
     repo.profile = profiles(:mit)
     assert_no_difference 'AclEntry.count' do
       repo.save!
     end
-    assert_equal :edit, AclEntry.get(repo.profile, repo) 
+    assert_equal :edit, AclEntry.get(repo.profile, repo)
   end
 
   test 'can_read?' do
@@ -546,11 +546,11 @@ class RepositoryTest < ActiveSupport::TestCase
     assert @repo.can_read?(nil), 'no user'
     assert @repo.can_read?(users(:costan))
   end
-  
+
   test 'can_commit?' do
     assert !@repo.can_commit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
-    assert !repo.can_commit?(users(:costan)) 
+    assert !repo.can_commit?(users(:costan))
     assert repo.can_commit?(users(:dexter))
   end
 
@@ -560,10 +560,10 @@ class RepositoryTest < ActiveSupport::TestCase
     assert !@repo.can_commit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
     repo.public = true
-    assert !repo.can_commit?(users(:costan)) 
+    assert !repo.can_commit?(users(:costan))
     assert repo.can_commit?(users(:dexter))
   end
-  
+
   test 'can_edit?' do
     assert !@repo.can_edit?(nil), 'no user'
     repo = repositories(:dexter_ghost)
@@ -580,11 +580,11 @@ class RepositoryTest < ActiveSupport::TestCase
     assert repo.can_edit?(users(:dexter))
     assert !repo.can_edit?(users(:costan))
   end
-  
+
   test 'acl_roles' do
     roles = Repository.acl_roles
     assert roles.length >= 0, 'There should be at least one ACL role'
-    
+
     roles.each do |role|
       assert_equal 2, role.length, 'Role should have description and name'
       assert_operator role.first, :kind_of?, String,
@@ -592,22 +592,22 @@ class RepositoryTest < ActiveSupport::TestCase
       assert_operator role.last, :kind_of?, Symbol,
           'Role should end with name'
     end
-    
+
     assert roles.any? { |role| role.last == :commit },
            'No committer role on a repository'
   end
-  
+
   test 'acl_principal_class' do
     assert_equal Repository.acl_principal_class,
                  repositories(:costan_ghost).acl_entries.first.principal.class
-  end    
-  
+  end
+
   test 'default_branch' do
     assert_equal nil, @repo.default_branch
-    assert_equal branches(:master), repositories(:dexter_ghost).default_branch    
+    assert_equal branches(:master), repositories(:dexter_ghost).default_branch
   end
-  
-  test 'profile creation publishing' do    
+
+  test 'profile creation publishing' do
     item = nil
     repository = repositories(:csail_ghost)
     assert_difference 'FeedItem.count' do
@@ -620,7 +620,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_operator repository.feed_items, :include?, item,
                     'repository feed'
   end
-  
+
   test 'profile removal publishing' do
     item = nil
     repository = repositories(:dexter_ghost)
@@ -637,19 +637,19 @@ class RepositoryTest < ActiveSupport::TestCase
 
   test 'publish_changes with branches' do
     repo = repositories(:dexter_ghost)
-    ghost_branch = Branch.create! :repository => repo, :name => 'ghosty',
-                                  :commit => commits(:require)
+    ghost_branch = Branch.create! repository: repo, name: 'ghosty',
+                                  commit: commits(:require)
     changes = {
-      :branches => {
-        :added => [branches(:branch1)],
-        :changed => [branches(:master), branches(:deleted)],
-        :deleted => [ghost_branch]
+      branches: {
+        added: [branches(:branch1)],
+        changed: [branches(:master), branches(:deleted)],
+        deleted: [ghost_branch]
       },
-      :tags => { :added => [], :changed => [], :deleted => [] },
-      :commits => Set.new([commits(:require)])
+      tags: { added: [], changed: [], deleted: [] },
+      commits: Set.new([commits(:require)])
     }
     author = profiles(:costan)
-    items = repo.publish_changes author, changes  
+    items = repo.publish_changes author, changes
     assert_equal 4, items.count, 'FeedItem count'
 
     assert_equal 'move_branch', items[0].verb
@@ -681,22 +681,22 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal repo.id, items[3].data[:repository_id]
     assert_equal 'ghosty', items[3].data[:branch_name]
   end
-  
+
   test 'publish_changes with tags' do
     repo = repositories(:dexter_ghost)
-    ghost_tag = Tag.create! :repository => repo, :name => 'ghosty',
-        :commit => commits(:require), :message => 'Ghosting around.',
-        :committer_name => profiles(:costan).name,
-        :committer_email => profiles(:costan).user.email,
-        :committed_at => Time.now - 1
+    ghost_tag = Tag.create! repository: repo, name: 'ghosty',
+        commit: commits(:require), message: 'Ghosting around.',
+        committer_name: profiles(:costan).name,
+        committer_email: profiles(:costan).user.email,
+        committed_at: Time.now - 1
     changes = {
-      :branches => { :added => [], :changed => [], :deleted => [] },
-      :tags => {
-        :added => [tags(:v1)],
-        :changed => [tags(:ci_request), tags(:unicorns)],
-        :deleted => [ghost_tag]
+      branches: { added: [], changed: [], deleted: [] },
+      tags: {
+        added: [tags(:v1)],
+        changed: [tags(:ci_request), tags(:unicorns)],
+        deleted: [ghost_tag]
       },
-      :commits => nil
+      commits: nil
     }
     author = profiles(:costan)
     items = repo.publish_changes author, changes

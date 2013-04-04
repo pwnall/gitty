@@ -2,10 +2,10 @@ require 'test_helper'
 
 class CommitDiffTest < ActiveSupport::TestCase
   setup do
-    @diff = CommitDiff.new :commit => commits(:hello),
-        :old_path => '/lib/ghost/hello.rb', :new_path => '/lib/ghost.rb',
-        :old_object => blobs(:lib_ghost_hello_rb),
-        :new_object => blobs(:lib_ghost_rb)
+    @diff = CommitDiff.new commit: commits(:hello),
+        old_path: '/lib/ghost/hello.rb', new_path: '/lib/ghost.rb',
+        old_object: blobs(:lib_ghost_hello_rb),
+        new_object: blobs(:lib_ghost_rb)
     @repo = @diff.commit.repository
   end
 
@@ -37,8 +37,8 @@ class CommitDiffTest < ActiveSupport::TestCase
 
   test 'old_path must be unique within a commit' do
     diff = @diff.commit.diffs.first
-    diff.update_attributes! :old_path => @diff.old_path,
-                            :old_object => @diff.old_object
+    diff.update_attributes! old_path: @diff.old_path,
+                            old_object: @diff.old_object
     assert !@diff.valid?
   end
 
@@ -59,12 +59,12 @@ class CommitDiffTest < ActiveSupport::TestCase
     assert_equal nil, CommitDiff.resolve_object(nil, 'lib/ghost/hello.rb',
                                                 @diff.commit)
     assert_equal blobs(:lib_ghost_hello_rb), CommitDiff.resolve_object(
-        Grit::Blob.create(git_repo, :id => blobs(:lib_ghost_hello_rb).gitid,
-                                    :size => blobs(:lib_ghost_hello_rb).size),
+        Grit::Blob.create(git_repo, id: blobs(:lib_ghost_hello_rb).gitid,
+                                    size: blobs(:lib_ghost_hello_rb).size),
         'lib/ghost/hello.rb', @diff.commit)
     assert_equal submodules(:markdpwn_012), CommitDiff.resolve_object(
-        Grit::Blob.create(git_repo, :id => submodules(:markdpwn_012).gitid,
-                                    :size => 0),
+        Grit::Blob.create(git_repo, id: submodules(:markdpwn_012).gitid,
+                                    size: 0),
         'lib/markdpwn', @diff.commit)
     assert_equal nil, CommitDiff.resolve_object(Grit::Blob.new, nil,
                                                 @diff.commit)

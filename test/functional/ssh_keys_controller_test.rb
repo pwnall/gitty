@@ -22,33 +22,33 @@ class SshKeysControllerTest < ActionController::TestCase
   end
 
   test "should create ssh_key" do
-    attributes = { :name => @ssh_key.name, :key_line => @new_ssh_key_line }
+    attributes = { name: @ssh_key.name, key_line: @new_ssh_key_line }
     assert_difference('SshKey.count') do
-      post :create, :ssh_key => attributes
+      post :create, ssh_key: attributes
     end
 
     assert_redirected_to ssh_key_path(assigns(:ssh_key))
   end
 
   test "should show ssh_key text" do
-    get :show, :id => @ssh_key.to_param, :format => 'txt'
+    get :show, id: @ssh_key.to_param, format: 'txt'
     assert_response :success
     assert_equal @ssh_key.key_line, response.body
   end
 
   test "should show ssh key" do
-    get :show, :id => @ssh_key.to_param
+    get :show, id: @ssh_key.to_param
     assert_redirected_to session_url
   end
 
   test "should get edit" do
-    get :edit, :id => @ssh_key.to_param
+    get :edit, id: @ssh_key.to_param
     assert_response :success
   end
 
   test "should update ssh_key" do
-    put :update, :id => @ssh_key.to_param,
-        :ssh_key => @ssh_key.attributes.with_indifferent_access.
+    put :update, id: @ssh_key.to_param,
+        ssh_key: @ssh_key.attributes.with_indifferent_access.
                              slice(:name, :key_line)
 
     assert_redirected_to ssh_key_path(assigns(:ssh_key))
@@ -56,7 +56,7 @@ class SshKeysControllerTest < ActionController::TestCase
 
   test "should destroy ssh_key" do
     assert_difference 'SshKey.count', -1 do
-      delete :destroy, :id => @ssh_key.to_param
+      delete :destroy, id: @ssh_key.to_param
     end
 
     assert_redirected_to ssh_keys_path
@@ -67,17 +67,17 @@ class SshKeysControllerTest < ActionController::TestCase
     assert non_owner, 'non-owner finding failed'
     set_session_current_user non_owner
 
-    get :show, :id => @ssh_key.to_param
+    get :show, id: @ssh_key.to_param
     assert_response :forbidden, 'show'
 
-    get :edit, :id => @ssh_key.to_param
+    get :edit, id: @ssh_key.to_param
     assert_response :forbidden, 'edit'
 
-    put :update, :id => @ssh_key.to_param, :ssh_key => @ssh_key.attributes
+    put :update, id: @ssh_key.to_param, ssh_key: @ssh_key.attributes
     assert_response :forbidden, 'update'
 
     assert_no_difference('SshKey.count') do
-      delete :destroy, :id => @ssh_key.to_param
+      delete :destroy, id: @ssh_key.to_param
       assert_response :forbidden, 'destroy'
     end
   end
@@ -85,17 +85,17 @@ class SshKeysControllerTest < ActionController::TestCase
   test "should deny access to guests" do
     set_session_current_user nil
 
-    get :show, :id => @ssh_key.to_param
+    get :show, id: @ssh_key.to_param
     assert_response :forbidden, 'show'
 
-    get :edit, :id => @ssh_key.to_param
+    get :edit, id: @ssh_key.to_param
     assert_response :forbidden, 'edit'
 
-    put :update, :id => @ssh_key.to_param, :ssh_key => @ssh_key.attributes
+    put :update, id: @ssh_key.to_param, ssh_key: @ssh_key.attributes
     assert_response :forbidden, 'update'
 
     assert_no_difference('SshKey.count') do
-      delete :destroy, :id => @ssh_key.to_param
+      delete :destroy, id: @ssh_key.to_param
       assert_response :forbidden, 'destroy'
     end
   end

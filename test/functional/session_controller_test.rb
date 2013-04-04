@@ -30,7 +30,7 @@ class SessionControllerTest < ActionController::TestCase
     old_token.updated_at = Time.now - 1.year
     old_token.save!
     email_credential = credentials(:dexter_email)
-    post :create, :email => email_credential.email, :password => 'pa55w0rd'
+    post :create, email: email_credential.email, password: 'pa55w0rd'
     assert_redirected_to session_url
     assert_equal users(:dexter), session_current_user, 'session'
     assert_nil Tokens::Base.with_code(old_token.code).first,
@@ -39,7 +39,7 @@ class SessionControllerTest < ActionController::TestCase
 
   test "user logged in JSON request" do
     set_session_current_user @user
-    get :show, :format => 'json'
+    get :show, format: 'json'
 
     assert_equal @user.exuid,
         ActiveSupport::JSON.decode(response.body)['user']['exuid']
@@ -56,7 +56,7 @@ class SessionControllerTest < ActionController::TestCase
   end
 
   test "user not logged in with JSON request" do
-    get :show, :format => 'json'
+    get :show, format: 'json'
 
     assert_equal({}, ActiveSupport::JSON.decode(response.body))
   end
@@ -74,16 +74,16 @@ class SessionControllerTest < ActionController::TestCase
   end
 
   test "e-mail verification link" do
-    get :token, :code => @token_credential.code
+    get :token, code: @token_credential.code
     assert_redirected_to session_url
     assert @email_credential.reload.verified?, 'Email not verified'
   end
 
   test "password reset link" do
     password_credential = credentials(:dexter_password)
-    get :token, :code => credentials(:dexter_password_token).code
+    get :token, code: credentials(:dexter_password_token).code
     assert_redirected_to change_password_session_url
-    assert_nil Credential.where(:id => password_credential.id).first,
+    assert_nil Credential.where(id: password_credential.id).first,
                'Password not cleared'
   end
 
@@ -106,10 +106,10 @@ class SessionControllerTest < ActionController::TestCase
     @password_credential.destroy
     get :password_change
 
-    assert_select 'span[class="password_age"]', :count => 0
+    assert_select 'span[class="password_age"]', count: 0
     assert_select 'form[action=?][method="post"]',
                   change_password_session_path do
-      assert_select 'input[name="old_password"]', :count => 0
+      assert_select 'input[name="old_password"]', count: 0
       assert_select 'input[name=?]', 'credential[password]'
       assert_select 'input[name=?]', 'credential[password_confirmation]'
       assert_select 'input[type=submit]'
@@ -120,7 +120,7 @@ class SessionControllerTest < ActionController::TestCase
     ActionMailer::Base.deliveries = []
 
     assert_difference 'Credential.count', 1 do
-      post :reset_password, :email => @email_credential.email
+      post :reset_password, email: @email_credential.email
     end
 
     assert !ActionMailer::Base.deliveries.empty?, 'email generated'

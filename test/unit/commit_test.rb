@@ -3,15 +3,15 @@ require 'test_helper'
 class CommitTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @commit = Commit.new :gitid => '93d00ea479394cd110116b29748538d16d9b931e',
-        :author_name => 'Victor Costan',
-        :author_email => 'victor@costan.us',
-        :committer_name => 'Dexter',
-        :committer_email => 'dexter@gmail.com',
-        :authored_at => Time.parse('2012-04-02 16:17:18 -0400'),
-        :committed_at => Time.parse('2012-04-02 16:17:19 -0400'),
-        :message => 'Easy mode',
-        :repository => @repo
+    @commit = Commit.new gitid: '93d00ea479394cd110116b29748538d16d9b931e',
+        author_name: 'Victor Costan',
+        author_email: 'victor@costan.us',
+        committer_name: 'Dexter',
+        committer_email: 'dexter@gmail.com',
+        authored_at: Time.parse('2012-04-02 16:17:18 -0400'),
+        committed_at: Time.parse('2012-04-02 16:17:19 -0400'),
+        message: 'Easy mode',
+        repository: @repo
   end
 
   test 'setup' do
@@ -73,14 +73,14 @@ class CommitTest < ActiveSupport::TestCase
   end
 
   test 'walk_parents' do
-    c1 = Commit.new :committed_at => Time.now - 10, :gitid => 'c1'
-    c2 = Commit.new :committed_at => Time.now - 9, :gitid => 'c2',
-                    :parents => [c1]
-    c3 = Commit.new :committed_at => Time.now - 8, :gitid => 'c3'
-    c4 = Commit.new :committed_at => Time.now - 7, :gitid => 'c4',
-                    :parents => [c2, c3]
-    c5 = Commit.new :committed_at => Time.now - 6, :gitid => 'c5',
-                    :parents => [c3, c4]
+    c1 = Commit.new committed_at: Time.now - 10, gitid: 'c1'
+    c2 = Commit.new committed_at: Time.now - 9, gitid: 'c2',
+                    parents: [c1]
+    c3 = Commit.new committed_at: Time.now - 8, gitid: 'c3'
+    c4 = Commit.new committed_at: Time.now - 7, gitid: 'c4',
+                    parents: [c2, c3]
+    c5 = Commit.new committed_at: Time.now - 6, gitid: 'c5',
+                    parents: [c3, c4]
 
     assert_equal [c5, c4, c3, c2, c1], c5.walk_parents(0, 10)
     assert_equal [c5, c4, c3], c5.walk_parents(0, 3)

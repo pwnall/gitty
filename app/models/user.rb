@@ -10,7 +10,7 @@ class User < ActiveRecord::Base
   # Allow logging in by profile name.
   def self.authenticate_signin(email, password)
     unless email.index ?@
-      if profile = Profile.where(:name => email).first
+      if profile = Profile.where(name: email).first
         email = profile.user.email
       end
     end
@@ -35,20 +35,20 @@ class User < ActiveRecord::Base
   end
   
   # Flag set for site administrators.
-  validates :admin, :inclusion => { :in => [true, false], :allow_nil => false }
+  validates :admin, inclusion: { in: [true, false], allow_nil: false }
   
   # The profile representing this user.
-  belongs_to :profile, :inverse_of => :user
+  belongs_to :profile, inverse_of: :user
   
   # The repositories created by this user.
-  has_many :repositories, :through => :profile
+  has_many :repositories, through: :profile
   
   # The SSH keys used to authenticate this user.
-  has_many :ssh_keys, :dependent => :destroy, :inverse_of => :user
+  has_many :ssh_keys, dependent: :destroy, inverse_of: :user
   
   # Entries for profiles that this user has bits for.
-  has_many :acl_entries, :as => :principal, :dependent => :destroy,
-                         :inverse_of => :principal
+  has_many :acl_entries, as: :principal, dependent: :destroy,
+                         inverse_of: :principal
     
   # Aliases e-mail, to conform to the ACL principal interface.
   def name
@@ -63,7 +63,7 @@ class User < ActiveRecord::Base
 
   # All the profiles such that profile.can_charge? returns true for this user.
   def chargeable_profiles
-    acl_entries.where(:role => [:charge, :edit]).map(&:subject)
+    acl_entries.where(role: [:charge, :edit]).map(&:subject)
   end
     
   # All the profiles with an ACL entry for this user.

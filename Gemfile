@@ -1,10 +1,7 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 4.0.0.beta1'
+gem 'rails', '>= 4.0.0.beta1', git: 'git://github.com/rails/rails.git'
 
-# Bundle edge Rails instead:
-# gem 'rails', :git => 'git://github.com/rails/rails.git',
-#              :branch => '3-0-stable'
 gem 'mysql2', '>= 0.3.11'
 gem 'sqlite3', '>= 1.3.6'
 
@@ -13,13 +10,13 @@ gem 'sqlite3', '>= 1.3.6'
 group :assets do
   gem 'sass-rails', '>= 4.0.0.beta1'
   gem 'coffee-rails', '>= 4.0.0.beta1'
-  gem 'coffee-script-source', '>= 1.6.1'
+  gem 'coffee-script-source', '>= 1.6.2'
   gem 'uglifier', '>= 1.3.0'
 
-  gem 'therubyracer', '>= 0.11.4'
+  gem 'therubyracer', '>= 0.11.4', require: 'v8'
 end
 
-gem 'jquery-rails', '>= 2.2.0'
+gem 'jquery-rails', '>= 2.2.1'
 
 # Use unicorn as the web server
 # gem 'unicorn'
@@ -33,14 +30,13 @@ gem 'jquery-rails', '>= 2.2.0'
 gem 'authpwn_rails', '>= 0.14.0'
 gem 'configvars_rails', '>= 0.5.2'
 gem 'gravatar-ultimate', '>= 1.0.3'
-gem 'grit', :git => 'https://github.com/pwnall/grit.git', :branch => 'gitty'
-gem 'json', :platforms => [:mri_18, :jruby]
+gem 'grit', git: 'https://github.com/pwnall/grit.git', branch: 'gitty'
+gem 'json', platforms: [:mri_18, :jruby]
 gem 'markdpwn', '>= 0.1.5'
-gem 'net-ssh', '>= 2.6.3', :require => 'net/ssh'
+gem 'net-ssh', '>= 2.6.6', require: 'net/ssh'
 gem 'posix-spawn', '>= 0.3.6'
-gem 'rbtree', '>= 0.3.0', :platform => :mri
-gem 'rbtree-pure', '>= 0.1.1', :require => 'rbtree',
-                               :platforms => [:jruby, :rbx]
+gem 'rbtree', '>= 0.4.1', platform: :mri
+gem 'rbtree-pure', '>= 0.1.1', require: 'rbtree', platforms: [:jruby, :rbx]
 gem 'topological_sort', '>= 0.1.1'
 
 # Bundler can't do decent dependency resolution.
@@ -57,5 +53,5 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha', '>= 0.13.2', :require => 'mocha/setup'
+  gem 'mocha', '>= 0.13.2', require: 'mocha/setup'
 end

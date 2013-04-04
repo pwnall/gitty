@@ -5,8 +5,8 @@ class SshKeyTest < ActiveSupport::TestCase
 
   setup do
     @key_path = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'new_key.pub'
-    @key = SshKey.new :name => 'Some name', :key_line => File.read(@key_path),
-                      :user => users(:dexter)
+    @key = SshKey.new name: 'Some name', key_line: File.read(@key_path),
+                      user: users(:dexter)
   end
     
   test 'setup' do
@@ -51,7 +51,7 @@ class SshKeyTest < ActiveSupport::TestCase
   test 'keyline works around Windows CRLF' do
     win_keyfile = File.read(@key_path)
     win_keyfile[100, 0] = "\r\n"
-    win_key = SshKey.new :key_line => win_keyfile
+    win_key = SshKey.new key_line: win_keyfile
     assert_equal @key.fprint, win_key.fprint
   end
   

@@ -1,19 +1,19 @@
 class ProfilesController < ApplicationController
   # before_filter verifying that the current user is authorized to do changes
   def current_user_can_edit_profile
-    @profile = Profile.where(:name => params[:profile_name]).first!
+    @profile = Profile.where(name: params[:profile_name]).first!
     bounce_user unless @profile.can_edit? current_user
   end
   private :current_user_can_edit_profile
   before_filter :current_user_can_edit_profile,
-      :except => [:new, :create, :index, :show]
+      except: [:new, :create, :index, :show]
   
   # before_filter that validates the current user's ability to list accounts  
   def current_user_can_list_profiles
     bounce_user unless User.can_list_users? current_user
   end
   private :current_user_can_list_profiles
-  before_filter :current_user_can_list_profiles, :only => [:index]
+  before_filter :current_user_can_list_profiles, only: [:index]
   
   # GET /_/profiles
   # GET /_/profiles.xml
@@ -22,18 +22,18 @@ class ProfilesController < ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.xml  { render :xml => @profiles }
+      format.xml  { render xml: @profiles }
     end
   end
 
   # GET /costan
   # GET /costan.xml
   def show
-    @profile = Profile.where(:name => params[:profile_name]).first!
+    @profile = Profile.where(name: params[:profile_name]).first!
 
     respond_to do |format|
       format.html # show.html.erb
-      format.xml  { render :xml => @profile }
+      format.xml  { render xml: @profile }
     end
   end
 
@@ -44,7 +44,7 @@ class ProfilesController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @profile }
+      format.xml  { render xml: @profile }
     end
   end
 
@@ -68,10 +68,10 @@ class ProfilesController < ApplicationController
         FeedSubscription.add current_user.profile, @profile
 
         format.html { redirect_to session_path }
-        format.xml  { render :xml => @profile, :status => :created, :location => @profile }          
+        format.xml  { render xml: @profile, status: :created, location: @profile }          
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @profile.errors, :status => :unprocessable_entity }
+        format.html { render action: "new" }
+        format.xml  { render xml: @profile.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -81,12 +81,12 @@ class ProfilesController < ApplicationController
   def update
     respond_to do |format|
       if @profile.update_attributes profile_params[:profile]
-        format.html { redirect_to(@profile, :notice => 'Profile was successfully updated.') }
+        format.html { redirect_to(@profile, notice: 'Profile was successfully updated.') }
         format.xml  { head :ok }
       else
         @original_profile = Profile.find(@profile.id)        
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @profile.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml  { render xml: @profile.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -94,7 +94,7 @@ class ProfilesController < ApplicationController
   # Paramaters for profile create/update.
   def profile_params
     params.permit :profile_name,  # Used instead of profile id.
-                  :profile => [:name, :display_name, :display_email, :blog,
+                  profile: [:name, :display_name, :display_email, :blog,
                                  :company, :city, :language, :about]
   end
 

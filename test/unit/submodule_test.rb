@@ -3,9 +3,9 @@ require 'test_helper'
 class SubmoduleTest < ActiveSupport::TestCase
   setup do
     @repo = submodules(:markdpwn_012).repository
-    @submodule = Submodule.new :name => 'vendored_gitty',
-                     :gitid => '796087fe7706929726f7163e9b39369cc8ea3053',
-                     :repository => @repo
+    @submodule = Submodule.new name: 'vendored_gitty',
+                     gitid: '796087fe7706929726f7163e9b39369cc8ea3053',
+                     repository: @repo
   end
   
   test 'setup' do

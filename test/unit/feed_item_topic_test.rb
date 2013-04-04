@@ -2,8 +2,8 @@ require 'test_helper'
 
 class FeedItemTopicTest < ActiveSupport::TestCase
   setup do
-    @feed_item_topic = FeedItemTopic.new :topic => profiles(:costan),
-        :feed_item => feed_items(:dexter_creates_ghost)
+    @feed_item_topic = FeedItemTopic.new topic: profiles(:costan),
+        feed_item: feed_items(:dexter_creates_ghost)
   end
   
   test 'setup' do

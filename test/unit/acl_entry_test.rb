@@ -4,7 +4,7 @@ class AclEntryTest < ActiveSupport::TestCase
   setup do
     @costan = users(:costan)
     @dexter = users(:dexter)
-    @acl_entry = AclEntry.new :role => :participate
+    @acl_entry = AclEntry.new role: :participate
     @acl_entry.principal = @dexter 
     @acl_entry.subject = profiles(:csail)                              
   end

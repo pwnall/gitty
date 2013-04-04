@@ -2,8 +2,8 @@ require 'test_helper'
 
 class FeedItemTest < ActiveSupport::TestCase
   setup do
-    @item = FeedItem.new :author => profiles(:dexter), :verb => 'subscribe',
-                         :target => profiles(:mit), :data => {:test => :data}
+    @item = FeedItem.new author: profiles(:dexter), verb: 'subscribe',
+                         target: profiles(:mit), data: {test: :data}
   end
   
   test 'setup' do

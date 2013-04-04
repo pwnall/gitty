@@ -3,8 +3,8 @@ require 'test_helper'
 class BranchTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @branch = Branch.new :name => 'branch2', :commit => commits(:hello),
-                         :repository => @repo
+    @branch = Branch.new name: 'branch2', commit: commits(:hello),
+                         repository: @repo
   end
   
   test 'setup' do

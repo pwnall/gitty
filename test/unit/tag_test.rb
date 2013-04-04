@@ -3,12 +3,12 @@ require 'test_helper'
 class TagTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @tag = Tag.new :name => 'tag', :commit => commits(:hello),
-                   :committer_name => 'Dexter',
-                   :committer_email => 'dexter@gmail.com',
-                   :committed_at => Time.parse('Mon Apr 2 16:18:19 2012 -0400'),
-                   :message => 'Tagged version tag.',
-                   :repository => @repo
+    @tag = Tag.new name: 'tag', commit: commits(:hello),
+                   committer_name: 'Dexter',
+                   committer_email: 'dexter@gmail.com',
+                   committed_at: Time.parse('Mon Apr 2 16:18:19 2012 -0400'),
+                   message: 'Tagged version tag.',
+                   repository: @repo
   end
   
   test 'setup' do

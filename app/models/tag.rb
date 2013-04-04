@@ -1,24 +1,24 @@
 # Tag in a git repository hosted on this server.
 class Tag < ActiveRecord::Base
   # The repository that the tag belongs to.
-  belongs_to :repository, :inverse_of => :tags
-  validates :repository, :presence => true
+  belongs_to :repository, inverse_of: :tags
+  validates :repository, presence: true
   
   # The tag's name.
-  validates :name, :length => 1..128, :presence => true,
-                   :uniqueness => { :scope => :repository_id }
+  validates :name, length: 1..128, presence: true,
+                   uniqueness: { scope: :repository_id }
   
   # The commit that the tag points to.
   belongs_to :commit
-  validates :commit, :presence => true
+  validates :commit, presence: true
   
   # The tagger's name.
-  validates :committer_name, :length => 1..128, :presence => true
+  validates :committer_name, length: 1..128, presence: true
   # The tagger's email.  
-  validates :committer_email, :length => 1..128, :presence => true
+  validates :committer_email, length: 1..128, presence: true
   
   # The tag message.
-  validates :message, :length => 1..2.kilobytes, :presence => true  
+  validates :message, length: 1..2.kilobytes, presence: true  
 
   # Creates or updates a Tag model for an on-disk tag.
   #
@@ -30,9 +30,9 @@ class Tag < ActiveRecord::Base
   #
   # Returns an unsaved Tag model.
   def self.from_git_tag(git_tag, repository, tag = nil)
-    commit = repository.commits.where(:gitid => git_tag.commit.id).first
-    tag ||= repository.branches.where(:name => git_tag.name).first
-    tag ||= self.new :repository => repository, :name => git_tag.name
+    commit = repository.commits.where(gitid: git_tag.commit.id).first
+    tag ||= repository.branches.where(name: git_tag.name).first
+    tag ||= self.new repository: repository, name: git_tag.name
     tag.commit = commit
     tag.committer_name = git_tag.tagger.name
     tag.committer_email = git_tag.tagger.email

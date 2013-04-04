@@ -2,35 +2,31 @@
 class CommitDiff < ActiveRecord::Base
   # The commit that this change is a part of.
   belongs_to :commit
-  validates :commit, :presence => true
+  validates :commit, presence: true
 
   # Changed path in the old commit tree. Nil for newly added blobs.
   #
   # This also differs from new_path for renames.
-  validates :old_path,
-      :length => { :in => 1..1.kilobyte, :allow_nil => true },
-      :uniqueness => { :scope => :commit_id, :allow_nil => true }
+  validates :old_path, length: { in: 1..1.kilobyte, allow_nil: true },
+      uniqueness: { scope: :commit_id, allow_nil: true }
 
   # Changed path in the new commit tree. Nil for removed blobs.
   #
   # This also differs from old_path for renames.
-  validates :new_path,
-      :length => { :in => 1..1.kilobyte, :allow_nil => true },
-      :uniqueness => { :scope => :commit_id, :allow_nil => true }
+  validates :new_path, length: { in: 1..1.kilobyte, allow_nil: true },
+      uniqueness: { scope: :commit_id, allow_nil: true }
 
   # Blob contents or submodule before the commit. Nil for newly added objects.
-  belongs_to :old_object, :polymorphic => true
-  validates :old_object, :presence => true,
-                         :if => lambda { |diff| diff.old_path }
+  belongs_to :old_object, polymorphic: true
+  validates :old_object, presence: true, :if => lambda { |diff| diff.old_path }
 
   # Blob contents after the commit. Nil for removed blobs and all submodules.
-  belongs_to :new_object, :polymorphic => true
-  validates :new_object, :presence => true,
-                         :if => lambda { |diff| diff.new_path }
+  belongs_to :new_object, polymorphic: true
+  validates :new_object, presence: true, :if => lambda { |diff| diff.new_path }
 
   # Hunks in the diff.
-  has_many :hunks, :class_name => 'CommitDiffHunk', :foreign_key => 'diff_id',
-           :dependent => :destroy
+  has_many :hunks, class_name: 'CommitDiffHunk', foreign_key: 'diff_id',
+           dependent: :destroy
 
   # The diffs that make up a commit.
   #
@@ -57,9 +53,8 @@ class CommitDiff < ActiveRecord::Base
       old_path = old_object && git_diff.a_path
       new_path = new_object && git_diff.b_path
 
-      diff = self.new :commit => commit, :old_path => old_path,
-          :new_path => new_path, :old_object => old_object,
-          :new_object => new_object
+      diff = self.new commit: commit, old_path: old_path, new_path: new_path,
+                      old_object: old_object, new_object: new_object
       diffs[diff] = CommitDiffHunk.from_git_diff(git_diff, diff)
     end
     diffs
@@ -76,7 +71,7 @@ class CommitDiff < ActiveRecord::Base
   def self.resolve_object(git_blob, diff_path, commit)
     return nil unless git_blob
 
-    blob = commit.repository.blobs.where(:gitid => git_blob.id).first
+    blob = commit.repository.blobs.where(gitid: git_blob.id).first
     return blob if blob
 
     # This slow path is only activated for modules.

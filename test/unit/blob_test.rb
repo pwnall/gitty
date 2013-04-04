@@ -3,9 +3,9 @@ require 'test_helper'
 class BlobTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @blob = Blob.new :gitid => '84840e173dd8b77b7451aa2c9346cb69d4ecf0cd',
-                     :repository => @repo, :mime_type => 'application/ruby',
-                     :size => 12
+    @blob = Blob.new gitid: '84840e173dd8b77b7451aa2c9346cb69d4ecf0cd',
+                     repository: @repo, mime_type: 'application/ruby',
+                     size: 12
   end
   
   test 'setup' do

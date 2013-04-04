@@ -3,8 +3,8 @@ require 'test_helper'
 class TreeTest < ActiveSupport::TestCase
   setup do
     @repo = repositories(:dexter_ghost)
-    @tree = Tree.new :gitid => 'a6ffe7f0b6d11b67df94795512c11460e303e2a2',
-                     :repository => @repo
+    @tree = Tree.new gitid: 'a6ffe7f0b6d11b67df94795512c11460e303e2a2',
+                     repository: @repo
   end
   
   test 'setup' do

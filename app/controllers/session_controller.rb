@@ -5,10 +5,10 @@ class SessionController < ApplicationController
   # Sets up the 'session/welcome' view. No user is logged in.
   def welcome
     @stats = {
-      :users => User.count,
-      :repositories => Repository.count,
-      :commits => Commit.count,
-      :files => Blob.count
+      users: User.count,
+      repositories: Repository.count,
+      commits: Commit.count,
+      files: Blob.count
     }
   end
   private :welcome
@@ -17,7 +17,7 @@ class SessionController < ApplicationController
   def home
     # Pull information about the current user.
     @profile = current_user.profile ||
-               Profile.new(:display_email => current_user.email)
+               Profile.new(display_email: current_user.email)
   end
   private :home
 
@@ -39,7 +39,7 @@ class SessionController < ApplicationController
       format.html do
         case token
         when Tokens::EmailVerification
-          redirect_to session_url, :notice => 'E-mail address confirmed'
+          redirect_to session_url, notice: 'E-mail address confirmed'
         when Tokens::PasswordReset
           redirect_to change_password_session_url
         # Handle other token types here.

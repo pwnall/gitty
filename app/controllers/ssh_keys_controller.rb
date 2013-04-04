@@ -5,7 +5,7 @@ class SshKeysController < ApplicationController
     bounce_user unless current_user && current_user.id == @ssh_key.user_id
   end
   private :user_owns_ssh_key
-  before_filter :user_owns_ssh_key, :except => [:index, :new, :create]
+  before_filter :user_owns_ssh_key, except: [:index, :new, :create]
 
   # GET /ssh_keys
   # GET /ssh_keys.xml
@@ -24,7 +24,7 @@ class SshKeysController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to session_url }
-      format.txt  { render :text => @ssh_key.key_line }
+      format.txt  { render text: @ssh_key.key_line }
     end
   end
 
@@ -35,7 +35,7 @@ class SshKeysController < ApplicationController
 
     respond_to do |format|
       format.html # new.html.erb
-      format.xml  { render :xml => @ssh_key }
+      format.xml  { render xml: @ssh_key }
     end
   end
 
@@ -52,11 +52,19 @@ class SshKeysController < ApplicationController
 
     respond_to do |format|
       if @ssh_key.save
-        format.html { redirect_to(@ssh_key, :notice => 'Ssh key was successfully created.') }
-        format.xml  { render :xml => @ssh_key, :status => :created, :location => @ssh_key }
+        format.html do
+          redirect_to @ssh_key, notice: 'Ssh key was successfully created.'
+        end
+        format.xml do
+          render xml: @ssh_key, status: :created, location: @ssh_key
+        end
       else
-        format.html { render :action => "new" }
-        format.xml  { render :xml => @ssh_key.errors, :status => :unprocessable_entity }
+        format.html do
+          render action: "new"
+        end
+        format.xml do
+          render xml: @ssh_key.errors, status: :unprocessable_entity
+        end
       end
     end
   end
@@ -68,18 +76,22 @@ class SshKeysController < ApplicationController
 
     respond_to do |format|
       if @ssh_key.update_attributes ssh_key_params[:ssh_key]
-        format.html { redirect_to(@ssh_key, :notice => 'Ssh key was successfully updated.') }
+        format.html do
+          redirect_to @ssh_key, notice: 'Ssh key was successfully updated.'
+        end
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
-        format.xml  { render :xml => @ssh_key.errors, :status => :unprocessable_entity }
+        format.html { render action: "edit" }
+        format.xml do
+          render xml: @ssh_key.errors, status: :unprocessable_entity
+        end
       end
     end
   end
 
   # Parameters for SSH key create / update.
   def ssh_key_params
-    params.permit :id, :ssh_key => [:name, :key_line]
+    params.permit :id, ssh_key: [:name, :key_line]
   end
 
   # DELETE /ssh_keys/1
