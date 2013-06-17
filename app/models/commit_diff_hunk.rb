@@ -43,8 +43,6 @@ class CommitDiffHunk < ActiveRecord::Base
   #   * the line contents in the old file
   #   * the line contents in the new file
   def patch_lines
-    return @patch_lines if @patch_lines
-    
     old_line, new_line = old_start, new_start
     
     old_lines = diff.old_object && diff.old_object.data_lines
@@ -77,7 +75,7 @@ class CommitDiffHunk < ActiveRecord::Base
         lines << line
       end
     end
-    @patch_lines = lines
+    lines
   end
   
   # The diff hunks that make up a diff.
