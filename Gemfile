@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 4.0.0.rc1'
+gem 'rails', '>= 4.0.0.rc2'
 
 gem 'mysql2', '>= 0.3.11'
 gem 'sqlite3', '>= 1.3.6'
@@ -8,10 +8,10 @@ gem 'sqlite3', '>= 1.3.6'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', '>= 4.0.0.rc1'
+  gem 'sass-rails', '>= 4.0.0.rc2'
   gem 'coffee-rails', '>= 4.0.0'
   gem 'coffee-script-source', '>= 1.6.2'
-  gem 'uglifier', '>= 2.0.1'
+  gem 'uglifier', '>= 2.1.1'
 
   gem 'therubyracer', '>= 0.11.4', require: 'v8'
 end
@@ -53,5 +53,5 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha', '>= 0.13.2', require: 'mocha/setup'
+  gem 'mocha', '>= 0.14.0', require: 'mocha/setup'
 end
