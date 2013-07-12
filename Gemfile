@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 4.0.0.rc2'
+gem 'rails', '>= 4.0.0'
 
 gem 'mysql2', '>= 0.3.11'
 gem 'sqlite3', '>= 1.3.6'
@@ -8,9 +8,9 @@ gem 'sqlite3', '>= 1.3.6'
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
-  gem 'sass-rails', '>= 4.0.0.rc2'
+  gem 'sass-rails', '>= 4.0.0'
   gem 'coffee-rails', '>= 4.0.0'
-  gem 'coffee-script-source', '>= 1.6.2'
+  gem 'coffee-script-source', '>= 1.6.3'
   gem 'uglifier', '>= 2.1.1'
 
   gem 'therubyracer', '>= 0.11.4', require: 'v8'
@@ -33,7 +33,7 @@ gem 'gravatar-ultimate', '>= 1.0.3'
 gem 'grit', git: 'https://github.com/pwnall/grit.git', branch: 'gitty'
 gem 'json', platforms: [:mri_18, :jruby]
 gem 'markdpwn', '>= 0.1.5'
-gem 'net-ssh', '>= 2.6.7', require: 'net/ssh'
+gem 'net-ssh', '>= 2.6.8', require: 'net/ssh'
 gem 'posix-spawn', '>= 0.3.6'
 gem 'rbtree', '>= 0.4.1', platform: :mri
 gem 'rbtree-pure', '>= 0.1.1', require: 'rbtree', platforms: [:jruby, :rbx]
