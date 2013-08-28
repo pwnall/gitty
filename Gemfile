@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 gem 'rails', '>= 4.0.0'
 
-gem 'mysql2', '>= 0.3.11'
+gem 'mysql2', '>= 0.3.13'
 gem 'sqlite3', '>= 1.3.6'
 
 # Gems used only for assets and not required
@@ -11,9 +11,9 @@ group :assets do
   gem 'sass-rails', '>= 4.0.0'
   gem 'coffee-rails', '>= 4.0.0'
   gem 'coffee-script-source', '>= 1.6.3'
-  gem 'uglifier', '>= 2.1.1'
+  gem 'uglifier', '>= 2.2.0'
 
-  gem 'therubyracer', '>= 0.11.4', require: 'v8'
+  gem 'therubyracer', '>= 0.12.0', require: 'v8'
 end
 
 gem 'jquery-rails', '>= 2.2.1'
