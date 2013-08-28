@@ -39,6 +39,9 @@ gem 'rbtree', '>= 0.4.1', platform: :mri
 gem 'rbtree-pure', '>= 0.1.1', require: 'rbtree', platforms: [:jruby, :rbx]
 gem 'topological_sort', '>= 0.1.1'
 
+# Monitoring.
+gem 'oink', '>= 0.10.1'
+
 # Bundler can't do decent dependency resolution.
 gem 'rdoc', '~> 3.12'
 
