@@ -1,17 +1,17 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 4.0.0'
+gem 'rails', '>= 4.0.1'
 
-gem 'mysql2', '>= 0.3.13'
-gem 'sqlite3', '>= 1.3.6'
+gem 'mysql2', '>= 0.3.14'
+gem 'sqlite3', '>= 1.3.8'
 
 # Gems used only for assets and not required
 # in production environments by default.
 group :assets do
   gem 'sass-rails', '>= 4.0.0'
-  gem 'coffee-rails', '>= 4.0.0'
+  gem 'coffee-rails', '>= 4.0.1'
   gem 'coffee-script-source', '>= 1.6.3'
-  gem 'uglifier', '>= 2.2.0'
+  gem 'uglifier', '>= 2.3.2'
 
   gem 'therubyracer', '>= 0.12.0', require: 'v8'
 end
@@ -29,11 +29,11 @@ gem 'jquery-rails', '>= 2.2.1'
 
 gem 'authpwn_rails', '>= 0.14.0'
 gem 'configvars_rails', '>= 0.5.2'
-gem 'gravatar-ultimate', '>= 1.0.3'
+gem 'gravatar-ultimate', '>= 2.0.0'
 gem 'grit', git: 'https://github.com/pwnall/grit.git', branch: 'gitty'
 gem 'json', platforms: [:mri_18, :jruby]
-gem 'markdpwn', '>= 0.1.5'
-gem 'net-ssh', '>= 2.6.8', require: 'net/ssh'
+gem 'markdpwn', '>= 0.1.7'
+gem 'net-ssh', '>= 2.7.0', require: 'net/ssh'
 gem 'posix-spawn', '>= 0.3.6'
 gem 'rbtree', '>= 0.4.1', platform: :mri
 gem 'rbtree-pure', '>= 0.1.1', require: 'rbtree', platforms: [:jruby, :rbx]
@@ -52,7 +52,7 @@ group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'railroady', '>= 0.4.5'
-  gem 'thin', '>= 1.5.0'
+  gem 'thin', '>= 1.6.1'
 end
 
 group :test do
