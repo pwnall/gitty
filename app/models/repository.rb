@@ -245,15 +245,17 @@ class Repository
 
     roots = git_refs.map(&:commit)
     root_ids = roots.map(&:id)
-    db_roots = Set.new self.commits.select(:gitid).where(gitid: root_ids).
-                            map(&:gitid)
+
+    db_roots = Set.new self.commits.select([:gitid, :repository_id]).
+                            where(gitid: root_ids).map(&:gitid)
+
     root_ids.each { |root_id| db_ids[root_id] = db_roots.include? root_id }
     roots = roots.reject { |root| db_ids[root.id] }
 
     topological_sort roots do |commit|
       parents = commit.parents
       unknown_ids = parents.map(&:id).reject { |p_id| db_ids.has_key? p_id }
-      db_ids2 = Set.new self.commits.select(:gitid).
+      db_ids2 = Set.new self.commits.select([:gitid, :repository_id]).
                                      where(gitid: unknown_ids).map(&:gitid)
       unknown_ids.each { |p_id| db_ids[p_id] = db_ids2.include? p_id }
 
@@ -279,7 +281,7 @@ class Repository
 
     roots = git_commits.map(&:tree)
     root_ids = roots.map(&:id)
-    db_roots = Set.new self.trees.select(:gitid).
+    db_roots = Set.new self.trees.select([:gitid, :repository_id]).
                                   where(gitid: root_ids).map(&:gitid)
     root_ids.each { |root_id| db_ids[root_id] = db_roots.include? root_id }
     roots = roots.reject { |root| db_ids[root.id] }
@@ -287,7 +289,7 @@ class Repository
     new_trees = topological_sort roots do |tree|
       parents = tree.contents.select { |child| child.kind_of? Grit::Tree }
       unknown_ids = parents.map(&:id).reject { |p_id| db_ids.has_key? p_id }
-      db_ids2 = Set.new self.trees.select(:gitid).
+      db_ids2 = Set.new self.trees.select([:gitid, :repository_id]).
                                    where(gitid: unknown_ids).map(&:gitid)
       unknown_ids.each { |p_id| db_ids[p_id] = db_ids2.include? p_id }
 
@@ -299,7 +301,7 @@ class Repository
       tree.contents.select { |child| child.kind_of? Grit::Blob }
     }.flatten.index_by(&:id).values
     new_ids = new_blobs.map(&:id)
-    db_ids = Set.new self.blobs.select(:gitid).
+    db_ids = Set.new self.blobs.select([:gitid, :repository_id]).
                                 where(gitid: new_ids).map(&:gitid)
     new_blobs.reject! { |blob| db_ids.include? blob.id }
 
@@ -308,7 +310,7 @@ class Repository
     }.flatten.index_by { |sub| [sub.basename, sub.id] }.values
     new_ids = new_submodules.map(&:id)
     new_names = new_submodules.map(&:basename)
-    db_keys = Set.new self.submodules.select([:gitid, :name]).
+    db_keys = Set.new self.submodules.select([:gitid, :name, :repository_id]).
         where(gitid: new_ids, name: new_names).
         map { |sub| [sub.gitid, sub.name] }
     new_submodules.reject! { |sub| db_keys.include? [sub.id, sub.basename] }
