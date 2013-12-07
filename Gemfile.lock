@@ -38,9 +38,9 @@ GEM
       tzinfo (~> 0.3.37)
     arel (4.0.1)
     atomic (1.1.14)
-    authpwn_rails (0.14.0)
+    authpwn_rails (0.14.1)
       fbgraph_rails (>= 0.2.2)
-      rails (>= 3.2.12)
+      rails (>= 3.2.16)
     better_errors (1.0.1)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
@@ -132,7 +132,7 @@ GEM
     org-ruby (0.8.2)
       rubypants (>= 0.2.0)
     polyglot (0.3.3)
-    posix-spawn (0.3.6)
+    posix-spawn (0.3.8)
     pygments.rb (0.5.4)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
@@ -206,7 +206,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  authpwn_rails (>= 0.14.0)
+  authpwn_rails (>= 0.14.1)
   better_errors
   binding_of_caller
   coffee-rails (>= 4.0.1)
