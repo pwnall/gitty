@@ -24,7 +24,7 @@
               'undefined' %>
     </td>
     <td><%= link_to 'Edit', edit_config_var_path(config_var) %></td>
-    <td><%= link_to 'Reset to default', config_var, :method => :delete %></td>
+    <td><%= link_to 'Reset to default', config_var, method: :delete %></td>
   </tr>
 <% end %>
 </table>
@@ -46,7 +46,7 @@
     <td><%= name %></td>
     <td><%= descriptor.value_type %></td>
     <td><%= descriptor.default_value %></td>
-    <td><%= link_to 'Edit', edit_config_var_path(:name => name) %></td>
+    <td><%= link_to 'Edit', edit_config_var_path(name: name) %></td>
   </tr>
 <% end %>
 </table>

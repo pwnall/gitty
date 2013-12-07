@@ -28,7 +28,7 @@ gem 'jquery-rails', '>= 2.2.1'
 # gem 'ruby-debug'
 
 gem 'authpwn_rails', '>= 0.14.1'
-gem 'configvars_rails', '>= 0.5.2'
+gem 'configvars_rails', '>= 0.6.1'
 gem 'gravatar-ultimate', '>= 2.0.0'
 gem 'grit', git: 'https://github.com/pwnall/grit.git', branch: 'gitty'
 gem 'json', platforms: [:mri_18, :jruby]

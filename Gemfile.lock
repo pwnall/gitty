@@ -55,8 +55,8 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
-    configvars_rails (0.5.3)
-      rails (>= 3.2.0)
+    configvars_rails (0.6.1)
+      rails (>= 3.2.16)
     creole (0.5.0)
     daemons (1.1.9)
     debug_inspector (0.0.2)
@@ -211,7 +211,7 @@ DEPENDENCIES
   binding_of_caller
   coffee-rails (>= 4.0.1)
   coffee-script-source (>= 1.6.3)
-  configvars_rails (>= 0.5.2)
+  configvars_rails (>= 0.6.1)
   gravatar-ultimate (>= 2.0.0)
   grit!
   jquery-rails (>= 2.2.1)

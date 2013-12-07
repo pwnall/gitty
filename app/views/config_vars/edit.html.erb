@@ -1,7 +1,7 @@
 <h2>Editing Configuration Variable</h2>
 
-<%= form_for(@config_var, :url => config_var_path(@config_var),
-                          :html => { :method => :put }) do |f| %>
+<%= form_for(@config_var, url: config_vars_path,
+                          html: { method: :put }) do |f| %>
   <% if @config_var.errors.any? %>
     <div id="error_explanation">
       <h3><%= pluralize(@config_var.errors.count, "error") %> prohibited this config_var from being saved:</h3>
