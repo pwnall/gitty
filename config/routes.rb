@@ -159,5 +159,5 @@ Gitty::Application.routes.draw do
     end
   end
 
-  root to: "session#show"
+  root to: 'session#show'
 end
