@@ -9,5 +9,5 @@ end
 module Credentials
 
 # Add your custom Credential types here.
-  
+
 end

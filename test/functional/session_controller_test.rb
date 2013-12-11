@@ -66,8 +66,8 @@ class SessionControllerTest < ActionController::TestCase
     assert_template :new
 
     assert_select 'form[action=?]', session_path do
-      assert_select 'input[name="email"]'
-      assert_select 'input[name="password"]'
+      assert_select 'input[name=?]', 'session[email]'
+      assert_select 'input[name=?]', 'session[password]'
       assert_select 'button[name="login"]'
       assert_select 'button[name="reset_password"]'
     end

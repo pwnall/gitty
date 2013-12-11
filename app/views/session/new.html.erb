@@ -1,9 +1,10 @@
 <h2>Log in</h2>
 
+<% if flash[:notice] %>
+<p class="notice"><%= flash[:notice] %></p>
+<% end %>
 <% if flash[:alert] %>
 <p class="alert"><%= flash[:alert] %></p>
-<% elsif flash[:notice] %>
-<p class="notice"><%= flash[:notice] %></p>
 <% end %>
 
 <% if @redirect_url %>
@@ -13,29 +14,28 @@
 </p>
 <% end %>
 
-<%= form_tag session_path do %>
+<%= form_for @session, url: session_path do |f| %>
   <div class="field">
-    <%= label_tag :email, 'Email Address' %><br />
+    <%= f.label :email, 'Email Address' %><br />
     <span class="value">
-      <%= email_field_tag :email, @email, :autofocus => true,
-            :required => true, :placeholder => 'your@email.com' %>
+      <%= f.email_field :email, autofocus: true, required: true,
+            placeholder: 'your@email.com' %>
     </span>
   </div>
 
   <div class="field">
-    <%= label_tag :password %><br />
+    <%= f.label :password %><br />
     <span class="value">
-      <%= password_field_tag :password %>
+      <%= f.password_field :password %>
     </span>
   </div>
 
   <div class="actions">
-    <%= button_tag 'Log in', :name => 'login', :value => 'requested' %>
-    <%= button_tag 'Reset Password', :name => 'reset_password',
-          :value => 'requested', :formaction => reset_password_session_path %>
-
-    <% if @redirect_url %>
-    <%= hidden_field_tag :redirect_url, @redirect_url %>
-    <% end %>
+    <%= f.button 'Log in', name: 'login', value: 'requested' %>
+    <%= f.button 'Reset Password', name: 'reset_password',
+          value: 'requested', formaction: reset_password_session_path %>
   </div>
+  <% if @redirect_url %>
+  <%= hidden_field_tag :redirect_url, @redirect_url %>
+  <% end %>
 <% end %>
