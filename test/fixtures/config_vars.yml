@@ -13,3 +13,7 @@ git_user:
 ssh_host:
   name: ssh_host
   value: localhost
+
+signup_email_check:
+  name: signup.email_check
+  value: enabled
