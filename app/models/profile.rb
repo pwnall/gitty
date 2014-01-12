@@ -77,7 +77,7 @@ class Profile < ActiveRecord::Base
   # Args:
   #   name:: the repository's name
   def self.local_path(name)
-    File.join UserHomeDir.for(ConfigVar['git_user']), 'repos', name
+    File.join Dir.home(ConfigVar['git_user']), 'repos', name
   end
 
   # :nodoc: normalize blank e-mails to nil

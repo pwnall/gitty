@@ -3,7 +3,7 @@ class SshKey < ActiveRecord::Base
   # The user that uses the SSH key to authenticate.
   belongs_to :user, inverse_of: :ssh_keys
   validates :user, presence: true
-  
+
   # The key's SSH fingerprint.
   validates :fprint, presence: true, length: 1..128, uniqueness: true
   # A user-friendly name for the key.
@@ -11,14 +11,14 @@ class SshKey < ActiveRecord::Base
   # The authorized_keys line for the key.
   validates :key_line, presence: true, length: 1..(1.kilobyte)
 
-  # Updates the fingerprint automatically when the key line changes.  
+  # Updates the fingerprint automatically when the key line changes.
   def key_line=(new_key_line)
     new_key_line = new_key_line.strip.gsub(/\r|\n/, '')
     self.fprint = self.class.fingerprint new_key_line
     super(new_key_line)
   end
 
-  # A key's fingerprint uniquely identifies the key.  
+  # A key's fingerprint uniquely identifies the key.
   def self.fingerprint(key_line)
     return nil unless hex_key_blob = key_line.split(' ')[1]
     key_blob = hex_key_blob.unpack('m*').first
@@ -32,35 +32,37 @@ end
 class SshKey
   # The location of the file containing SSH keys for the git user.
   def self.keyfile_path
-    File.join UserHomeDir.for(ConfigVar['git_user']), 'repos', '.ssh_keys'
+    File.join Dir.home(ConfigVar['git_user']), 'repos', '.ssh_keys'
   end
-  
+
   # The location of the shell file that installs the SSH keys for the git user.
   def self.keyfile_installer_path
-    File.join UserHomeDir.for(ConfigVar['git_user']), 'install_keys'
-  end    
-  
+    File.join Dir.home(ConfigVar['git_user']), 'install_keys'
+  end
+
   # The authorized_keys line for this key.
   def keyfile_line
     command = [
       '\"' + Rails.root.join('script', 'git_shell.rb').to_s + '\"',
       id, ConfigVar['app_uri'], '$SSH_ORIGINAL_COMMAND'
     ].join(' ')
-    
-    
+
+
     %Q|command="#{command}",no-agent-forwarding,no-port-forwarding,no-pty,| +
         'no-X11-forwarding ' + key_line
   end
-  
+
   # Re-generates the file containing SSH keys for the git user.
   def self.write_keyfile
+    p keyfile_path
     File.open(keyfile_path, 'w') do |f|
       SshKey.all.each { |key| f.write key.keyfile_line + "\n" }
     end
-    # NOTE: using blank argument to avoid having the path fed to the shell.
+    puts File.read(keyfile_path)
+    # NOTE: using blank argument so the path isn't parsed as a shell command.
     Kernel.system keyfile_installer_path, ''
   end
-  
+
   # Re-generats the file containing SSH keys for the git user.
   def write_keyfile
     self.class.write_keyfile
