@@ -22,7 +22,12 @@ class SshKey < ActiveRecord::Base
   def self.fingerprint(key_line)
     return nil unless hex_key_blob = key_line.split(' ')[1]
     key_blob = hex_key_blob.unpack('m*').first
-    return nil unless ssh_key = Net::SSH::Buffer.new(key_blob).read_key
+    begin
+      return nil unless ssh_key = Net::SSH::Buffer.new(key_blob).read_key
+    rescue NotImplementedError
+      # NotImplementedError is thrown for some invalid key lines.
+      return nil
+    end
     ssh_key.fingerprint
   end
 end
@@ -54,7 +59,6 @@ class SshKey
 
   # Re-generates the file containing SSH keys for the git user.
   def self.write_keyfile
-    p keyfile_path
     File.open(keyfile_path, 'w') do |f|
       SshKey.all.each { |key| f.write key.keyfile_line + "\n" }
     end
