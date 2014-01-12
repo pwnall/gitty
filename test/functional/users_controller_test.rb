@@ -5,23 +5,19 @@ class UsersControllerTest < ActionController::TestCase
     @user = users(:costan)
     admin = users(:dexter)
 
-    User.class_eval do
-      (class <<self; self; end).class_eval do
-        alias_method :real_can_list_users?, :can_list_users?
-        define_method :can_list_users? do |user|
-          user == admin
-        end
+    User.singleton_class.instance_exec do
+      alias_method :real_can_list_users?, :can_list_users?
+      define_method :can_list_users? do |user|
+        user == admin
       end
     end
   end
 
   teardown do
-    User.class_eval do
-      (class <<self; self; end).class_eval do
-        undef can_list_users?
-        alias_method :can_list_users?, :real_can_list_users?
-        undef real_can_list_users?
-      end
+    User.singleton_class.instance_exec do
+      remove_method :can_list_users?
+      alias_method :can_list_users?, :real_can_list_users?
+      remove_method :real_can_list_users?
     end
   end
 

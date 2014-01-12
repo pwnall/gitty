@@ -14,6 +14,7 @@ class ActiveSupport::TestCase
   # Add more helper methods to be used by all tests here...
 end
 
+require File.expand_path('../helpers/mock_config.rb', __FILE__)
 require File.expand_path('../helpers/mock_profile_paths.rb', __FILE__)
 require File.expand_path('../helpers/mock_repository_path.rb', __FILE__)
 require File.expand_path('../helpers/mock_ssh_keys_path.rb', __FILE__)
