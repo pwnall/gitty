@@ -58,7 +58,6 @@ class SshKey
     File.open(keyfile_path, 'w') do |f|
       SshKey.all.each { |key| f.write key.keyfile_line + "\n" }
     end
-    puts File.read(keyfile_path)
     # NOTE: using blank argument so the path isn't parsed as a shell command.
     Kernel.system keyfile_installer_path, ''
   end

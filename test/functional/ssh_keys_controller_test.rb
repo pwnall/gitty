@@ -2,6 +2,7 @@ require 'test_helper'
 
 class SshKeysControllerTest < ActionController::TestCase
   setup :mock_ssh_keys_path
+  teardown :mock_ssh_keys_path_undo
 
   setup do
     @ssh_key = ssh_keys(:rsa)

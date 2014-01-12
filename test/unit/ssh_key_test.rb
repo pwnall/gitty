@@ -2,6 +2,7 @@ require 'test_helper'
 
 class SshKeyTest < ActiveSupport::TestCase
   setup :mock_ssh_keys_path
+  teardown :mock_ssh_keys_path_undo
 
   setup do
     @key_path = Rails.root.join 'test', 'fixtures', 'ssh_keys', 'new_key.pub'
