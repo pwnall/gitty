@@ -56,5 +56,5 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha', '>= 0.14.0', require: 'mocha/setup'
+  gem 'mocha', '>= 1.0.0', require: 'mocha/setup'
 end
