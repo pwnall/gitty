@@ -82,11 +82,16 @@ class UsersControllerTest < ActionController::TestCase
 
   test "should destroy user" do
     set_session_current_user users(:costan)
-    assert_difference('User.count', -1) do
-      delete :destroy, user_param: @user.to_param
-    end
+    begin
+      mock_ssh_keys_path
+      assert_difference('User.count', -1) do
+        delete :destroy, user_param: @user.to_param
+      end
 
-    assert_redirected_to users_path
+      assert_redirected_to users_path
+    ensure
+      mock_ssh_keys_path_undo
+    end
   end
 
   test "another user should not be able to change account" do
