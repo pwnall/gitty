@@ -11,8 +11,8 @@ gem 'gravatar-ultimate', '>= 2.0.0'
 gem 'grit', git: 'https://github.com/pwnall/grit.git', branch: 'gitty'
 gem 'markdpwn', '>= 0.1.7'
 gem 'net-ssh', '>= 2.7.0', require: 'net/ssh'
-gem 'posix-spawn', '>= 0.3.6'
-gem 'rbtree', '>= 0.4.1', platform: :mri
+gem 'posix-spawn', '>= 0.3.8'
+gem 'rbtree', '>= 0.4.2', platform: :mri
 gem 'rbtree-pure', '>= 0.1.1', require: 'rbtree', platforms: [:jruby, :rbx]
 gem 'topological_sort', '>= 0.1.1'
 
