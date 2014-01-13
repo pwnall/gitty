@@ -238,7 +238,7 @@ DEPENDENCIES
   configvars_rails (>= 0.6.1)
   debugger
   font-awesome-rails (>= 4.0.3)
-  foundation-rails (>= 5.0.2)
+  foundation-rails (>= 5.1.1.0)
   gravatar-ultimate (>= 2.0.0)
   grit!
   jquery-rails (>= 3.0.4)

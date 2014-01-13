@@ -21,7 +21,7 @@ gem 'topological_sort', '>= 0.1.1'
 
 # CSS gems.
 gem 'sass-rails', '>= 4.0.1'
-gem 'foundation-rails', '>= 5.0.2'
+gem 'foundation-rails', '>= 5.1.1.0'
 gem 'font-awesome-rails', '>= 4.0.3'
 
 # JavaScript gems.

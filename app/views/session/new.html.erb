@@ -1,41 +1,38 @@
-<h2>Log in</h2>
-
-<% if flash[:notice] %>
-<p class="notice"><%= flash[:notice] %></p>
-<% end %>
-<% if flash[:alert] %>
-<p class="alert"><%= flash[:alert] %></p>
-<% end %>
-
 <% if @redirect_url %>
-<p>
-  We need you to sign in before we can show you the page that you are trying to
+<p data-alert class="alert-box">
+  We need you to log in before we can show you the page that you are trying to
   view.
+  <a href="#" title="Close" class="close">&times;</a>
 </p>
 <% end %>
 
-<%= form_for @session, url: session_path do |f| %>
-  <div class="field">
-    <%= f.label :email, 'Email Address' %><br />
-    <span class="value">
-      <%= f.email_field :email, autofocus: true, required: true,
-              placeholder: 'your@email.com' %>
-    </span>
+<h2>Log in</h2>
+<%= form_for @session, url: session_path,
+             builder: FoundationFormBuilder::Icons do |f| %>
+
+  <%= f.email_field :email, autofocus: true, required: true,
+          placeholder: 'your@email.com',
+          label: { icon: fa_icon('envelope'), text: 'Email Address' }  %>
+
+  <%= f.password_field :password, required: true, placeholder: 'your password',
+          label: { icon: fa_icon('key'), text: 'Password' }  %>
+
+  <div class="row">
+    <div class="small-5 small-offset-1 columns">
+      <%= button_tag name: 'login', value: 'requested', type: 'submit',
+                     class: 'large success button expand' do %>
+        <%= fa_icon 'sign-in' %> Sign in
+      <% end %>
+    </div>
+    <div class="small-5 columns">
+      <%= button_tag name: 'reset_password', value: 'requested',
+                     type: 'submit', formaction: reset_password_session_path,
+                     class: 'large button expand' do %>
+        <%= fa_icon '' %> Reset password
+      <% end %>
+    </div>
   </div>
 
-  <div class="field">
-    <%= f.label :password %><br />
-    <span class="value">
-      <%= f.password_field :password %>
-    </span>
-  </div>
-
-  <div class="actions">
-    <%= f.button 'Sign In', type: 'submit', name: 'login',
-            value: 'requested' %>
-    <%= f.button 'Reset Password', type: 'submit', name: 'reset_password',
-            value: 'requested', formaction: reset_password_session_path %>
-  </div>
   <% if @redirect_url %>
   <%= hidden_field_tag :redirect_url, @redirect_url %>
   <% end %>

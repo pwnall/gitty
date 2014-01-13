@@ -1,0 +1,74 @@
+<nav class="top-bar" data-topbar>
+  <ul class="title-area">
+    <li class="name">
+      <h1>
+        <%= link_to root_path do %>
+          <%= fa_icon 'home' %> Gitty
+        <% end %>
+      </h1>
+    </li>
+  </ul>
+
+  <section class="top-bar-section">
+  <% if current_user %>
+    <ul class="right">
+      <li class="has-dropdown">
+        <%= link_to current_user.profile ? current_user.profile : new_profile_path do %>
+          <%= header_user_image current_user %>
+          <% if current_user.profile %>
+          <%= current_user.profile.name %>
+          <% else %>
+          <%= current_user.email %>
+          <% end %>
+        <% end %>
+        <ul class="dropdown">
+          <li>
+            <%= link_to change_password_session_path do %>
+              <%= fa_icon 'key' %> Change password
+            <% end %>
+          </li>
+          <li>
+            <%= link_to session_path, method: :delete do %>
+              <%= fa_icon 'sign-out' %> Sign out
+            <% end %>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="left">
+      <li>
+        <%= link_to session_path do %>
+          <%= fa_icon 'dashboard' %> Dashboard
+        <% end %>
+      </li>
+    </ul>
+  <% else %>
+    <ul class="right">
+      <li class="has-dropdown">
+        <%= link_to new_session_path do %>
+          Not logged in
+        <% end %>
+        <ul class="dropdown">
+          <li>
+            <%= link_to new_session_path do %>
+              Sign in
+            <% end %>
+          </li>
+          <li>
+            <%= link_to new_user_path do %>
+              Sign up
+            <% end %>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <ul class="left">
+      <li>
+        <%= link_to new_user_path do %>
+          Sign up
+        <% end %>
+      </li>
+    </ul>
+  <% end %>
+  </section>
+</nav>

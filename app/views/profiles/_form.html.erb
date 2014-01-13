@@ -1,51 +1,43 @@
-<%= form_for(@profile, :url => (@original_profile || @profile)) do |f| %>
-  <% if @profile.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@profile.errors.count, "error") %> prohibited this profile from being saved:</h2>
+<%= form_for @profile, url: (@original_profile || @profile),
+        builder: FoundationFormBuilder::Icons do |f| %>
 
-      <ul>
-      <% @profile.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
+  <%= f.text_field :name, required: true, placeholder: 'unix_name',
+          label: { icon: fa_icon('bullseye'), text: 'Short Name' } %>
+  <%= f.text_field :display_name, required: true,
+          placeholder: 'Your Full Name',
+          label: { icon: fa_icon(profile_icon_name(@profile)),
+                   text: 'Display Name' } %>
+  <%= f.text_field :display_email,
+          placeholder: 'your_gravatar@something.com (optional)',
+          label: { icon: fa_icon('envelope-o'), text: 'Display E-mail' } %>
+
+  <%= f.text_field :blog, placeholder: 'http://blogger.com/you (optional)',
+          label: { icon: fa_icon('link'), text: 'Blog' } %>
+  <%= f.text_field :company, placeholder: 'Awesome, Inc. (optional)',
+          label: { icon: fa_icon('briefcase'), text: 'Company' } %>
+  <%= f.text_field :city, placeholder: 'Anytown, USA (optional)',
+          label: { icon: fa_icon('map-marker'), text: 'City' } %>
+  <%= f.text_field :language, placeholder: 'C++ (optional)',
+          label: { icon: fa_icon('code'),
+                   text: 'Favorite Programming Language' } %>
+  <%= f.text_area :about, placeholder: 'A little bit about yourself', rows: 4,
+          label: { icon: fa_icon('align-justify'),
+                   text: profile_about_label(@profile) } %>
+
+  <div class="row">
+    <div class="small-11 small-offset-1 columns">
+      <%= f.button type: 'submit', class: 'large success button expand' do %>
+      <% if @profile.new_record? %>
+        <%= fa_icon 'sign-in' %> Create
+      <% else %>
+        <%= fa_icon 'sign-in' %> Update
       <% end %>
-      </ul>
+      <% if @profile.team? %>
+        Team
+      <% else %>
+        Profile
+      <% end %>
+      <% end %>
     </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :name %><br />
-    <%= f.text_field :name, :placeholder => 'unix_name' %>
-  </div>
-  <div class="field">
-    <%= f.label :display_name %><br />
-    <%= f.text_field :display_name, :placeholder => 'Your Full Name' %>
-  </div>
-  <div class="field">
-    <%= f.label :display_email, 'Display email' %>
-    <br />
-    <%= f.email_field :display_email,
-                      :placeholder => 'your_gravatar@something.com' %>
-  </div>
-  <div class="field">
-    <%= f.label :blog %><br />
-    <%= f.text_field :blog, :placeholder => 'http://blogger.com/you' %>
-  </div>
-  <div class="field">
-    <%= f.label :company %><br />
-    <%= f.text_field :company, :placeholder => 'Awesome, Inc.' %>
-  </div>
-  <div class="field">
-    <%= f.label :city %><br />
-    <%= f.text_field :city, :placeholder => 'Anytown, USA' %>
-  </div>
-   <div class="field">
-    <%= f.label :language, 'Favorite Programming Language' %><br />
-    <%= f.text_field :language, :placeholder => 'C++' %>
-  </div>
-  <div class="field">
-    <%= f.label :about %><br />
-    <%= f.text_area :about, rows: 4 %>
-  </div>
-  <div class="actions">
-    <%= f.submit %>
   </div>
 <% end %>

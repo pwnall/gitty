@@ -1,41 +1,61 @@
-<h2 class="profile">
-  <p class="name">
-    <%= profile_image profile %>
-    <%= link_to profile.name, profile %>
-    <span class="display_name">
-      (<%= profile.display_name %>)
-    </span>
-  </p>
-</h2>
-<dl class="metadata">
-  <dt>Email:</dt>
-  <dd><%= profile.display_email %></dd>
-<% if profile.blog %>
-  <dt>Blog:</dt>
-  <dd><%= profile.blog %></dd>
-<% end %>
-<% if profile.company %>
-  <dt>Company:</dt>
-  <dd><%= profile.company %></dd>
-<% end %>
-<% if profile.city %>
-  <dt>City:</dt>
-  <dd><%= profile.city %></dd>
-<% end %>
-<% if profile.language %>      
-  <dt>Favorite Programming Language:</dt>
-  <dd><%= profile.language %></dd>
-<% end %>
-<% if profile.about %>
-  <dt><%= profile_about_label(profile) %>:</dt>
-  <dd><%= profile.about %></dd>
-<% end %>
-  <dt>Date joined:</dt>
-  <dd><%= profile.created_at.strftime("%b %e, %Y") %></dd>
-</dl>
+<section class="profile-card">
+  <h2 class="profile">
+    <p class="name">
+      <%= profile_image profile %>
+      <%= link_to profile.name, profile %>
+      <span class="display_name">
+        (<%= profile.display_name %>)
+      </span>
+    </p>
+  </h2>
+  <dl class="profile-attributes">
+    <dt data-tooltip title="Display Name">
+      <%= fa_icon profile_icon_name(profile) %>
+    </dt>
+    <dd><%= profile.display_name %></dd>
+    <dt data-tooltip title="E-mail">
+      <%= fa_icon 'envelope-o' %>
+    </dt>
+    <dd><%= profile.display_email %></dd>
+  <% if profile.blog %>
+    <dt data-tooltip title="Blog">
+      <%= fa_icon 'link' %>
+    </dt>
+    <dd><%= profile.blog %></dd>
+  <% end %>
+  <% if profile.company %>
+    <dt data-tooltip title="Company">
+      <%= fa_icon 'briefcase' %>
+    </dt>
+    <dd><%= profile.company %></dd>
+  <% end %>
+  <% if profile.city %>
+    <dt data-tooltip title="City">
+      <%= fa_icon 'map-marker' %>
+    </dt>
+    <dd><%= profile.city %></dd>
+  <% end %>
+  <% if profile.language %>
+    <dt data-tooltip title="Favorite Programming Language">
+      <%= fa_icon 'code' %>
+    </dt>
+    <dd><%= profile.language %></dd>
+  <% end %>
+  <% if profile.about %>
+    <dt data-tooltip title="<%= profile_about_label(profile) %>">
+      <%= fa_icon 'align-justify' %>
+    </dt>
+    <dd><%= profile.about %></dd>
+  <% end %>
+    <dt data-tooltip title="Date joined">
+      <%= fa_icon 'calendar' %>
+    </dt>
+    <dd>Joined on <%= profile.created_at.strftime("%b %e, %Y") %></dd>
+  </dl>
 
-<% if profile.can_edit?(current_user) %>
-<p>
-  <%= link_to 'Edit Profile', edit_profile_path %>
-</p>
-<% end %>
+  <% if profile.can_edit?(current_user) %>
+  <p>
+    <%= link_to 'Edit Profile', edit_profile_path %>
+  </p>
+  <% end %>
+</section>

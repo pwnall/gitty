@@ -1,0 +1,21 @@
+#header {
+}
+
+#page-body {
+  @include grid-row();
+}
+#flash-notice-box, #flash-alert-box {
+  @include alert();
+  .close {
+    @include alert-close();
+  }
+}
+#flash-notice-box {
+  @include alert-style($primary-color);
+}
+#flash-alert-box {
+  @include alert-style($alert-color);
+}
+
+#footer {
+}

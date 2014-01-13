@@ -12,6 +12,11 @@ module ProfilesHelper
                    style: 'width: 40px; height: 40px;'
   end
 
+  # Name of the FontAwesome icon used next to the profile's display name.
+  def profile_icon_name(profile)
+    profile.team? ? 'group' : 'user'
+  end
+
   # Label used for the profile's about field.
   def profile_about_label(profile)
     profile.team? ? 'About' : 'Bio'

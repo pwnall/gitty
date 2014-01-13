@@ -1,0 +1,17 @@
+section.profile-card {
+  dl.profile-attributes {
+    display: block;
+
+    dt {
+      display: inline-block;
+      width: 1.75em;
+      text-align: center;
+      padding-right: 0.25em;
+    }
+    dd {
+      display: inline-block;
+      width: calc(100% - 2.5em);
+      margin-bottom: 0;
+    }
+  }
+}

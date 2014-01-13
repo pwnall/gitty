@@ -1,3 +1,9 @@
-<h1>Editing <%= @profile.name %></h1>
+<h2>
+<% if @profile.team? %>
+Edit Team
+<% else %>
+Edit Profile
+<% end %>
+</h2>
 
 <%= render 'form' %>

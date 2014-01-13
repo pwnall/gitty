@@ -1,36 +1,24 @@
 <h2>Sign up</h2>
 
-<%= form_for(@user) do |f| %>
-  <% if @user.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:</h2>
+<%= form_for @user, builder: FoundationFormBuilder::Icons do |f| %>
+  <%= f.email_field :email, autofocus: true, required: true,
+          placeholder: 'your@email.com',
+          label: { icon: fa_icon('envelope'), text: 'Email Address' }  %>
 
-      <ul>
-      <% @user.errors.full_messages.each do |msg| %>
-        <li><%= msg %></li>
+  <%= f.password_field :password, required: true,
+          placeholder: 'a clever password',
+          label: { icon: fa_icon('key'), text: 'Password' }  %>
+
+  <%= f.password_field :password_confirmation, required: true,
+          placeholder: 'same clever password',
+          label: { icon: fa_icon('key'), text: 'Confirm Password' }  %>
+
+  <div class="row">
+    <div class="small-11 small-offset-1 columns">
+      <%= f.button name: 'login', value: 'requested',
+                   class: 'large success button expand' do %>
+        <%= fa_icon 'sign-in' %> Create Account
       <% end %>
-      </ul>
     </div>
-  <% end %>
-
-  <div class="field">
-    <%= f.label :email, 'Email Address' %>
-    <%= f.email_field :email, :required => true,
-            :placeholder => 'your@email.com' %>
-  </div>
-  
-  <div class="field">
-    <%= f.label :password %>
-    <%= f.password_field :password, :required => true,
-          :placeholder => 'be clever' %>
-  </div>
-  <div class="field">
-    <%= f.label :password_confirmation, 'Confirm Password' %>
-    <%= f.password_field :password_confirmation, :required => true,
-          :placeholder => 'type it again' %>
-  </div>
-  
-  <div class="actions">
-    <%= f.submit 'Create Account' %>
   </div>
 <% end %>

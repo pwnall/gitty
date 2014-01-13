@@ -1,23 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>gitty</title>
-  <%= csrf_meta_tag %>
-  <%= favicon_link_tag '/favicon.ico' %>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Gitty</title>
+
   <%= stylesheet_link_tag 'application' %>
-  <%= javascript_include_tag 'application' %>
+  <%= javascript_include_tag 'vendor/modernizr' %>
+  <%= csrf_meta_tags %>
+  <%= favicon_link_tag %>
 </head>
+
 <body>
-  <div id="page_wrapper">
-    <%= render 'layouts/header' -%>
+<header id="header">
+<%= render 'layouts/top_nav' %>
+</header>
 
-    <div id="content_wrapper">
-      <div id="contents">
-        <%= yield %>
-      </div>
-    </div>
+<article id="page-body">
+  <% if flash[:notice] %>
+  <p data-alert id="flash-notice-box">
+    <%= flash[:notice] %>
+    <a href="#" title="Close" class="close">&times;</a>
+  </p>
+  <% end %>
+  <% if flash[:alert] %>
+  <p data-alert id="flash-alert-box">
+    <%= flash[:alert] %>
+    <a href="#" title="Close" class="close">&times;</a>
+  </p>
+  <% end %>
 
-    <%= render 'layouts/footer' -%>
-  </div>
+  <%= yield %>
+</article>
+
+<footer id="footer">
+</footer>
+
+  <%= javascript_include_tag 'application' %>
 </body>
 </html>
