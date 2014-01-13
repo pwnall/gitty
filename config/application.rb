@@ -24,9 +24,6 @@ module Gitty
     # config.autoload_paths += %W(#{config.root}/extras)
     config.autoload_paths += %W(#{config.root}/lib)
 
-    # Get rid of warnings when queries include e-mail addresses.
-    config.active_record.disable_implicit_join_references = true
-
     config.logger = Hodel3000CompliantLogger.new config.paths['log'].first
   end
 end
