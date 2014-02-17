@@ -14,6 +14,9 @@ gem 'net-ssh', '>= 2.7.0', require: 'net/ssh'
 gem 'posix-spawn', '>= 0.3.8'
 gem 'rbtree', '>= 0.4.2', platform: :mri
 gem 'rbtree-pure', '>= 0.1.1', require: 'rbtree', platforms: [:jruby, :rbx]
+gem 'rugged', '>= 0.19.0', git: 'https://github.com/libgit2/rugged',
+    submodules: true, ref: 'f286099b4d0c5bbcc54ae3005c6603b42a1eabd4'
+    # branch: development
 gem 'topological_sort', '>= 0.1.1'
 
 # CSS gems.
