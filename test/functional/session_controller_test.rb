@@ -120,7 +120,7 @@ class SessionControllerTest < ActionController::TestCase
     ActionMailer::Base.deliveries = []
 
     assert_difference 'Credential.count', 1 do
-      post :reset_password, email: @email_credential.email
+      post :reset_password, session: { email: @email_credential.email }
     end
 
     assert !ActionMailer::Base.deliveries.empty?, 'email generated'
