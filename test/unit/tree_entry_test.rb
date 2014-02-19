@@ -6,22 +6,22 @@ class TreeEntryTest < ActiveSupport::TestCase
     @entry = TreeEntry.new tree: trees(:hello_root),
                            child: blobs(:lib_ghost_rb), name: 'ghost.rb'
   end
-  
+
   test 'setup' do
     assert @entry.valid?
   end
-  
+
   test 'no duplicate names' do
     @entry.name = 'lib'
     assert !@entry.valid?
   end
-  
+
   test 'duplicate objects with different names are ok' do
     @entry.name = 'new'
     @entry.tree = trees(:require_lib)
     assert @entry.valid?
   end
-  
+
   test 'tree must be set' do
     @entry.tree = nil
     assert !@entry.valid?
@@ -36,12 +36,12 @@ class TreeEntryTest < ActiveSupport::TestCase
     @entry.name = nil
     assert !@entry.valid?
   end
-  
+
   test 'from_git_tree' do
     mock_repository_path @repo
     TreeEntry.destroy_all
 
-    git_tree = @repo.grit_repo.tree trees(:require_lib).gitid
+    git_tree = @repo.rugged_repository.lookup trees(:require_lib).gitid
     entries = TreeEntry.from_git_tree git_tree, @repo
     assert_equal [trees(:require_lib), trees(:require_lib),
                   trees(:require_lib)], entries.map(&:tree), 'Tree'

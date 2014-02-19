@@ -3,15 +3,14 @@ require 'test_helper'
 class SubmoduleTest < ActiveSupport::TestCase
   setup do
     @repo = submodules(:markdpwn_012).repository
-    @submodule = Submodule.new name: 'vendored_gitty',
-                     gitid: '796087fe7706929726f7163e9b39369cc8ea3053',
-                     repository: @repo
+    @submodule = Submodule.new name: 'vendored_gitty',repository: @repo,
+        gitid: '796087fe7706929726f7163e9b39369cc8ea3053'
   end
-  
+
   test 'setup' do
     assert @submodule.valid?
   end
-  
+
   test 'repository must be set' do
     @submodule.repository = nil
     assert !@submodule.valid?
@@ -34,10 +33,10 @@ class SubmoduleTest < ActiveSupport::TestCase
     @submodule.gitid = submodules(:markdpwn_012).gitid
     assert !@submodule.valid?
   end
-  
+
   test 'from_git_submodule' do
     mock_repository_path @repo
-    git_submodule = @repo.grit_repo.
+    git_submodule = @repo.rugged_repo.
         tree('55c232282ca3c345768919e41e8217c946fca152').contents.
         find { |e| e.name == 'vendored_gitty' }
     submodule = Submodule.from_git_submodule git_submodule, @repo
@@ -56,7 +55,7 @@ class SubmoduleTest < ActiveSupport::TestCase
     assert_raise TypeError, RuntimeError, 'data are frozen' do
       submodule.data[1] = 'E'
     end
-    
+
     assert_equal ['Subproject commit 50dd97ed5108082b0d0c69512ae71b2af9330857'],
                  submodule.data_lines
     assert_raise TypeError, RuntimeError, 'data_lines array are frozen' do
@@ -65,7 +64,7 @@ class SubmoduleTest < ActiveSupport::TestCase
     assert_raise TypeError, RuntimeError, 'data_lines elements are frozen' do
       submodule.data_lines[0][1] = 'E'
     end
-    
+
     assert_equal 1, submodule.data_line_count, 'data_line_count'
   end
 end

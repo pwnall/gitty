@@ -71,9 +71,8 @@ class Repository < ActiveRecord::Base
 
   # The on-disk location of a repository.
   #
-  # Args:
-  #   profile:: the profile owning the repository
-  #   name:: the repository's name
+  # @param [Profile] profile the profile owning the repository
+  # @param [String] name the repository's name
   def self.local_path(profile, name)
     File.join profile.local_path, name + '.git'
   end
@@ -89,9 +88,10 @@ class Repository < ActiveRecord::Base
     "#{profile.name}/#{name}.git"
   end
 
-  # The Grit::Repo object for this repository.
-  def grit_repo
-    @grit_repo ||= !(new_record? || destroyed?) && Grit::Repo.new(local_path)
+  # The Rugged::Repository object for this repository.
+  def rugged_repository
+    @rugged_repository ||= !(new_record? || destroyed?) &&
+        Rugged::Repository.new(local_path)
   end
 
   # Use the repository name instead of ID in all routes.
@@ -132,7 +132,7 @@ class Repository
   # Creates a Git repository on disk.
   def create_local_repository
     # TODO: background job.
-    @grit_repo = Grit::Repo.init_bare local_path
+    @rugged_repository = Rugged::Repository.init_at local_path, :bare
     FileUtils.chmod_R 0770, local_path
     begin
       FileUtils.chown_R ConfigVar['git_user'], nil, local_path
@@ -142,8 +142,6 @@ class Repository
     rescue Errno::EPERM
       # Not root, not allowed to chown.
     end
-
-    @grit_repo
   end
 
   # Relocates a Git repository on disk.
@@ -153,12 +151,14 @@ class Repository
     new_path = local_path profile, name
     FileUtils.mkdir_p File.dirname(new_path)
     FileUtils.mv old_path, new_path
+    true
   end
 
   # Saves the repository's old name and profile, so it can be relocated.
   def save_old_repository_identity
     @_old_repository_name = name_change && name_change.first
     @_old_repository_profile_id = profile_id_change && profile_id_change.first
+    true
   end
 
   # Relocates the on-disk repository if the model's name or profile is changed.
@@ -169,14 +169,16 @@ class Repository
 
     old_profile = Profile.where(id: old_profile_id).first
     self.class.relocate_local_repository old_profile, profile, old_name, name
-    @grit_repo = nil
+    @rugged_repository = nil
+    true
   end
 
   # Deletes the on-disk repository.
   def delete_local_repository
     # TODO: background job.
     FileUtils.rm_r local_path if File.exist? local_path
-    @grit_repo = nil
+    @rugged_repository = nil
+    true
   end
 end
 
@@ -185,16 +187,16 @@ class Repository
   # Differences between the on-disk branches and the database models.
   #
   # Returns a hash with the following keys:
-  #   :added:: array of Grit::Head objects for new branches
-  #   :deleted:: array of Branch models that have been removed
-  #   :changed:: hash of Branch models to Grit::Head objects for branches whose
-  #              commit pointers have changed
+  #   :added:: array of {Rugged::Branch} objects for new branches
+  #   :deleted:: array of {Branch} models that have been removed
+  #   :changed:: hash of {Branch} models to {Rugged::Branch} objects for
+  #              branches whose commit pointers have changed
   def branch_changes
     delta = {added: [], deleted: [], changed: {}}
     db_branches = self.branches.index_by(&:name)
-    grit_repo.branches.each do |git_branch|
+    rugged_repository.branches.each do |git_branch|
       if branch = db_branches.delete(git_branch.name)
-        if branch.commit.gitid != git_branch.commit.id
+        if branch.commit.gitid != git_branch.target_id
           delta[:changed][branch] = git_branch
         end
       else
@@ -208,18 +210,22 @@ class Repository
   # Differences between the on-disk tags and the database models.
   #
   # Returns a hash with the following keys:
-  #   :added:: array of Grit::Tag objects for new tags
-  #   :deleted:: array of Tag models that have been removed
-  #   :changed:: hash of Tag models to Grit::Tag objects for tags whose
+  #   :added:: array of {Rugged::Tag} objects for new tags
+  #   :deleted:: array of {Tag} models that have been removed
+  #   :changed:: hash of {Tag} models to {Rugged::Tag} objects for tags whose
   #              commit pointers have changed
   def tag_changes
     delta = {added: [], deleted: [], changed: {}}
     db_tags = self.tags.index_by(&:name)
-    grit_repo.tags.each do |git_tag|
+    rugged_repository.tags.each do |git_tag|
       if tag = db_tags.delete(git_tag.name)
-        if tag.commit.gitid != git_tag.commit.id ||
-            tag.message != git_tag.message ||
-            tag.committed_at != git_tag.tag_date
+        # TODO(pwnall): what if the tag is not annotated?
+        annotation = git_tag.annotation
+        if tag.commit.gitid != annotation.target_id ||
+            tag.message != annotation.message ||
+            tag.committed_at != annotation.tagger[:time] ||
+            tag.committer_email != annotation.tagger[:email] ||
+            tag.committer_name != annotation.tagger[:name]
           delta[:changed][tag] = git_tag
         end
       else
@@ -233,41 +239,40 @@ class Repository
 
   # Commits that don't have associated database models.
   #
-  # Args:
-  #   git_refs:: array of Grit::Ref objects representing on-disk branches or
-  #              tags used as starting points for searching for commits
-  #
-  # Returns an array of Grit::Commit objects, topologically sorted. This means
-  # that, if the commits are created in order, a commit's parents will always
-  # exist before it is created.
+  # @param [Array<Rugged::Reference>] git_refs: objects representing on-disk
+  #     branches or tags used as starting points for searching for commits
+  # @return [Array<Rugged::Commit>] commits, topologically sorted; if the
+  #     commits are created in order, a commit's parents will always exist
+  #     when the commit is created
   def commits_added(git_refs)
     db_ids = {}  # f(commit git id) -> {true, false} if it's in the db or not
 
-    roots = git_refs.map(&:commit)
-    root_ids = roots.map(&:id)
+    roots = git_refs.map(&:target)
+    root_ids = roots.map(&:oid)
 
     db_roots = Set.new self.commits.select([:gitid, :repository_id]).
                             where(gitid: root_ids).map(&:gitid)
 
     root_ids.each { |root_id| db_ids[root_id] = db_roots.include? root_id }
-    roots = roots.reject { |root| db_ids[root.id] }
+    roots.reject! { |root| db_ids[root.oid] }
 
     topological_sort roots do |commit|
       parents = commit.parents
-      unknown_ids = parents.map(&:id).reject { |p_id| db_ids.has_key? p_id }
+      unknown_ids = parents.map(&:oid).reject { |p_id| db_ids.has_key? p_id }
       db_ids2 = Set.new self.commits.select([:gitid, :repository_id]).
                                      where(gitid: unknown_ids).map(&:gitid)
       unknown_ids.each { |p_id| db_ids[p_id] = db_ids2.include? p_id }
 
-      parents = parents.reject { |parent| db_ids[parent.id] }
-      { id: commit.id, next: parents }
+      parents = parents.reject { |parent| db_ids[parent.oid] }
+      { id: commit.oid, next: parents }
     end
   end
 
   # Trees, blobs, and submodules that don't have associated database models.
   #
   # Args:
-  #   git_branches:: array of Grit::Head objects representing on-disk branches
+  #   git_branches:: array of Rugged::Branch objects representing on-disk
+  #                  branches
   #                  used as starting points for searching for commits
   #
   # Returns a hash with the follwing keys:
@@ -280,33 +285,38 @@ class Repository
     db_ids = {}  # f(tree git id) -> {true, false} if it's in the db or not
 
     roots = git_commits.map(&:tree)
-    root_ids = roots.map(&:id)
+    root_ids = roots.map(&:oid)
     db_roots = Set.new self.trees.select([:gitid, :repository_id]).
                                   where(gitid: root_ids).map(&:gitid)
     root_ids.each { |root_id| db_ids[root_id] = db_roots.include? root_id }
-    roots = roots.reject { |root| db_ids[root.id] }
+    roots.reject! { |root| db_ids[root.oid] }
 
     new_trees = topological_sort roots do |tree|
-      parents = tree.contents.select { |child| child.kind_of? Grit::Tree }
-      unknown_ids = parents.map(&:id).reject { |p_id| db_ids.has_key? p_id }
+      parent_ids = tree.entries.select { |entry| entry[:type] == :tree }.
+                                map { |entry| entry[:oid] }
+      unknown_ids = parent_ids.reject { |p_id| db_ids.has_key? p_id }
       db_ids2 = Set.new self.trees.select([:gitid, :repository_id]).
                                    where(gitid: unknown_ids).map(&:gitid)
       unknown_ids.each { |p_id| db_ids[p_id] = db_ids2.include? p_id }
 
-      parents = parents.reject { |parent| db_ids[parent.id] }
-      { id: tree.id, next: parents }
+      parent_ids.reject! { |p_id| db_ids[p_id] }
+
+      parents = parent_ids.map { |p_id| tree.owner.lookup p_id }
+      { id: tree.oid, next: parents }
     end
 
-    new_blobs = new_trees.map { |tree|
-      tree.contents.select { |child| child.kind_of? Grit::Blob }
-    }.flatten.index_by(&:id).values
-    new_ids = new_blobs.map(&:id)
+    new_blob_ids = new_trees.map { |tree|
+      tree.entries.select { |entry| entry[:type] == :blob }.
+                   map { |entry| entry[:oid] }
+    }.flatten.uniq
     db_ids = Set.new self.blobs.select([:gitid, :repository_id]).
-                                where(gitid: new_ids).map(&:gitid)
-    new_blobs.reject! { |blob| db_ids.include? blob.id }
+                                where(gitid: new_blob_ids).map(&:gitid)
+    new_blob_ids.reject! { |blob_id| db_ids.include? blob_id }
+    new_blobs = new_blob_ids.
+        map { |blob_id| new_trees.first.owner.lookup blob_id }
 
     new_submodules = new_trees.map { |tree|
-      tree.contents.select { |child| child.kind_of? Grit::Submodule }
+      tree.entries.select { |entry| entry[:type] == :commit }
     }.flatten.index_by { |sub| [sub.basename, sub.id] }.values
     new_ids = new_submodules.map(&:id)
     new_names = new_submodules.map(&:basename)
@@ -336,8 +346,6 @@ class Repository
   #                          repository
   def integrate_changes
     self.update_http_info
-
-    changes = {}
 
     branch_delta = self.branch_changes
     tag_delta = self.tag_changes

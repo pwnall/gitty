@@ -19,14 +19,13 @@ class Blob < ActiveRecord::Base
 
   # Blob model for an on-disk blob (file).
   #
-  # Args:
-  #   git_blob:: a Grit::Blob object
-  #   repository:: the Repository that this blob will belong to
+  # @param [Rugged::Blob] git_blob the on-disk blob
+  # @param [Repository] repository the repository that this blob will belong to
   #
-  # Returns an unsaved Blob model. It needs to be saved before child links to it
-  # are created by calling TreeEntry#from_git_tree.
+  # @return [Blob] an unsaved model; the model needs to be saved before child
+  #     links to it are created by calling {TreeEntry#from_git_tree}.
   def self.from_git_blob(git_blob, repository)
-    self.new repository: repository, gitid: git_blob.id,
+    self.new repository: repository, gitid: git_blob.oid,
              mime_type: git_blob.mime_type, size: git_blob.size
   end
 
@@ -37,7 +36,7 @@ class Blob < ActiveRecord::Base
 
   # The contents of the file stored in the blob.
   def data
-    repository.grit_repo.blob(gitid).data.freeze
+    repository.rugged_repository.lookup(gitid).content.freeze
   end
 
   # The contents of the file stored in the blob, broken up into lines.

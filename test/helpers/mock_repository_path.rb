@@ -3,15 +3,15 @@ class ActiveSupport::TestCase
   def mock_repository_path(repo)
     fixture_repo_path = Rails.root.join('test', 'fixtures', 'repo.git').to_s
     repo.stubs(:local_path).returns fixture_repo_path
-    grit_repo = Grit::Repo.new fixture_repo_path
-    repo.stubs(:grit_repo).returns grit_repo
+    rugged_repo = Rugged::Repository.new fixture_repo_path
+    repo.stubs(:rugged_repository).returns rugged_repo
   end
-  
+
   # Mocks Grit so all repositories point to the fixtures repository.
   def mock_any_repository_path
     fixture_repo_path = Rails.root.join('test', 'fixtures', 'repo.git').to_s
     Repository.any_instance.stubs(:local_path).returns fixture_repo_path
-    grit_repo = Grit::Repo.new fixture_repo_path
-    Grit::Repo.stubs(:new).returns(grit_repo)
-  end    
+    rugged_repo = Rugged::Repo.new fixture_repo_path
+    Rugged::Repo.stubs(:new).returns(rugged_repo)
+  end
 end

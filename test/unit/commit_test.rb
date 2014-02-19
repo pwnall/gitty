@@ -10,7 +10,7 @@ class CommitTest < ActiveSupport::TestCase
         committer_email: 'dexter@gmail.com',
         authored_at: Time.parse('2012-04-02 16:17:18 -0400'),
         committed_at: Time.parse('2012-04-02 16:17:19 -0400'),
-        message: 'Easy mode',
+        message: "Easy mode\n",
         repository: @repo
   end
 
@@ -52,7 +52,7 @@ class CommitTest < ActiveSupport::TestCase
 
   test 'from_git_commit' do
     mock_repository_path @repo
-    git_commit = @repo.grit_repo.commit @commit.gitid
+    git_commit = @repo.rugged_repository.lookup @commit.gitid
 
     git_tree = git_commit.tree
     tree = Tree.from_git_tree git_tree, @repo
@@ -61,15 +61,17 @@ class CommitTest < ActiveSupport::TestCase
     commit = Commit.from_git_commit git_commit, @repo
     assert commit.valid?, 'Invalid commit created from git'
     assert_equal tree, commit.tree, 'Tree'
+    assert_equal @commit.message, commit.message, 'Commit message'
     assert_equal @commit.author_name, commit.author_name, 'Author name'
-    assert_equal @commit.committer_name, commit.committer_name, 'Committer name'
+    assert_equal @commit.committer_name, commit.committer_name,
+                 'Committer name'
     assert_equal @commit.author_email, commit.author_email, 'Author email'
     assert_equal @commit.committer_email, commit.committer_email,
                  'Committer email'
     assert_equal @commit.authored_at, commit.authored_at, 'Date authored'
     assert_equal @commit.committed_at, commit.committed_at, 'Date committed'
     commit.save!
-    assert !@commit.valid?, "Commit incorrectly created from git"
+    assert !@commit.valid?, 'Commit incorrectly created from git'
   end
 
   test 'walk_parents' do

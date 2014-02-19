@@ -2,7 +2,7 @@ v1:
   repository: dexter_ghost
   name: v1.0
   commit: hello
-  message: Released version 1.
+  message: "Released version 1.\n"
   committer_name: Dexter
   committer_email: dexter@gmail.com
   committed_at: 2012-04-02 13:15:16 -04:00
@@ -11,7 +11,7 @@ unicorns:
   repository: dexter_ghost
   name: unicorns
   commit: hello
-  message: Unicorns private build.
+  message: "Unicorns private build.\n"
   committer_name: Dexter
   committer_email: dexter@gmail.com
   committed_at: 2012-04-02 13:16:17 -04:00
@@ -20,7 +20,7 @@ ci_request:
   repository: dexter_ghost
   name: ci_request
   commit: require
-  message: Continuous integration request.
+  message: "Continuous integration request.\n"
   committer_name: Dexter
   committer_email: dexter@gmail.com
   committed_at: 2012-04-02 15:35:20 -04:00

@@ -36,21 +36,20 @@ class Commit < ActiveRecord::Base
 
   # Commit model for an on-disk commit.
   #
-  # Args:
-  #   git_commit:: a Grit::Commit object
-  #   repository:: the Repository that this commit will belong to
-  #
-  # Returns an unsaved Commit model. It needs to be saved before parent links
-  # are created by calling CommitParent#from_git_commit.
+  # @param [Rugged::Commit] git_commit an on-disk commit
+  # @param [Repository] repository the repository that owns the commit
+  # @return [Commit] an unsaved model for the on-disk commit; the model needs
+  #     to be saved before parent links are created by calling
+  #     {CommitParent#from_git_commit}
   def self.from_git_commit(git_commit, repository)
-    tree = repository.trees.where(gitid: git_commit.tree.id).first
-    self.new repository: repository, gitid: git_commit.id, tree: tree,
-        author_name: git_commit.author.name,
-        author_email: git_commit.author.email,
-        committer_name: git_commit.committer.name,
-        committer_email: git_commit.committer.email,
-        authored_at: git_commit.authored_date,
-        committed_at: git_commit.committed_date,
+    tree = repository.trees.where(gitid: git_commit.tree_id).first
+    self.new repository: repository, gitid: git_commit.oid, tree: tree,
+        author_name: git_commit.author[:name],
+        author_email: git_commit.author[:email],
+        committer_name: git_commit.committer[:name],
+        committer_email: git_commit.committer[:email],
+        authored_at: git_commit.author[:time],
+        committed_at: git_commit.committer[:time],
         message: git_commit.message
   end
 

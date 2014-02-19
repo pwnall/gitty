@@ -140,7 +140,7 @@ class RepositoryTest < ActiveSupport::TestCase
     @repo.save!
     assert File.exist?('tmp/test_git_root/dexter/awesome.git/objects'),
            'Repository not created on disk'
-    assert @repo.grit_repo.branches,
+    assert @repo.rugged_repository.branches,
            'The Grit repository object is broken after creation'
 
     @repo.name = 'pwnage'
@@ -149,8 +149,11 @@ class RepositoryTest < ActiveSupport::TestCase
            'Old repository not deleted on rename'
     assert File.exist?('tmp/test_git_root/dexter/pwnage.git/objects'),
            'New repository not created on rename'
-    assert @repo.grit_repo.tags,
-           'The Grit repository object is broken after rename'
+    assert_equal File.expand_path('tmp/test_git_root/dexter/pwnage.git/'),
+                 File.expand_path(@repo.rugged_repository.path),
+                 'Cached Rugged repository not invalidated after rename'
+    assert @repo.rugged_repository.branches,
+           'The Rugged repository object is broken after rename'
 
     @repo.profile = profiles(:csail)
     @repo.save!
@@ -158,13 +161,17 @@ class RepositoryTest < ActiveSupport::TestCase
            'Old repository not deleted on rename'
     assert File.exist?('tmp/test_git_root/csail/pwnage.git/objects'),
            'New repository not created on rename'
-    assert @repo.grit_repo.commits,
-           'The Grit repository object is broken after rename'
+    assert_equal File.expand_path('tmp/test_git_root/csail/pwnage.git/'),
+                 File.expand_path(@repo.rugged_repository.path),
+                 'Cached Rugged repository not invalidated after rename'
+    assert @repo.rugged_repository.branches,
+           'The Rugged repository object is broken after rename'
 
     @repo.destroy
     assert !File.exist?('tmp/test_git_root/csail/pwnage.git/objects'),
            'Old repository not deleted on rename'
-    assert !@repo.grit_repo, 'The Grit repository object exists after deletion'
+    assert !@repo.rugged_repository,
+           'Cached Rugged repository not invalidated after deletion'
   end
 
   test 'branch_changes with an empty db' do
@@ -225,10 +232,10 @@ class RepositoryTest < ActiveSupport::TestCase
     commit_b2 = '93d00ea479394cd110116b29748538d16d9b931e'
     commit_c = '88ca4433d478d6abb6558bebb9524fb72300457e'
 
-    branches = @repo.grit_repo.branches.index_by(&:name)
-    tags = @repo.grit_repo.tags.index_by(&:name)
+    branches = @repo.rugged_repository.branches.index_by(&:name)
+    tags = @repo.rugged_repository.tags.index_by(&:name)
 
-    commit_ids = @repo.commits_added([branches['master']]).map(&:id)
+    commit_ids = @repo.commits_added([branches['master']]).map(&:oid)
     assert_equal [commit_a, commit_b1, commit_b2, commit_c].sort,
                  commit_ids.sort, 'Added commits on master'
     [
@@ -238,8 +245,8 @@ class RepositoryTest < ActiveSupport::TestCase
                       'Topological sort failed'
     end
 
-    # NOTE: branch test repeated for tag. to make sure tags are accepted as well
-    commit_ids = @repo.commits_added([tags['v2.0']]).map(&:id)
+    # NOTE: branch test repeated for tag. to make sure tags are also accepted
+    commit_ids = @repo.commits_added([tags['v2.0']]).map(&:oid)
     assert_equal [commit_a, commit_b1, commit_b2, commit_c].sort,
                  commit_ids.sort, 'Added commits on master'
     [
@@ -249,10 +256,10 @@ class RepositoryTest < ActiveSupport::TestCase
                       'Topological sort failed'
     end
 
-    commit_ids = @repo.commits_added([branches['branch1']]).map(&:id)
+    commit_ids = @repo.commits_added([branches['branch1']]).map(&:oid)
     assert_equal [commit_a, commit_b1], commit_ids, 'Added commits on branch1'
 
-    commit_ids = @repo.commits_added([branches['branch2']]).map(&:id)
+    commit_ids = @repo.commits_added([branches['branch2']]).map(&:oid)
     assert_equal [commit_a, commit_b2], commit_ids, 'Added commits on branch2'
 
     # NOTE: branch orders here are dependent on an implementation detail, which
@@ -260,12 +267,12 @@ class RepositoryTest < ActiveSupport::TestCase
     #       Grit changes, but possibly not against DFS implementation changes
 
     commit_ids = @repo.commits_added([branches['branch1'],
-                                      branches['branch2']]).map(&:id)
+                                      branches['branch2']]).map(&:oid)
     assert_equal [commit_a, commit_b1, commit_b2], commit_ids,
                  'Added commits on branch1 and branch2'
 
     commit_ids = @repo.commits_added([branches['branch1'], branches['master'],
-                                      branches['branch2']]).map(&:id)
+                                      branches['branch2']]).map(&:oid)
     assert_equal [commit_a, commit_b1, commit_b2, commit_c], commit_ids,
                  'Added commits on all branches'
   end
@@ -277,18 +284,18 @@ class RepositoryTest < ActiveSupport::TestCase
     commit_b2 = '93d00ea479394cd110116b29748538d16d9b931e'
     commit_c = '88ca4433d478d6abb6558bebb9524fb72300457e'
 
-    branches = repo.grit_repo.branches.index_by(&:name)
-    commit_ids = repo.commits_added([branches['master']]).map(&:id)
+    branches = repo.rugged_repository.branches.index_by(&:name)
+    commit_ids = repo.commits_added([branches['master']]).map(&:oid)
     assert_equal [commit_b2, commit_c], commit_ids, 'Added commits on master'
 
-    commit_ids = repo.commits_added([branches['branch1']]).map(&:id)
+    commit_ids = repo.commits_added([branches['branch1']]).map(&:oid)
     assert_equal [], commit_ids, 'Added commits on branch1'
 
-    commit_ids = repo.commits_added([branches['branch2']]).map(&:id)
+    commit_ids = repo.commits_added([branches['branch2']]).map(&:oid)
     assert_equal [commit_b2], commit_ids, 'Added commits on branch2'
 
     commit_ids = repo.commits_added([branches['branch1'], branches['master'],
-                                     branches['branch2']]).map(&:id)
+                                     branches['branch2']]).map(&:oid)
     assert_equal [commit_b2, commit_c], commit_ids,
                  'Added commits on all branches'
   end
@@ -297,8 +304,8 @@ class RepositoryTest < ActiveSupport::TestCase
     @repo.save!
     mock_repository_path @repo
 
-    commit_a = @repo.grit_repo.commit(commits(:hello).gitid)
-    commit_b1 = @repo.grit_repo.commit(commits(:require).gitid)
+    commit_a = @repo.rugged_repository.lookup commits(:hello).gitid
+    commit_b1 = @repo.rugged_repository.lookup commits(:require).gitid
 
     # NOTE: order dependent on topological sort implementation details, but not
     #       on Grit implementation
@@ -308,8 +315,8 @@ class RepositoryTest < ActiveSupport::TestCase
                  bits[:blobs].map(&:id), 'Blobs for commit Hello'
     assert_equal [trees(:lib_ghost), trees(:hello_lib), trees(:hello_root)].
                  map(&:gitid), bits[:trees].map(&:id), 'Trees for commit Hello'
-    assert_equal [submodules(:markdpwn_012).gitid], bits[:submodules].map(&:id),
-                 'Submodules for commit Hello'
+    assert_equal [submodules(:markdpwn_012).gitid],
+                 bits[:submodules].map(&:oid), 'Submodules for commit Hello'
 
     bits = @repo.contents_added([commit_a, commit_b1])
     assert_equal [blobs(:gitmodules), blobs(:lib_ghost_hello_rb),
@@ -318,18 +325,20 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal [trees(:lib_ghost), trees(:hello_lib), trees(:hello_root),
                   trees(:require_lib), trees(:require_root)].map(&:gitid),
                  bits[:trees].map(&:id), 'Trees for commit Require'
-    assert_equal [submodules(:markdpwn_012).gitid], bits[:submodules].map(&:id),
-                 'Submodules for commit Require'
+    assert_equal [submodules(:markdpwn_012).gitid],
+                 bits[:submodules].map(&:oid), 'Submodules for commit Require'
   end
 
   test 'contents_added with fixtures' do
     repo = repositories(:dexter_ghost)
     mock_repository_path repo
 
-    commit_a = repo.grit_repo.commit commits(:hello).gitid
-    commit_b1 = repo.grit_repo.commit commits(:require).gitid
-    commit_b2 = repo.grit_repo.commit '93d00ea479394cd110116b29748538d16d9b931e'
-    commit_c = repo.grit_repo.commit '88ca4433d478d6abb6558bebb9524fb72300457e'
+    commit_a = repo.rugged_repository.lookup commits(:hello).gitid
+    commit_b1 = repo.rugged_repository.lookup commits(:require).gitid
+    commit_b2 = repo.rugged_repository.lookup(
+        '93d00ea479394cd110116b29748538d16d9b931e')
+    commit_c = repo.rugged_repository.lookup(
+        '88ca4433d478d6abb6558bebb9524fb72300457e')
     lib_easy_rb = '84840e173dd8b77b7451aa2c9346cb69d4ecf0cd'
     easy_root = 'a4816eeed7c020b19545455b0366d252b0d73672'  # easy is commit_b2
     easy_gitmodules = '1c62d4f811a5d22dbec88416dcbbbe3f7638dd83'
@@ -708,7 +717,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal 'ghost', items[0].data[:repository_name]
     assert_equal repo.id, items[0].data[:repository_id]
     assert_equal 'ci_request', items[0].data[:tag_name]
-    assert_equal 'Continuous integration request.', items[0].data[:message]
+    assert_equal "Continuous integration request.\n", items[0].data[:message]
     assert_equal commits(:require).gitid, items[0].data[:commit][:gitid]
     assert_equal commits(:require).message, items[0].data[:commit][:message]
     assert_equal commits(:require).author_email, items[0].data[:commit][:author]
@@ -720,7 +729,7 @@ class RepositoryTest < ActiveSupport::TestCase
     assert_equal 'ghost', items[2].data[:repository_name]
     assert_equal repo.id, items[2].data[:repository_id]
     assert_equal 'v1.0', items[2].data[:tag_name]
-    assert_equal 'Released version 1.', items[2].data[:message]
+    assert_equal "Released version 1.\n", items[2].data[:message]
     assert_equal commits(:hello).gitid, items[2].data[:commit][:gitid]
     assert_equal commits(:hello).message, items[2].data[:commit][:message]
     assert_equal commits(:hello).author_email, items[2].data[:commit][:author]
