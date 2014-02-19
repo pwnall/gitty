@@ -48,3 +48,7 @@ end
 group :test do
   gem 'mocha', '>= 1.0.0', require: 'mocha/setup'
 end
+
+group :production do
+  gem 'thin', '>= 1.6.1'
+end
