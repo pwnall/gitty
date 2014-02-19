@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 4.1.0.beta1'
+gem 'rails', '>= 4.1.0.rc1'
 
 gem 'mysql2', '>= 0.3.14'
 gem 'sqlite3', '>= 1.3.8'
@@ -27,7 +27,7 @@ gem 'font-awesome-rails', '>= 4.0.3'
 # JavaScript gems.
 gem 'coffee-rails', '>= 4.0.1'
 gem 'jquery-rails', '>= 3.0.4'
-gem 'therubyracer', '>= 0.12.0', platforms: :ruby
+gem 'therubyracer', '>= 0.12.1', platforms: :ruby
 gem 'uglifier', '>= 2.3.2'
 
 
