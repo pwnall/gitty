@@ -2,21 +2,21 @@
 <html>
   <body>
     <h3>Dear <%= @token.email %>,</h3>
-    
+
     <p>
       You are receiving this e-mail because someone (hopefully you) registered
       an account at
       <%= link_to @host, root_url(:host => @host, :protocol => @protocol) %>
       using your e-mail address.
     </p>
-    
+
     <p>
       Please go
       <%= link_to 'here', token_session_url(@token, :host => @host,
                                             :protocol => @protocol) %>
       to confirm your e-mail address.
     </p>
-    
+
     <p>
       If you haven't registered an account, please ignore this e-mail. Someone
       most likely mistyped their e-mail.

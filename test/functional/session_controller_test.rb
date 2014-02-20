@@ -2,10 +2,9 @@ require 'test_helper'
 
 class SessionControllerTest < ActionController::TestCase
   setup do
-    @user = users(:costan)
-    @email_credential = credentials(:costan_email)
-    @password_credential = credentials(:costan_password)
-    @token_credential = credentials(:costan_email_token)
+    @user = users(:dexter)
+    @email_credential = credentials(:dexter_email)
+    @password_credential = credentials(:dexter_password)
   end
 
   test "user home page" do
@@ -14,7 +13,7 @@ class SessionControllerTest < ActionController::TestCase
 
     assert_equal @user, assigns(:user)
     assert_equal @user.profile, assigns(:profile)
-    assert_select 'a[href="/_/session"][data-method="delete"]', 'Log out'
+    assert_select 'a[href="/_/session"][data-method="delete"]', 'Sign out'
   end
 
   test "user home page for user without profile" do
@@ -23,16 +22,17 @@ class SessionControllerTest < ActionController::TestCase
     get :show
 
     assert_equal user.email, assigns(:profile).display_email
+    assert_select 'a[href="/_/session"][data-method="delete"]', 'Sign out'
   end
 
   test "user login works and purges old sessions" do
-    old_token = credentials(:costan_session_token)
+    old_token = credentials(:dexter_session_token)
     old_token.updated_at = Time.now - 1.year
     old_token.save!
-    email_credential = credentials(:dexter_email)
-    post :create, email: email_credential.email, password: 'pa55w0rd'
+    post :create, session: { email: @email_credential.email,
+                             password: 'pa55w0rd' }
+    assert_equal @user, session_current_user, 'session'
     assert_redirected_to session_url
-    assert_equal users(:dexter), session_current_user, 'session'
     assert_nil Tokens::Base.with_code(old_token.code).first,
                'old session not purged'
   end
@@ -52,7 +52,7 @@ class SessionControllerTest < ActionController::TestCase
     assert_equal Repository.count, assigns(:stats)[:repositories], 'repos'
     assert_equal Commit.count, assigns(:stats)[:commits], 'commits'
     assert_equal Blob.count, assigns(:stats)[:files], 'files'
-    assert_select 'a', 'Log in'
+    assert_select 'a[href="/_/session/new"]', 'Sign in'
   end
 
   test "user not logged in with JSON request" do
@@ -68,15 +68,17 @@ class SessionControllerTest < ActionController::TestCase
     assert_select 'form[action=?]', session_path do
       assert_select 'input[name=?]', 'session[email]'
       assert_select 'input[name=?]', 'session[password]'
-      assert_select 'button[name="login"]'
-      assert_select 'button[name="reset_password"]'
+      assert_select 'button[name="login"][type="submit"]'
+      assert_select 'button[name="reset_password"][type="submit"]'
     end
   end
 
   test "e-mail verification link" do
-    get :token, code: @token_credential.code
+    token_credential = credentials(:costan_email_token)
+    email_credential = credentials(:costan_email)
+    get :token, code: token_credential.code
     assert_redirected_to session_url
-    assert @email_credential.reload.verified?, 'Email not verified'
+    assert email_credential.reload.verified?, 'Email not verified'
   end
 
   test "password reset link" do
@@ -97,7 +99,7 @@ class SessionControllerTest < ActionController::TestCase
       assert_select 'input[name="old_password"]'
       assert_select 'input[name=?]', 'credential[password]'
       assert_select 'input[name=?]', 'credential[password_confirmation]'
-      assert_select 'input[type=submit]'
+      assert_select 'button[type="submit"]'
     end
   end
 
@@ -112,7 +114,7 @@ class SessionControllerTest < ActionController::TestCase
       assert_select 'input[name="old_password"]', count: 0
       assert_select 'input[name=?]', 'credential[password]'
       assert_select 'input[name=?]', 'credential[password_confirmation]'
-      assert_select 'input[type=submit]'
+      assert_select 'button[type="submit"]'
     end
   end
 

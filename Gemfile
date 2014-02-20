@@ -5,7 +5,7 @@ gem 'rails', '>= 4.1.0.rc1'
 gem 'mysql2', '>= 0.3.14'
 gem 'sqlite3', '>= 1.3.8'
 
-gem 'authpwn_rails', '>= 0.15.3'
+gem 'authpwn_rails', '>= 0.16.0'
 gem 'configvars_rails', '>= 0.6.1'
 gem 'gravatar-ultimate', '>= 2.0.0'
 gem 'grit', git: 'https://github.com/pwnall/grit.git', branch: 'gitty'

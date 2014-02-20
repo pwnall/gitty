@@ -9,7 +9,7 @@
 
 <% if @redirect_url %>
 <p>
-  We need you to log in before we can show you the page that you are trying to
+  We need you to sign in before we can show you the page that you are trying to
   view.
 </p>
 <% end %>
@@ -19,7 +19,7 @@
     <%= f.label :email, 'Email Address' %><br />
     <span class="value">
       <%= f.email_field :email, autofocus: true, required: true,
-            placeholder: 'your@email.com' %>
+              placeholder: 'your@email.com' %>
     </span>
   </div>
 
@@ -31,9 +31,10 @@
   </div>
 
   <div class="actions">
-    <%= f.button 'Log in', name: 'login', value: 'requested' %>
-    <%= f.button 'Reset Password', name: 'reset_password',
-          value: 'requested', formaction: reset_password_session_path %>
+    <%= f.button 'Sign In', type: 'submit', name: 'login',
+            value: 'requested' %>
+    <%= f.button 'Reset Password', type: 'submit', name: 'reset_password',
+            value: 'requested', formaction: reset_password_session_path %>
   </div>
   <% if @redirect_url %>
   <%= hidden_field_tag :redirect_url, @redirect_url %>

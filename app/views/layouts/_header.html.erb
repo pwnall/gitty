@@ -1,6 +1,6 @@
 <header>
   <h1><%= link_to 'Gitty', root_url %></h1>
-  
+
   <% if current_user %>
   <ol>
     <li>
@@ -11,7 +11,7 @@
       <%= current_user.email %>
       <% end %>
     </li>
-    
+
     <li>
       <%= link_to 'Account', change_password_session_path %>
     </li>
@@ -19,7 +19,7 @@
       <%= link_to 'Dashboard', session_path %>
     </li>
     <li>
-      <%= link_to 'Log out', session_path, :method => :delete %>
+      <%= link_to 'Sign out', session_path, method: :delete %>
     </li>
   </ol>
   <% else %>
@@ -31,7 +31,7 @@
       <%= link_to 'Sign up', new_user_path %>
     </li>
     <li>
-      <%= link_to 'Log in', new_session_path %>
+      <%= link_to 'Sign in', new_session_path %>
     </li>
   </ol>
   <% end %>
