@@ -7,14 +7,14 @@ class ProfilesController < ApplicationController
   private :current_user_can_edit_profile
   before_filter :current_user_can_edit_profile,
       except: [:new, :create, :index, :show]
-  
-  # before_filter that validates the current user's ability to list accounts  
+
+  # before_filter that validates the current user's ability to list accounts
   def current_user_can_list_profiles
     bounce_user unless User.can_list_users? current_user
   end
   private :current_user_can_list_profiles
   before_filter :current_user_can_list_profiles, only: [:index]
-  
+
   # GET /_/profiles
   # GET /_/profiles.xml
   def index
@@ -55,7 +55,7 @@ class ProfilesController < ApplicationController
   # POST /_/profiles
   # POST /_/profiles.xml
   def create
-    @profile = Profile.new profile_params[:profile]
+    @profile = Profile.new profile_params
 
     respond_to do |format|
       if @profile.save
@@ -68,7 +68,7 @@ class ProfilesController < ApplicationController
         FeedSubscription.add current_user.profile, @profile
 
         format.html { redirect_to session_path }
-        format.xml  { render xml: @profile, status: :created, location: @profile }          
+        format.xml  { render xml: @profile, status: :created, location: @profile }
       else
         format.html { render action: "new" }
         format.xml  { render xml: @profile.errors, status: :unprocessable_entity }
@@ -80,11 +80,11 @@ class ProfilesController < ApplicationController
   # PUT /costan.xml
   def update
     respond_to do |format|
-      if @profile.update_attributes profile_params[:profile]
+      if @profile.update_attributes profile_params
         format.html { redirect_to(@profile, notice: 'Profile was successfully updated.') }
         format.xml  { head :ok }
       else
-        @original_profile = Profile.find(@profile.id)        
+        @original_profile = Profile.find(@profile.id)
         format.html { render action: "edit" }
         format.xml  { render xml: @profile.errors, status: :unprocessable_entity }
       end
@@ -93,9 +93,8 @@ class ProfilesController < ApplicationController
 
   # Paramaters for profile create/update.
   def profile_params
-    params.permit :profile_name,  # Used instead of profile id.
-                  profile: [:name, :display_name, :display_email, :blog,
-                                 :company, :city, :language, :about]
+    params.require(:profile).permit :name, :display_name, :display_email,
+                                    :blog, :company, :city, :language, :about
   end
 
   # DELETE /costan

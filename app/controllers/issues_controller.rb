@@ -65,7 +65,7 @@ class IssuesController < ApplicationController
   def create
     @author = current_user.profile
 
-    @issue = Issue.new issue_params[:issue]
+    @issue = Issue.new issue_params
     @issue.repository = @repository
     @issue.author = @author
 
@@ -93,7 +93,7 @@ class IssuesController < ApplicationController
   # PUT /costan/rails/issues/1.xml
   def update
     respond_to do |format|
-      if @issue.update_attributes issue_params[:issue]
+      if @issue.update_attributes issue_params
         # publish issue depending on being closed or reopened
         if params[:issue].has_key? :open
           if params[:issue][:open] == true || params[:issue][:open] == "true"
@@ -121,9 +121,7 @@ class IssuesController < ApplicationController
 
   # Parameters for creating / updating an issue.
   def issue_params
-    params.permit(:profile_name, :repo_name,  # Used instead of repository id.
-                  :issue_number,  # Used instead of issue id.
-                  issue: [:title, :description, :open, :sensitive])
+    params.require(:issue).permit :title, :description, :open, :sensitive
   end
 
   # DELETE /costan/rails/issues/1

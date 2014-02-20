@@ -47,7 +47,7 @@ class SshKeysController < ApplicationController
   # POST /ssh_keys
   # POST /ssh_keys.xml
   def create
-    @ssh_key = SshKey.new ssh_key_params[:ssh_key]
+    @ssh_key = SshKey.new ssh_key_params
     @ssh_key.user = current_user
 
     respond_to do |format|
@@ -75,7 +75,7 @@ class SshKeysController < ApplicationController
     @ssh_key = SshKey.find(params[:id])
 
     respond_to do |format|
-      if @ssh_key.update_attributes ssh_key_params[:ssh_key]
+      if @ssh_key.update_attributes ssh_key_params
         format.html do
           redirect_to @ssh_key, notice: 'Ssh key was successfully updated.'
         end
@@ -91,7 +91,7 @@ class SshKeysController < ApplicationController
 
   # Parameters for SSH key create / update.
   def ssh_key_params
-    params.permit :id, ssh_key: [:name, :key_line]
+    params.require(:ssh_key).permit :name, :key_line
   end
 
   # DELETE /ssh_keys/1

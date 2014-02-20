@@ -53,6 +53,19 @@ class UsersControllerTest < ActionController::TestCase
            "E-mail verification e-mail not sent"
   end
 
+  test "should create user with extra form input" do
+    ConfigVar['signup.email_check'] = 'disabled'
+    attributes = { email: 'costan2@gmail.com', password: 'passw0rd',
+                   password_confirmation: 'passw0rd'}
+    assert_difference 'User.count' do
+      post :create, user: attributes, utf8: "\u2713", commit: 'Sign Up'
+    end
+
+    assert_redirected_to root_url
+    assert_equal session_current_user, assigns(:user),
+           'The new user should be logged on'
+  end
+
   test "should create user when email checking is disabled" do
     ConfigVar['signup.email_check'] = 'disabled'
     ActionMailer::Base.deliveries = []

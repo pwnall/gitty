@@ -57,6 +57,21 @@ class ProfilesControllerTest < ActionController::TestCase
     assert_redirected_to session_path
   end
 
+  test "should create user's main profile with extra form input" do
+    user = users(:disconnected)
+    set_session_current_user user
+    assert_difference('Profile.count') do
+      post :create, profile: @profile.attributes.with_indifferent_access.
+          except!(:id, :created_at, :updated_at).merge(name: 'newest'),
+          utf8: "\u2713", commit: 'Create Profile'
+    end
+    assert_equal assigns(:profile), user.reload.profile
+    assert_equal [assigns(:profile)], assigns(:profile).subscribers,
+                 'Current user not subscribed to itself'
+
+    assert_redirected_to session_path
+  end
+
   test "should create a team profile" do
     user = users(:costan)
     set_session_current_user user

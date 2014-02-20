@@ -41,6 +41,20 @@ class AclEntriesControllerTest < ActionController::TestCase
     assert_redirected_to acl_entries_path(@repository)
   end
 
+  test "should create acl_entry for repository with extra form input" do
+    attributes = {
+      principal_name: users(:costan).profile.to_param,
+      role: 'commit'
+    }
+    assert_difference 'AclEntry.count' do
+      post :create, profile_name: @repository.profile.name,
+           repo_name: @repository.to_param, acl_entry: attributes,
+           utf8: "\u2713", commit: 'Add Member'
+    end
+
+    assert_redirected_to acl_entries_path(@repository)
+  end
+
   test "should create acl_entry for profile" do
     set_session_current_user @profile_acl_entry.principal
     attributes = {

@@ -62,7 +62,7 @@ class UsersController < ApplicationController
   # POST /users
   # POST /users.xml
   def create
-    @user = User.new user_params[:user]
+    @user = User.new user_params
 
     respond_to do |format|
       if @user.save
@@ -96,7 +96,7 @@ class UsersController < ApplicationController
 
   # Parameters for user signup.
   def user_params
-    params.permit user: [:email, :password, :password_confirmation]
+    params.require(:user).permit :email, :password, :password_confirmation
   end
 
   # DELETE /users/1
@@ -105,7 +105,7 @@ class UsersController < ApplicationController
     @user.destroy
 
     respond_to do |format|
-      format.html { redirect_to(users_url) }
+      format.html { redirect_to users_url }
       format.xml  { head :ok }
     end
   end

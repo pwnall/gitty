@@ -31,6 +31,16 @@ class SshKeysControllerTest < ActionController::TestCase
     assert_redirected_to ssh_key_path(assigns(:ssh_key))
   end
 
+  test "should create ssh_key with extra form input" do
+    attributes = { name: @ssh_key.name, key_line: @new_ssh_key_line }
+    assert_difference('SshKey.count') do
+      post :create, ssh_key: attributes, utf8: "\u2713",
+                    commit: 'Create SSH Key'
+    end
+
+    assert_redirected_to ssh_key_path(assigns(:ssh_key))
+  end
+
   test "should show ssh_key text" do
     get :show, id: @ssh_key.to_param, format: 'txt'
     assert_response :success

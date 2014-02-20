@@ -55,7 +55,7 @@ class AclEntriesController < ApplicationController
   # POST /acl_entries
   # POST /acl_entries.json
   def create
-    @acl_entry = AclEntry.new acl_entry_params[:acl_entry]
+    @acl_entry = AclEntry.new acl_entry_params
     @acl_entry.principal_type = @subject.class.acl_principal_class.name
     @acl_entry.subject = @subject
 
@@ -81,7 +81,7 @@ class AclEntriesController < ApplicationController
   # PUT /acl_entries/1.json
   def update
     respond_to do |format|
-      if @acl_entry.update_attributes acl_entry_params[:acl_entry]
+      if @acl_entry.update_attributes acl_entry_params
         Rails.logger.error [acl_entries_path(@subject), @subject].inspect
         format.html do
           redirect_to acl_entries_path(@subject),
@@ -99,9 +99,7 @@ class AclEntriesController < ApplicationController
 
   # Parameters for ACL entry create / update.
   def acl_entry_params
-    params.permit :profile_name, :repo_name,  # Used instead of subject id.
-                  :principal_name,  # Used instead of acl entry id.
-                  acl_entry: [:principal_name, :role]
+    params.require(:acl_entry).permit :principal_name, :role
   end
 
   # DELETE /acl_entries/1

@@ -24,12 +24,12 @@ class IssuesControllerTest < ActionController::TestCase
   end
 
   test "should create issue" do
+    attributes = @issue.attributes.with_indifferent_access.except!(
+        :id, :created_at, :updated_at, :author_id, :repository_id, :number)
     assert_difference('Issue.count') do
       post :create, profile_name: @issue.repository.profile,
-           repo_name: @issue.repository,
-           issue: @issue.attributes.with_indifferent_access.
-          except!(:id, :created_at, :updated_at, :author_id, :repository_id,
-                 :number)
+           repo_name: @issue.repository, issue: attributes, utf8: "\u2713",
+           commit: 'Create Issue'
     end
 
     assert_redirected_to profile_repository_issues_path(

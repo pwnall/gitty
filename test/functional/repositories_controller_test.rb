@@ -43,6 +43,18 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_equal assigns(:repository), item.target
   end
 
+  test "should create repository with extra form input" do
+    attributes = @repository.attributes.with_indifferent_access.
+        except!(:id, :profile_id, :created_at, :updated_at).
+        merge name: 'rails', profile_name: @repository.profile.name
+    assert_difference('Repository.count') do
+      post :create, repository: attributes, utf8: "\u2713",
+                    commit: 'Create Repository'
+    end
+    assert_redirected_to profile_repository_path(assigns(:repository).profile,
+                                                 assigns(:repository))
+  end
+
   test "should show repository" do
     get :show, repo_name: @repository.to_param,
                profile_name: @repository.profile.to_param
@@ -59,8 +71,8 @@ class RepositoriesControllerTest < ActionController::TestCase
                profile_name: @repository.profile.to_param
     assert_response :success
   end
-  
-  
+
+
   test "should show public repository without logged in user" do
     set_session_current_user nil
     get :show, repo_name: repositories(:public_ghost).to_param,
@@ -76,7 +88,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_response :success
     assert_select '.bootstrap_steps'
   end
-  
+
   test "should show oops page to non-committer for empty repository" do
     repository = repositories(:costan_ghost)
     set_session_current_user users(:dexter)
@@ -102,11 +114,11 @@ class RepositoriesControllerTest < ActionController::TestCase
     put :update, repository: attributes,
         repo_name: @repository.to_param,
         profile_name: @repository.profile.to_param
-        
+
     assert_redirected_to profile_repository_path(assigns(:repository).profile,
                                                  assigns(:repository))
   end
-  
+
   test "should rename repository" do
     old_local_path = @repository.local_path
     FileUtils.mkdir_p old_local_path
@@ -117,55 +129,55 @@ class RepositoriesControllerTest < ActionController::TestCase
     put :update, repository: attributes,
         repo_name: @repository.to_param,
         profile_name: @repository.profile.to_param
-    
+
     assert_equal 'randomness', @repository.reload.name
-    
+
     assert_not_equal old_local_path, @repository.local_path,
                      'rename test case broken'
     assert !File.exist?(old_local_path), 'repository not renamed'
     assert File.exist?(@repository.local_path), 'repository not renamed'
-    
+
     assert_redirected_to profile_repository_path(assigns(:repository).profile,
-                                                 assigns(:repository))        
+                                                 assigns(:repository))
   end
 
   test "should move repository to different profile" do
     old_local_path = @repository.local_path
     FileUtils.mkdir_p old_local_path
     profile = profiles(:mit)
-    AclEntry.set @author, profile, :charge   
-    
+    AclEntry.set @author, profile, :charge
+
     attributes = @repository.attributes.with_indifferent_access.
         except!(:id, :profile_id, :created_at, :updated_at).
         merge profile_name: profile.to_param
     put :update, repository: attributes,
         repo_name: @repository.to_param,
         profile_name: @repository.profile.to_param
-    
+
     assert_equal profile, @repository.reload.profile
-    
+
     assert_not_equal old_local_path, @repository.local_path,
                      'rename test case broken'
     assert !File.exist?(old_local_path), 'repository not renamed'
     assert File.exist?(@repository.local_path), 'repository not renamed'
-    
+
     assert_redirected_to profile_repository_path(profile,
-                                                 assigns(:repository))        
+                                                 assigns(:repository))
   end
-  
+
   test "should reject repository move to profile without charge bits" do
     profile = profiles(:mit)
-    
+
     attributes = @repository.attributes.with_indifferent_access.
         except!(:id, :profile_id, :created_at, :updated_at).
         merge profile_name: profile.to_param
     put :update, repository: attributes,
         repo_name: @repository.to_param,
         profile_name: @repository.profile.to_param
-    
+
     assert_response :forbidden
   end
-  
+
   test "should use old repository url on rejected rename" do
     attributes = @repository.attributes.with_indifferent_access.
         except!(:id, :profile_id, :created_at, :updated_at).
@@ -174,7 +186,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     put :update, repository: attributes,
         repo_name: @repository.to_param,
         profile_name: @repository.profile.to_param
-    
+
     assert_not_equal '-broken', @repository.reload.name
     repo_path = profile_repository_path(@repository.profile, @repository)
     assert_template :edit
@@ -195,33 +207,33 @@ class RepositoriesControllerTest < ActionController::TestCase
     item = FeedItem.last
     assert_equal 'del_repository', item.verb
     assert_equal @author.profile, item.author
-    assert_equal @repository.name, item.data[:repository_name]    
+    assert_equal @repository.name, item.data[:repository_name]
   end
-  
+
   test "should grant read access to participating user" do
     set_session_current_user users(:costan)
     AclEntry.set(users(:costan).profile, @repository, :participate)
-    
+
     get :show, repo_name: @repository.to_param,
                profile_name: @repository.profile.to_param
     assert_response :success
-    
+
     get :edit, repo_name: @repository.to_param,
                profile_name: @repository.profile.to_param
     assert_response :forbidden
-    
+
     put :update, repository: @repository.attributes,
         repo_name: @repository.to_param,
         profile_name: @repository.profile.to_param
     assert_response :forbidden
-    
+
     assert_no_difference 'Repository.count' do
       delete :destroy, repo_name: @repository.to_param,
                        profile_name: @repository.profile.to_param
     end
     assert_response :forbidden
   end
-  
+
   test "should reject unauthorized charging via create" do
     attributes = @repository.attributes.merge name: 'rails',
         profile_name: 'costan'
@@ -230,7 +242,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     end
     assert_response :forbidden
   end
-  
+
   test "should reject unauthorized charging via update" do
     attributes = @repository.attributes.merge profile_name: 'costan'
     put :update, repository: attributes, repo_name: @repository.to_param,
@@ -241,31 +253,31 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   test "should deny access to guests" do
     set_session_current_user nil
-    
+
     get :show, repo_name: @repository.to_param,
                profile_name: @repository.profile.to_param
     assert_response :forbidden
-    
+
     get :edit, repo_name: @repository.to_param,
                profile_name: @repository.profile.to_param
     assert_response :forbidden
-    
+
     put :update, repository: @repository.attributes,
         repo_name: @repository.to_param,
         profile_name: @repository.profile.to_param
     assert_response :forbidden
-    
+
     assert_no_difference 'Repository.count' do
       delete :destroy, repo_name: @repository.to_param,
                        profile_name: @repository.profile.to_param
     end
     assert_response :forbidden
-    
+
     get :feed, repo_name: @repository.to_param,
                profile_name: @repository.profile.to_param
     assert_response :forbidden
   end
-  
+
   test "check_access allows author to push" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
     post :check_access, format: 'json',
@@ -311,7 +323,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_equal false, assigns(:commit_access)
     assert_equal true, JSON.parse(response.body)['access']
   end
-  
+
   test "check_access rejects bad ssh key" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
     post :check_access, format: 'json',
@@ -320,7 +332,7 @@ class RepositoriesControllerTest < ActionController::TestCase
          commit_access: true.to_param
     assert_equal false, JSON.parse(response.body)['access']
   end
-  
+
   test "check_access rejects bad repo path" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
     post :check_access, format: 'json',
@@ -329,7 +341,7 @@ class RepositoriesControllerTest < ActionController::TestCase
          commit_access: true.to_param
     assert_equal false, JSON.parse(response.body)['access']
   end
-  
+
   test "change_notice works for author" do
     set_session_current_user nil
     mock_any_repository_path
@@ -342,13 +354,13 @@ class RepositoriesControllerTest < ActionController::TestCase
     end
     assert_response :success
   end
-  
+
   test "should show feed" do
     get :feed, repo_name: @repository.to_param,
                profile_name: @repository.profile.to_param
     assert_response :success
   end
-  
+
   test "repository routes" do
     assert_routing({path: '/_/repositories', method: :get},
                    {controller: 'repositories', action: 'index'})
@@ -385,19 +397,19 @@ class RepositoriesControllerTest < ActionController::TestCase
                        profile_name: 'costan', repo_name: 'rails'},
                       {path: '/_/repositories/costan/rails',
                        method: :delete})
-  
+
     assert_routing({path: '/_/check_access.json', method: :get},
                    {controller: 'repositories', action: 'check_access',
                     format: 'json'})
     assert_routing({path: '/_/change_notice.json', method: :post},
                    {controller: 'repositories', action: 'change_notice',
                     format: 'json'})
-                    
+
     assert_routing({path: '/costan/rails/feed', method: :get},
                    {controller: 'repositories', action: 'feed',
                     profile_name: 'costan', repo_name: 'rails'})
   end
-  
+
   test "special characters in repository names" do
     assert_routing({path: '/co.st-an_/r-ai_l.s', method: :get},
                    {controller: 'repositories', action: 'show',
