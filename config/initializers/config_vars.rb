@@ -15,4 +15,5 @@ ConfigVars.string 'git_user', 'git'
 ConfigVars.string('ssh_host') { Socket.gethostname }
 ConfigVars.string('admin_email') { 'admin@' + Socket.gethostname }
 ConfigVars.string 'markdpwn', 'enabled'
+ConfigVars.string 'max_diff_lines', '10000'
 ConfigVars.string 'signup.email_check', 'disabled'

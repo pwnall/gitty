@@ -91,4 +91,8 @@ class CommitTest < ActiveSupport::TestCase
   test 'walk_path' do
     assert_equal trees(:lib_ghost), commits(:hello).walk_path('/lib/ghost')
   end
+
+  test 'total_diff_lines on add-only commit' do
+    assert_equal 5, commits(:hello).total_diff_lines
+  end
 end

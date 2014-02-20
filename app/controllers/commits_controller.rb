@@ -9,16 +9,16 @@ class CommitsController < ApplicationController
         @branch = ref
       elsif ref = @repository.tags.where(name: params[:ref_name]).first!
         @tag = ref
-      end        
+      end
     else
       @branch = ref = @repository.default_branch
     end
-    
+
     commits_page = (params[:page] || 1).to_i
     commits_page = 1 if commits_page < 1
     parent_commits = ref.commit.walk_parents((commits_page - 1) * 20, 21)
     @commits = parent_commits[0, 20]
-    
+
     @next_page = parent_commits[20] ? commits_page + 1 : nil
     @previous_page = (commits_page > 1) ? commits_page - 1 : nil
 
@@ -34,7 +34,16 @@ class CommitsController < ApplicationController
     @commit = @repository.commits.where(gitid: params[:commit_gid]).first
 
     respond_to do |format|
-      format.html # show.html.erb
+      format.html do
+        @commit_too_large =
+          @commit.total_diff_lines > ConfigVar['max_diff_lines'].to_i
+        unless @commit_too_large
+          # Pre-fetch all the diff data to avoid O(n) SQL queries in render.
+          @commit = @repository.commits.where(gitid: params[:commit_gid]).
+                                includes(diffs: :hunks).first
+        end
+        render action: :show  # show.html.erb
+      end
       format.xml  { render xml: @commit }
     end
   end

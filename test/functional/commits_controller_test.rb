@@ -6,7 +6,7 @@ class CommitsControllerTest < ActionController::TestCase
     @branch = branches(:branch1)
     @tag = tags(:v1)
     @session_user = @branch.repository.profile.user
-    set_session_current_user @session_user    
+    set_session_current_user @session_user
     mock_any_repository_path
   end
 
@@ -16,7 +16,7 @@ class CommitsControllerTest < ActionController::TestCase
     assert_response :success
     assert_equal branches(:master), assigns(:branch)
     assert_equal [commits(:hello)], assigns(:commits)
-    
+
     assert_nil assigns(:previous_page)
     assert_nil assigns(:next_page)
   end
@@ -47,8 +47,23 @@ class CommitsControllerTest < ActionController::TestCase
                repo_name: @commit.repository.to_param,
                profile_name: @commit.repository.profile.to_param
     assert_response :success
+    assert_equal @commit, assigns(:commit)
+    assert_equal false, assigns(:commit_too_large)
+    assert_select 'div[class="repository_diff"]', 1
   end
-  
+
+  test "should not include diff when showing large commit" do
+    ConfigVar['max_diff_lines'] = 1
+    commit = commits(:hello)
+    get :show, commit_gid: commit.to_param,
+               repo_name: commit.repository.to_param,
+               profile_name: commit.repository.profile.to_param
+    assert_response :success
+    assert_equal commit, assigns(:commit)
+    assert_equal true, assigns(:commit_too_large)
+    assert_select 'div[class="repository_diff"]', 0
+  end
+
   test "should grant read access to participating user" do
     set_session_current_user users(:costan)
     AclEntry.set(users(:costan).profile, @commit.repository, :participate)
@@ -56,46 +71,46 @@ class CommitsControllerTest < ActionController::TestCase
     get :index, repo_name: @commit.repository.to_param,
                 profile_name: @commit.repository.profile.to_param
     assert_response :success
-    
+
     get :index, repo_name: @commit.repository.to_param,
                 profile_name: @commit.repository.profile.to_param,
                 ref_name: @branch.to_param
     assert_response :success
-    
+
     get :index, repo_name: @commit.repository.to_param,
                 profile_name: @commit.repository.profile.to_param,
                 ref_name: @tag.to_param
     assert_response :success
-    
+
     get :show, commit_gid: @commit.to_param,
                repo_name: @commit.repository.to_param,
                profile_name: @commit.repository.profile.to_param
-    assert_response :success    
+    assert_response :success
   end
 
   test "should deny access to guests" do
     set_session_current_user nil
-    
+
     get :index, repo_name: @commit.repository.to_param,
                 profile_name: @commit.repository.profile.to_param
     assert_response :forbidden
-    
+
     get :index, repo_name: @commit.repository.to_param,
                 profile_name: @commit.repository.profile.to_param,
                 ref_name: @branch.to_param
     assert_response :forbidden
-    
+
     get :index, repo_name: @commit.repository.to_param,
                 profile_name: @commit.repository.profile.to_param,
                 ref_name: @tag.to_param
     assert_response :forbidden
-    
+
     get :show, commit_gid: @commit.to_param,
                repo_name: @commit.repository.to_param,
                profile_name: @commit.repository.profile.to_param
     assert_response :forbidden
   end
-  
+
   test "commit routes" do
     assert_routing({path: '/costan/rails/commits', method: :get},
                    {controller: 'commits', action: 'index',

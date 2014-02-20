@@ -28,6 +28,11 @@ class CommitDiff < ActiveRecord::Base
   has_many :hunks, class_name: 'CommitDiffHunk', foreign_key: 'diff_id',
            dependent: :destroy
 
+  # Number of lines in the diff.
+  def total_lines
+    hunks.sum(:old_count) + hunks.sum(:new_count)
+  end
+
   # The diffs that make up a commit.
   #
   # Args:

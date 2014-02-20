@@ -3,4 +3,10 @@
 <h2>Commit <%= @commit.gitid %></h2>
 <%= render @commit %>
 
+<% if @commit_too_large %>
+<p>
+  This commit's diff is too large and cannot be displayed.
+</p>
+<% else %>
 <%= render @commit.diffs %>
+<% end %>

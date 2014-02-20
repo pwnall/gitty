@@ -1,5 +1,21 @@
+hello_gitmodules_rb_hunk1:
+  diff: hello_gitmodules
+  old_start: 0
+  old_count: 0
+  new_start: 1
+  new_count: 3
+  summary: "+3"
+
 hello_lib_ghost_hello_rb_hunk1:
   diff: hello_lib_ghost_hello_rb
+  old_start: 0
+  old_count: 0
+  new_start: 1
+  new_count: 1
+  summary: "+1"
+
+hello_lib_markdpwn_hunk1:
+  diff: hello_lib_markdpwn
   old_start: 0
   old_count: 0
   new_start: 1

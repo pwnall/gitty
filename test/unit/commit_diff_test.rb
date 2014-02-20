@@ -51,6 +51,10 @@ class CommitDiffTest < ActiveSupport::TestCase
     @diff.new_path = @diff.old_path
   end
 
+  test 'total_lines on simple diff' do
+    assert_equal 3, commit_diffs(:hello_gitmodules).total_lines
+  end
+
   test 'resolve_object' do
     mock_repository_path @repo
     git_repo = @repo.grit_repo
