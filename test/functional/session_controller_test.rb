@@ -96,7 +96,7 @@ class SessionControllerTest < ActionController::TestCase
     assert_select 'span[class="password_age"]'
     assert_select 'form[action=?][method="post"]',
                   change_password_session_path do
-      assert_select 'input[name="old_password"]'
+      assert_select 'input[name=?]', 'credential[old_password]'
       assert_select 'input[name=?]', 'credential[password]'
       assert_select 'input[name=?]', 'credential[password_confirmation]'
       assert_select 'button[type="submit"]'
@@ -111,7 +111,7 @@ class SessionControllerTest < ActionController::TestCase
     assert_select 'span[class="password_age"]', count: 0
     assert_select 'form[action=?][method="post"]',
                   change_password_session_path do
-      assert_select 'input[name="old_password"]', count: 0
+      assert_select 'input[name=?]', 'credential[old_password]', count: 0
       assert_select 'input[name=?]', 'credential[password]'
       assert_select 'input[name=?]', 'credential[password_confirmation]'
       assert_select 'button[type="submit"]'
