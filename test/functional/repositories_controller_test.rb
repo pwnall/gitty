@@ -111,9 +111,9 @@ class RepositoriesControllerTest < ActionController::TestCase
         except!(:id, :profile_id, :created_at, :updated_at).
         merge profile_name: @repository.profile.name
 
-    put :update, repository: attributes,
-        repo_name: @repository.to_param,
-        profile_name: @repository.profile.to_param
+    patch :update, repository: attributes,
+          repo_name: @repository.to_param,
+          profile_name: @repository.profile.to_param
 
     assert_redirected_to profile_repository_path(assigns(:repository).profile,
                                                  assigns(:repository))
@@ -126,9 +126,9 @@ class RepositoriesControllerTest < ActionController::TestCase
         except!(:id, :profile_id, :created_at, :updated_at).
         merge profile_name: @repository.profile.name, name: 'randomness'
 
-    put :update, repository: attributes,
-        repo_name: @repository.to_param,
-        profile_name: @repository.profile.to_param
+    patch :update, repository: attributes,
+          repo_name: @repository.to_param,
+          profile_name: @repository.profile.to_param
 
     assert_equal 'randomness', @repository.reload.name
 
@@ -150,9 +150,9 @@ class RepositoriesControllerTest < ActionController::TestCase
     attributes = @repository.attributes.with_indifferent_access.
         except!(:id, :profile_id, :created_at, :updated_at).
         merge profile_name: profile.to_param
-    put :update, repository: attributes,
-        repo_name: @repository.to_param,
-        profile_name: @repository.profile.to_param
+    patch :update, repository: attributes,
+          repo_name: @repository.to_param,
+          profile_name: @repository.profile.to_param
 
     assert_equal profile, @repository.reload.profile
 
@@ -171,9 +171,9 @@ class RepositoriesControllerTest < ActionController::TestCase
     attributes = @repository.attributes.with_indifferent_access.
         except!(:id, :profile_id, :created_at, :updated_at).
         merge profile_name: profile.to_param
-    put :update, repository: attributes,
-        repo_name: @repository.to_param,
-        profile_name: @repository.profile.to_param
+    patch :update, repository: attributes,
+          repo_name: @repository.to_param,
+          profile_name: @repository.profile.to_param
 
     assert_response :forbidden
   end
@@ -183,9 +183,9 @@ class RepositoriesControllerTest < ActionController::TestCase
         except!(:id, :profile_id, :created_at, :updated_at).
         merge profile_name: @repository.profile.name, name: '-broken'
 
-    put :update, repository: attributes,
-        repo_name: @repository.to_param,
-        profile_name: @repository.profile.to_param
+    patch :update, repository: attributes,
+          repo_name: @repository.to_param,
+          profile_name: @repository.profile.to_param
 
     assert_not_equal '-broken', @repository.reload.name
     repo_path = profile_repository_path(@repository.profile, @repository)
@@ -222,9 +222,9 @@ class RepositoriesControllerTest < ActionController::TestCase
                profile_name: @repository.profile.to_param
     assert_response :forbidden
 
-    put :update, repository: @repository.attributes,
-        repo_name: @repository.to_param,
-        profile_name: @repository.profile.to_param
+    patch :update, repository: @repository.attributes,
+          repo_name: @repository.to_param,
+          profile_name: @repository.profile.to_param
     assert_response :forbidden
 
     assert_no_difference 'Repository.count' do
@@ -245,8 +245,8 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   test "should reject unauthorized charging via update" do
     attributes = @repository.attributes.merge profile_name: 'costan'
-    put :update, repository: attributes, repo_name: @repository.to_param,
-        profile_name: @repository.profile.to_param
+    patch :update, repository: attributes, repo_name: @repository.to_param,
+          profile_name: @repository.profile.to_param
     assert_response :forbidden
     assert_equal profiles(:dexter), @repository.reload.profile
   end
@@ -262,9 +262,9 @@ class RepositoriesControllerTest < ActionController::TestCase
                profile_name: @repository.profile.to_param
     assert_response :forbidden
 
-    put :update, repository: @repository.attributes,
-        repo_name: @repository.to_param,
-        profile_name: @repository.profile.to_param
+    patch :update, repository: @repository.attributes,
+                   repo_name: @repository.to_param,
+                   profile_name: @repository.profile.to_param
     assert_response :forbidden
 
     assert_no_difference 'Repository.count' do
@@ -280,10 +280,9 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   test "check_access allows author to push" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
-    post :check_access, format: 'json',
-         repo_path: @repository.ssh_path,
-         ssh_key_id: @author_key.to_param,
-         commit_access: true.to_param
+    post :check_access, format: 'json', repo_path: @repository.ssh_path,
+                                        ssh_key_id: @author_key.to_param,
+                                        commit_access: true.to_param
     assert_equal @repository, assigns(:repository)
     assert_equal @author, assigns(:user)
     assert_equal true, assigns(:commit_access)
@@ -292,20 +291,18 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   test "check_access allows author to pull" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
-    post :check_access, format: 'json',
-         repo_path: @repository.ssh_path,
-         ssh_key_id: @author_key.to_param,
-         commit_access: false.to_param
+    post :check_access, format: 'json', repo_path: @repository.ssh_path,
+                                        ssh_key_id: @author_key.to_param,
+                                        commit_access: false.to_param
     assert_equal false, assigns(:commit_access)
     assert_equal true, JSON.parse(response.body)['access']
   end
 
   test "check_access does not allow random user to push" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
-    post :check_access, format: 'json',
-         repo_path: @repository.ssh_path,
-         ssh_key_id: @reader_key.to_param,
-         commit_access: true.to_param
+    post :check_access, format: 'json', repo_path: @repository.ssh_path,
+                                        ssh_key_id: @reader_key.to_param,
+                                        commit_access: true.to_param
 
     assert_equal @repository, assigns(:repository)
     assert_equal @reader, assigns(:user)
@@ -316,29 +313,26 @@ class RepositoriesControllerTest < ActionController::TestCase
 
   test "check_access allows another user to pull" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
-    post :check_access, format: 'json',
-         repo_path: @repository.ssh_path,
-         ssh_key_id: @reader_key.to_param,
-         commit_access: false.to_param
+    post :check_access, format: 'json', repo_path: @repository.ssh_path,
+                                        ssh_key_id: @reader_key.to_param,
+                                        commit_access: false.to_param
     assert_equal false, assigns(:commit_access)
     assert_equal true, JSON.parse(response.body)['access']
   end
 
   test "check_access rejects bad ssh key" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
-    post :check_access, format: 'json',
-         repo_path: @repository.ssh_path,
-         ssh_key_id: 0,
-         commit_access: true.to_param
+    post :check_access, format: 'json', repo_path: @repository.ssh_path,
+                                        ssh_key_id: 0,
+                                        commit_access: true.to_param
     assert_equal false, JSON.parse(response.body)['access']
   end
 
   test "check_access rejects bad repo path" do
     # NOTE: the test should use GET, except GET doesn't encode extra parameters
-    post :check_access, format: 'json',
-         repo_path: 'no/repository/here.git',
-         ssh_key_id: @author_key.to_param,
-         commit_access: true.to_param
+    post :check_access, format: 'json', repo_path: 'no/repository/here.git',
+                                        ssh_key_id: @author_key.to_param,
+                                        commit_access: true.to_param
     assert_equal false, JSON.parse(response.body)['access']
   end
 
@@ -347,9 +341,8 @@ class RepositoriesControllerTest < ActionController::TestCase
     mock_any_repository_path
     assert_difference 'Tag.count', 1 do
       assert_difference 'FeedItem.count', 7 do
-        post :change_notice, format: 'json',
-                             repo_path: @repository.ssh_path,
-                             ssh_key_id: @author_key.to_param
+        post :change_notice, format: 'json', repo_path: @repository.ssh_path,
+                                             ssh_key_id: @author_key.to_param
       end
     end
     assert_response :success
@@ -383,13 +376,13 @@ class RepositoriesControllerTest < ActionController::TestCase
                        profile_name: 'costan', repo_name: 'rails'},
                       {path: '/_/repositories/costan/rails/edit',
                        method: :get})
-    assert_routing({path: '/costan/rails', method: :put},
+    assert_routing({path: '/costan/rails', method: :patch},
                    {controller: 'repositories', action: 'update',
                     profile_name: 'costan', repo_name: 'rails'})
     assert_recognizes({controller: 'repositories', action: 'update',
                        profile_name: 'costan', repo_name: 'rails'},
                       {path: '/_/repositories/costan/rails',
-                       method: :put})
+                       method: :patch})
     assert_routing({path: '/costan/rails', method: :delete},
                    {controller: 'repositories', action: 'destroy',
                     profile_name: 'costan', repo_name: 'rails'})

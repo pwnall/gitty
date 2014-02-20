@@ -121,9 +121,9 @@ class ProfilesControllerTest < ActionController::TestCase
   end
 
   test "should update profile" do
-    put :update, profile_name: @profile.to_param,
-        profile: @profile.attributes.with_indifferent_access.
-        except!(:id, :created_at, :updated_at)
+    patch :update, profile_name: @profile.to_param,
+          profile: @profile.attributes.with_indifferent_access.
+          except!(:id, :created_at, :updated_at)
     assert_redirected_to profile_path(assigns(:profile))
   end
 
@@ -131,10 +131,9 @@ class ProfilesControllerTest < ActionController::TestCase
     old_local_path = @profile.local_path
     FileUtils.mkdir_p old_local_path
 
-    put :update, profile_name: @profile.to_param,
-        profile: @profile.attributes.with_indifferent_access.
-        except!(:id, :created_at, :updated_at).merge(name: 'randomness')
-
+    patch :update, profile_name: @profile.to_param,
+          profile: @profile.attributes.with_indifferent_access.
+          except!(:id, :created_at, :updated_at).merge(name: 'randomness')
 
     assert_equal 'randomness', @profile.reload.name
 
@@ -147,9 +146,9 @@ class ProfilesControllerTest < ActionController::TestCase
   end
 
   test "should use old profile url on rejected rename" do
-    put :update, profile_name: @profile.to_param,
-        profile: @profile.attributes.with_indifferent_access.
-        except!(:id, :created_at, :updated_at).merge(name: '-broken')
+    patch :update, profile_name: @profile.to_param,
+          profile: @profile.attributes.with_indifferent_access.
+          except!(:id, :created_at, :updated_at).merge(name: '-broken')
 
     assert_not_equal '-broken', @profile.reload.name
     assert_template :edit
@@ -176,8 +175,8 @@ class ProfilesControllerTest < ActionController::TestCase
     get :edit, profile_name: @profile.to_param
     assert_response :forbidden
 
-    put :update, profile_name: @profile.to_param,
-                 profile: @profile.attributes
+    patch :update, profile_name: @profile.to_param,
+                   profile: @profile.attributes
     assert_response :forbidden
 
     assert_no_difference 'Repository.count' do
@@ -203,12 +202,12 @@ class ProfilesControllerTest < ActionController::TestCase
     assert_recognizes({controller: 'profiles', action: 'show',
                        profile_name: 'costan'},
                       {path: '/_/profiles/costan', method: :get})
-    assert_routing({path: '/costan', method: :put},
+    assert_routing({path: '/costan', method: :patch},
                    {controller: 'profiles', action: 'update',
                     profile_name: 'costan'})
     assert_recognizes({controller: 'profiles', action: 'update',
                        profile_name: 'costan'},
-                      {path: '/_/profiles/costan', method: :put})
+                      {path: '/_/profiles/costan', method: :patch})
     assert_routing({path: '/costan', method: :delete},
                    {controller: 'profiles', action: 'destroy',
                     profile_name: 'costan'})

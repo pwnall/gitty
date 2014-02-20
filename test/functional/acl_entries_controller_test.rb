@@ -70,19 +70,19 @@ class AclEntriesControllerTest < ActionController::TestCase
   end
 
   test "should update acl_entry for repository" do
-    put :update, principal_name: @repo_acl_entry.principal.name,
-                 profile_name: @repository.profile.to_param,
-                 repo_name: @repository.to_param,
-                 acl_entry: { role: 'read' }
+    patch :update, principal_name: @repo_acl_entry.principal.name,
+                   profile_name: @repository.profile.to_param,
+                   repo_name: @repository.to_param,
+                   acl_entry: { role: 'read' }
     assert_redirected_to acl_entries_path(@repository)
     assert_equal 'read', @repo_acl_entry.reload.role
   end
 
   test "should update acl_entry for profile" do
     set_session_current_user @profile_acl_entry.principal
-    put :update, principal_name: @profile_acl_entry.principal.name,
-                 profile_name: @profile.to_param,
-                 acl_entry: { role: 'read' }
+    patch :update, principal_name: @profile_acl_entry.principal.name,
+                   profile_name: @profile.to_param,
+                   acl_entry: { role: 'read' }
     assert_redirected_to acl_entries_path(@profile)
     assert_equal 'read', @profile_acl_entry.reload.role
   end
@@ -124,10 +124,10 @@ class AclEntriesControllerTest < ActionController::TestCase
     end
     assert_response :forbidden
 
-    put :update, principal_name: @repo_acl_entry.principal.name,
-                 profile_name: @repository.profile.to_param,
-                 repo_name: @repository.to_param,
-                 acl_entry: { role: 'read' }
+    patch :update, principal_name: @repo_acl_entry.principal.name,
+                   profile_name: @repository.profile.to_param,
+                   repo_name: @repository.to_param,
+                   acl_entry: { role: 'read' }
     assert_response :forbidden
 
     assert_no_difference 'AclEntry.count' do
@@ -154,9 +154,9 @@ class AclEntriesControllerTest < ActionController::TestCase
     end
     assert_response :forbidden
 
-    put :update, principal_name: @profile_acl_entry.principal.name,
-                 profile_name: @profile.to_param,
-                 acl_entry: { role: 'read' }
+    patch :update, principal_name: @profile_acl_entry.principal.name,
+                   profile_name: @profile.to_param,
+                   acl_entry: { role: 'read' }
     assert_response :forbidden
 
     assert_no_difference 'AclEntry.count' do
@@ -174,7 +174,7 @@ class AclEntriesControllerTest < ActionController::TestCase
                    {controller: 'acl_entries', action: 'create',
                     profile_name: 'costan'})
     assert_routing({path: '/_/profiles/costan/acl_entries/costan@gmail.com',
-                    method: :put},
+                    method: :patch},
                    {controller: 'acl_entries', action: 'update',
                     profile_name: 'costan',
                     principal_name: 'costan@gmail.com'})
@@ -193,7 +193,7 @@ class AclEntriesControllerTest < ActionController::TestCase
                    {controller: 'acl_entries', action: 'create',
                     profile_name: 'costan', repo_name: 'rails'})
     assert_routing({path: '/costan/rails/acl_entries/dexter',
-                    method: :put},
+                    method: :patch},
                    {controller: 'acl_entries', action: 'update',
                     profile_name: 'costan', repo_name: 'rails',
                     principal_name: 'dexter'})

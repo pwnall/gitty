@@ -58,9 +58,9 @@ class SshKeysControllerTest < ActionController::TestCase
   end
 
   test "should update ssh_key" do
-    put :update, id: @ssh_key.to_param,
-        ssh_key: @ssh_key.attributes.with_indifferent_access.
-                             slice(:name, :key_line)
+    patch :update, id: @ssh_key.to_param,
+                   ssh_key: @ssh_key.attributes.with_indifferent_access.
+                                     slice(:name, :key_line)
 
     assert_redirected_to ssh_key_path(assigns(:ssh_key))
   end
@@ -84,7 +84,7 @@ class SshKeysControllerTest < ActionController::TestCase
     get :edit, id: @ssh_key.to_param
     assert_response :forbidden, 'edit'
 
-    put :update, id: @ssh_key.to_param, ssh_key: @ssh_key.attributes
+    patch :update, id: @ssh_key.to_param, ssh_key: @ssh_key.attributes
     assert_response :forbidden, 'update'
 
     assert_no_difference('SshKey.count') do
@@ -102,7 +102,7 @@ class SshKeysControllerTest < ActionController::TestCase
     get :edit, id: @ssh_key.to_param
     assert_response :forbidden, 'edit'
 
-    put :update, id: @ssh_key.to_param, ssh_key: @ssh_key.attributes
+    patch :update, id: @ssh_key.to_param, ssh_key: @ssh_key.attributes
     assert_response :forbidden, 'update'
 
     assert_no_difference('SshKey.count') do

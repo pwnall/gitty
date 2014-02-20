@@ -49,11 +49,11 @@ class IssuesControllerTest < ActionController::TestCase
   end
 
   test "should update issue" do
-    put :update, profile_name: @issue.repository.profile,
-        repo_name: @issue.repository, issue_number: @issue.to_param,
-        issue: @issue.attributes.with_indifferent_access.
-        except!(:id, :created_at, :updated_at, :author_id, :repository_id,
-                :number)
+    patch :update, profile_name: @issue.repository.profile,
+          repo_name: @issue.repository, issue_number: @issue.to_param,
+          issue: @issue.attributes.with_indifferent_access.
+          except!(:id, :created_at, :updated_at, :author_id, :repository_id,
+                  :number)
     assert_redirected_to profile_repository_issues_path(
         assigns(:issue).repository.profile, assigns(:issue).repository)
   end
@@ -112,18 +112,18 @@ class IssuesControllerTest < ActionController::TestCase
   test "should not be able to close issue if user isn't an editor or author" do
     set_session_current_user users(:costan)
     issue = issues(:public_ghost_dead_code)
-    put :update, profile_name: issue.repository.profile,
-                 repo_name: issue.repository,
-                 issue_number: issue, issue: { open: false }
+    patch :update, profile_name: issue.repository.profile,
+                   repo_name: issue.repository,
+                   issue_number: issue, issue: { open: false }
     assert_response :forbidden
   end
 
   test "should be able to close issue if user is an editor or author" do
     set_session_current_user users(:dexter)
     issue = issues(:public_ghost_dead_code)
-    put :update, profile_name: issue.repository.profile,
-                 repo_name: issue.repository,
-                 issue_number: issue, issue: { open: false }
+    patch :update, profile_name: issue.repository.profile,
+                   repo_name: issue.repository,
+                   issue_number: issue, issue: { open: false }
     assert_equal issue.reload.open, false
   end
 
@@ -173,7 +173,7 @@ class IssuesControllerTest < ActionController::TestCase
                     repo_name: 'costan_ghost',
                     issue_number: '42'})
     assert_routing({path: "/costan/costan_ghost/issues/42",
-                    method: :put},
+                    method: :patch},
                    {controller: 'issues', action: 'update',
                     profile_name: 'costan',
                     repo_name: 'costan_ghost',

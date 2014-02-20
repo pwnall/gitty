@@ -14,22 +14,22 @@
     <p>
       <%= link_to 'Edit', edit_profile_repository_issue_path(
               issue.repository.profile, issue.repository, issue),
-              :method => :get %>
+              method: :get %>
       <%= link_to 'Delete', profile_repository_issue_path(
               issue.repository.profile, issue.repository, issue),
-              :method => :delete, :data => { :confirm => 'Are you sure?' } %>
+              method: :delete, data: { confirm: 'Are you sure?' } %>
     </p>
     <p>
       <% if issue.open %>
       <%= button_to 'Close Issue', profile_repository_issue_path(
               issue.repository.profile, issue.repository, issue,
-              :issue => { :open => false }), :method => :put,
-              :class => 'close_issue_button' %>
+              issue: { open: false }), method: :patch,
+              class: 'close_issue_button' %>
       <% else %>
       <%= button_to 'Reopen Issue', profile_repository_issue_path(
-              issue.repository.profile, issue.repository, issue, 
-              :issue => { :open => true }),
-              :method => :put, :class => 'reopen_issue_button' %>
+              issue.repository.profile, issue.repository, issue,
+              issue: { open: true }), method: :patch,
+              class: 'reopen_issue_button' %>
       <% end %>
     </p>
     <% end %>
@@ -41,7 +41,7 @@
     </p>
     <p class="description">
       <%= issue.description %>
-    </p>  
+    </p>
     <p class="time">
       <%= distance_of_time_in_words_to_now issue.created_at %> ago
     </p>

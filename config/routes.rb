@@ -14,7 +14,7 @@ Gitty::Application.routes.draw do
         constraints: { user_param: /[^\/]+/ }
     get '/user/:user_param/edit(.:format)' => 'users#edit', as: :edit_user,
         constraints: { user_param: /[^\/]+/ }
-    put '/user/:user_param(.:format)' => 'users#update',
+    patch '/user/:user_param(.:format)' => 'users#update',
         constraints: { user_param: /[^\/]+/ }
     delete '/user/:user_param(.:format)' => 'users#destroy',
            constraints: { user_param: /[^\/]+/ }
@@ -30,7 +30,7 @@ Gitty::Application.routes.draw do
   # Profiles.
   get '/:profile_name(.:format)' => 'profiles#show', as: :profile,
       constraints: { profile_name: /[^_][^\/]+/ }
-  put '/:profile_name(.:format)' => 'profiles#update',
+  patch '/:profile_name(.:format)' => 'profiles#update',
       constraints: { profile_name: /[^_][^\/]+/ }
   delete '/:profile_name(.:format)' => 'profiles#destroy',
          constraints: { profile_name: /[^_][^\/]+/ }
@@ -39,7 +39,7 @@ Gitty::Application.routes.draw do
     scope 'profiles' do
       get ':profile_name(.:format)' => 'profiles#show'
       get ':profile_name/edit(.:format)' => 'profiles#edit', as: :edit_profile
-      put ':profile_name(.:format)' => 'profiles#update'
+      patch ':profile_name(.:format)' => 'profiles#update'
       delete ':profile_name(.:format)' => 'profiles#destroy'
     end
   end
@@ -52,7 +52,7 @@ Gitty::Application.routes.draw do
     # Repositories.
     get ':repo_name(.:format)' => 'repositories#show',
         constraints: { repo_name: /[^\/]+/ }, as: :profile_repository
-    put ':repo_name(.:format)' => 'repositories#update',
+    patch ':repo_name(.:format)' => 'repositories#update',
         constraints: { repo_name: /[^\/]+/ }
     delete ':repo_name(.:format)' => 'repositories#destroy',
            constraints: { repo_name: /[^\/]+/ }
@@ -65,7 +65,7 @@ Gitty::Application.routes.draw do
     scope 'repositories/:profile_name' do
       get ':repo_name(.:format)' => 'repositories#show'
       get ':repo_name/edit(.:format)' => 'repositories#edit'
-      put ':repo_name(.:format)' => 'repositories#update'
+      patch ':repo_name(.:format)' => 'repositories#update'
       delete ':repo_name(.:format)' => 'repositories#destroy'
     end
   end
@@ -126,13 +126,13 @@ Gitty::Application.routes.draw do
     get 'issues/:issue_number' => 'issues#show', as: :profile_repository_issue
     get 'issues/:issue_number/edit(.:format)' => 'issues#edit',
         as: :edit_profile_repository_issue
-    put 'issues/:issue_number' => 'issues#update'
+    patch 'issues/:issue_number' => 'issues#update'
     delete 'issues/:issue_number' => 'issues#destroy'
 
     # ACLs.
     get 'acl_entries' => 'acl_entries#index', as: :profile_repository_acl_entries
     post 'acl_entries' => 'acl_entries#create'
-    put 'acl_entries/:principal_name' => 'acl_entries#update',
+    patch 'acl_entries/:principal_name' => 'acl_entries#update',
         as: :profile_repository_acl_entry,
         constraints: { principal_name: /[^_][^\/]+/ }
     delete 'acl_entries/:principal_name' => 'acl_entries#destroy',
@@ -146,7 +146,7 @@ Gitty::Application.routes.draw do
       # ACLs.
       get 'acl_entries' => 'acl_entries#index', as: :profile_acl_entries
       post 'acl_entries' => 'acl_entries#create'
-      put 'acl_entries/:principal_name' => 'acl_entries#update',
+      patch 'acl_entries/:principal_name' => 'acl_entries#update',
           as: :profile_acl_entry, constraints: { principal_name: /[^_][^\/]+/ }
       delete 'acl_entries/:principal_name' => 'acl_entries#destroy',
           constraints: { principal_name: /[^_][^\/]+/ }
