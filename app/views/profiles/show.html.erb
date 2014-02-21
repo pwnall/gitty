@@ -10,19 +10,19 @@
   <%= render 'repositories/list', :repositories => @profile.repositories %>
 </div>
 
-<div class="home_panel profiles">  
-  <% if @profile.team_profile? %>
+<div class="home_panel profiles">
+  <% if @profile.team? %>
     <h3>Members</h3>
     <% if @profile.can_edit? current_user %>
     <p class="actions">
       <%= link_to 'Edit', acl_entries_path(@profile), :class => 'button' %>
     </p>
     <% end %>
-    
+
     <%= render 'profiles/list', :profiles => @profile.members.map { |member| member.profile } %>
   <% else %>
     <h3>Teams</h3>
-    
+
     <%= render 'profiles/list', :profiles => @profile.user.team_profiles %>
   <% end %>
 </div>
@@ -35,13 +35,13 @@
   <p class="actions">
     <% if @profile.subscribed?(current_user.profile) %>
       <%= link_to 'Unfollow', subscribers_profile_path(@profile),
-                              :method => :delete, :class => 'button' %>      
+                              :method => :delete, :class => 'button' %>
     <% else %>
       <%= link_to 'Follow', subscribers_profile_path(@profile),
-                            :method => :post, :class => 'button' %>      
+                            :method => :post, :class => 'button' %>
     <% end %>
-  </p>  
+  </p>
   <% end %>
-  
+
   <%= render 'profiles/list', :profiles => @profile.subscribers %>
 </div>

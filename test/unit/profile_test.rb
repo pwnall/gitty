@@ -189,9 +189,9 @@ class ProfileTest < ActiveSupport::TestCase
                  profiles(:dexter).acl_entries.first.principal.class
   end
 
-  test 'team_profile?' do
-    assert !profiles(:costan).team_profile?
-    assert profiles(:csail).team_profile?
+  test 'team?' do
+    assert !profiles(:costan).team?
+    assert profiles(:csail).team?
   end
 
   test 'members' do

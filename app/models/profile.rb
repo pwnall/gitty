@@ -62,13 +62,13 @@ class Profile < ActiveRecord::Base
   end
 
   # True if this is a team profile.
-  def team_profile?
+  def team?
     user.nil?
   end
 
   # Users that are members of a team profile.
   def members
-    team_profile? ? user_acl_entries.map(&:principal) : []
+    team? ? user_acl_entries.map(&:principal) : []
   end
 
 
