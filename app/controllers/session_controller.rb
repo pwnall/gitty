@@ -16,8 +16,11 @@ class SessionController < ApplicationController
   # Sets up the 'session/home' view. A user is logged in.
   def home
     # Pull information about the current user.
-    @profile = current_user.profile ||
-               Profile.new(display_email: current_user.email)
+    @profile = current_user.profile
+    unless @profile
+      redirect_to new_profile_url
+      return
+    end
   end
   private :home
 

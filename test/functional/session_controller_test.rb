@@ -20,9 +20,7 @@ class SessionControllerTest < ActionController::TestCase
     user = users(:disconnected)
     set_session_current_user user
     get :show
-
-    assert_equal user.email, assigns(:profile).display_email
-    assert_select 'a[href="/_/session"][data-method="delete"]', 'Sign out'
+    assert_redirected_to new_profile_url
   end
 
   test "user login works and purges old sessions" do

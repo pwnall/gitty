@@ -38,9 +38,21 @@ class ProfilesControllerTest < ActionController::TestCase
     assert_response :forbidden
   end
 
-  test "should get new" do
+  test "get new should show team creation for user with profile" do
     get :new
     assert_response :success
+
+    assert_equal true, assigns(:profile).team?
+  end
+
+  test "should get new for user without profile" do
+    user = users(:disconnected)
+    set_session_current_user user
+    get :new
+    assert_response :success
+
+    assert_equal false, assigns(:profile).team?
+    assert_equal user.email, assigns(:profile).display_email
   end
 
   test "should create user's main profile" do

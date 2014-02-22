@@ -5,7 +5,7 @@
   <ol>
     <li>
       <%= header_user_image current_user %>
-      <% if current_user.profile %>
+      <% if current_user.profile && current_user.profile.name %>
       <%= link_to current_user.profile.name, current_user.profile %>
       <% else %>
       <%= current_user.email %>

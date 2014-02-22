@@ -41,6 +41,10 @@ class ProfilesController < ApplicationController
   # GET /_/profiles/new.xml
   def new
     @profile = Profile.new
+    unless current_user.profile
+      @profile.user = current_user
+      @profile.display_email = current_user.email
+    end
 
     respond_to do |format|
       format.html # new.html.erb
@@ -56,14 +60,14 @@ class ProfilesController < ApplicationController
   # POST /_/profiles.xml
   def create
     @profile = Profile.new profile_params
+    unless current_user.profile
+      @profile.user = current_user
+    end
 
     respond_to do |format|
       if @profile.save
         if current_user.profile
           AclEntry.set current_user, @profile, :edit
-        else
-          current_user.profile = @profile
-          current_user.save!
         end
         FeedSubscription.add current_user.profile, @profile
 
