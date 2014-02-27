@@ -40,7 +40,7 @@ class SmartHttpControllerTest < ActionController::TestCase
   end
 
   test 'dumb git pack fetch' do
-    path = 'objects/pack/pack-7f67317db46e457c4fa046b22d8e87593c40a625.pack'
+    path = 'objects/pack/pack-ae5ce0ac8f14fb2cbcf8e181dbcc4712a547c747.pack'
     get :git_file, profile_name: @profile.to_param,
                    repo_name: @repo.to_param, path: path
 
@@ -52,7 +52,7 @@ class SmartHttpControllerTest < ActionController::TestCase
 
   test 'dumb git pack fetch with no user' do
     set_http_basic_user nil
-    path = 'objects/pack/pack-7f67317db46e457c4fa046b22d8e87593c40a625.pack'
+    path = 'objects/pack/pack-ae5ce0ac8f14fb2cbcf8e181dbcc4712a547c747.pack'
     get :git_file, profile_name: @profile.to_param,
                    repo_name: @repo.to_param, path: path
     assert_response :unauthorized
@@ -61,7 +61,7 @@ class SmartHttpControllerTest < ActionController::TestCase
   test 'dumb git pack fetch with session cookies' do
     set_http_basic_user nil
     set_session_current_user @user
-    path = 'objects/pack/pack-7f67317db46e457c4fa046b22d8e87593c40a625.pack'
+    path = 'objects/pack/pack-ae5ce0ac8f14fb2cbcf8e181dbcc4712a547c747.pack'
     get :git_file, profile_name: @profile.to_param,
                    repo_name: @repo.to_param, path: path
     assert_response :unauthorized

@@ -67,3 +67,9 @@ git push --all
 git push --tags
 cd ..
 rm -rf repo_temp
+
+# Generate the files for the dumb HTTP protocol.
+cd repo.git
+git repack
+git update-server-info
+cd ..
