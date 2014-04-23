@@ -8,7 +8,7 @@ before_script:
   - "bundle exec rake db:migrate"
   - "git config --global user.email tester@testing.com"
   - "git config --global user.name \"Testing Tester\""
-script: "BACKTRACE=1 rake test"
+script: "BACKTRACE=1 bundle exec rake test"
 rvm:
   - 2.0.0
   - 2.1.0
