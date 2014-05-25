@@ -42,7 +42,7 @@ group :development, :test do
   gem 'binding_of_caller'
   gem 'debugger'
   gem 'railroady', '>= 0.4.5'
-  gem 'thin', '>= 1.6.1'
+  gem 'thin', '>= 1.6.2'
 end
 
 group :test do
