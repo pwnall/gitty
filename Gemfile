@@ -1,8 +1,8 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 4.1.0'
+gem 'rails', '>= 4.1.1'
 
-gem 'mysql2', '>= 0.3.14'
+gem 'mysql2', '>= 0.3.16'
 gem 'sqlite3', '>= 1.3.8'
 
 gem 'authpwn_rails', '>= 0.16.2'
@@ -22,7 +22,7 @@ gem 'topological_sort', '>= 0.1.1'
 # CSS gems.
 gem 'sass-rails', '>= 4.0.3'
 gem 'foundation-rails', '>= 5.2.2.0'
-gem 'font-awesome-rails', '>= 4.0.3.1'
+gem 'font-awesome-rails', '>= 4.1.0.0'
 
 # JavaScript gems.
 gem 'coffee-rails', '>= 4.0.1'
@@ -46,9 +46,9 @@ group :development, :test do
 end
 
 group :test do
-  gem 'mocha', '>= 1.0.0', require: 'mocha/setup'
+  gem 'mocha', '>= 1.1.0', require: 'mocha/setup'
 end
 
 group :production do
-  gem 'thin', '>= 1.6.1'
+  gem 'thin', '>= 1.6.2'
 end
