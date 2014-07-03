@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-gem 'rails', '>= 4.1.1'
+gem 'rails', '>= 4.1.4'
 
 gem 'mysql2', '>= 0.3.16'
 gem 'sqlite3', '>= 1.3.8'
@@ -21,14 +21,14 @@ gem 'topological_sort', '>= 0.1.1'
 
 # CSS gems.
 gem 'sass-rails', '>= 4.0.3'
-gem 'foundation-rails', '>= 5.2.2.0'
+gem 'foundation-rails', '>= 5.3.0.1'
 gem 'font-awesome-rails', '>= 4.1.0.0'
 
 # JavaScript gems.
 gem 'coffee-rails', '>= 4.0.1'
-gem 'jquery-rails', '>= 3.0.4'
+gem 'jquery-rails', '>= 3.1.1'
 gem 'therubyracer', '>= 0.12.1', platforms: :ruby
-gem 'uglifier', '>= 2.3.2'
+gem 'uglifier', '>= 2.5.1'
 
 
 # Memory leak debugging.
