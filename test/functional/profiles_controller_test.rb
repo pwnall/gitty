@@ -164,7 +164,7 @@ class ProfilesControllerTest < ActionController::TestCase
 
     assert_not_equal '-broken', @profile.reload.name
     assert_template :edit
-    assert_select "form[action=#{profile_path(@profile)}]"
+    assert_select "form[action=\"#{profile_path(@profile)}\"]"
     assert_select 'input[id=profile_name][value="-broken"]'
   end
 

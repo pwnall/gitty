@@ -190,7 +190,7 @@ class RepositoriesControllerTest < ActionController::TestCase
     assert_not_equal '-broken', @repository.reload.name
     repo_path = profile_repository_path(@repository.profile, @repository)
     assert_template :edit
-    assert_select "form[action=#{repo_path}]"
+    assert_select "form[action=\"#{repo_path}\"]"
     assert_select 'input[id=repository_name][value="-broken"]'
   end
 
