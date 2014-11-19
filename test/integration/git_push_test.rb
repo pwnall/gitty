@@ -15,6 +15,7 @@ class GitPushTest < ActionDispatch::IntegrationTest
     @webapp_log_file = @temp_dir.join 'thin.log'
     Kernel.system 'bundle', 'exec', 'thin', 'start', '--daemonize',
                   '--quiet', '--environment', 'test',
+                  '--address', '127.0.0.1',
                   '--port', ConfigVar['app_uri'].split(':').last[0...-1],
                   '--pid', @webapp_pid_file.to_s,
                   '--log', @webapp_log_file.to_s

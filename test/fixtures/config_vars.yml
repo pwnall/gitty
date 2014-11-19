@@ -4,7 +4,8 @@ admin_email:
 
 app_uri:
   name: app_uri
-  value: "http://localhost:29121/"
+  # localhost breaks because thin doesn't support IPv6
+  value: "http://127.0.0.1:29121/"
 
 git_user:
   name: git_user

@@ -1,11 +1,11 @@
-source 'http://rubygems.org'
+source 'https://rubygems.org'
 
-gem 'rails', '>= 4.1.6'
+gem 'rails', '>= 4.1.8'
 
-gem 'mysql2', '>= 0.3.16'
-gem 'sqlite3', '>= 1.3.8'
+gem 'mysql2', '>= 0.3.17'
+gem 'sqlite3', '>= 1.3.10'
 
-gem 'authpwn_rails', '>= 0.16.2'
+gem 'authpwn_rails', '>= 0.17.1'
 gem 'configvars_rails', '>= 0.6.1'
 gem 'gravatar-ultimate', '>= 2.0.0'
 gem 'grit', git: 'https://github.com/pwnall/grit.git', branch: 'gitty'
@@ -25,8 +25,8 @@ gem 'foundation-rails', '>= 5.4.5.0'
 gem 'font-awesome-rails', '>= 4.2.0.0'
 
 # JavaScript gems.
-gem 'coffee-rails', '>= 4.0.1'
-gem 'jquery-rails', '>= 3.1.1'
+gem 'coffee-rails', '>= 4.1.0'
+gem 'jquery-rails', '>= 3.1.2'
 gem 'therubyracer', '>= 0.12.1', platforms: :ruby
 gem 'uglifier', '>= 2.5.3'
 
@@ -40,7 +40,7 @@ gem 'oink', '>= 0.10.1'
 group :development, :test do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'debugger'
+  gem 'byebug'
   gem 'railroady', '>= 1.1.2'
   gem 'thin', '>= 1.6.3'
 end

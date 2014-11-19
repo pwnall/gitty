@@ -11,17 +11,21 @@ class UserTest < ActiveSupport::TestCase
   end
 
   test 'authenticate_signin with email/password' do
-    assert_equal users(:dexter),
-        User.authenticate_signin('dexter@gmail.com', 'pa55w0rd')
-    assert_equal :blocked,
-        User.authenticate_signin('costan@gmail.com', 'password')
+    signin = Session.new email: 'dexter@gmail.com', password: 'pa55w0rd'
+    assert_equal users(:dexter), User.authenticate_signin(signin)
+
+    signin = Session.new email: 'costan@gmail.com', password: 'password'
+    assert_equal :blocked, User.authenticate_signin(signin)
   end
 
   test 'authenticate_signin with profile name/password' do
-    assert_equal users(:dexter),
-        User.authenticate_signin('dexter', 'pa55w0rd')
-    assert_equal :blocked,
-        User.authenticate_signin('costan', 'password')
+    signin = Session.new email: 'dexter', password: 'pa55w0rd'
+    assert_equal users(:dexter), User.authenticate_signin(signin)
+    assert_equal 'dexter', signin.email, 'Signin e-mail field changed'
+
+    signin = Session.new email: 'costan', password: 'password'
+    assert_equal :blocked, User.authenticate_signin(signin)
+    assert_equal 'costan', signin.email, 'Signin e-mail field changed'
   end
 
   test 'name' do
