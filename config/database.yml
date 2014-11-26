@@ -6,9 +6,11 @@ dev_pgsql: &dev_pgsql
 
 dev_mysql: &dev_mysql
   adapter: mysql2
+  encoding: utf8
+  pool: 5
   database: gitty_dev
   username: root
-  password: 
+  password:
 
 dev_sqlite: &dev_sqlite
   adapter: sqlite3
@@ -23,6 +25,8 @@ test_pgsql: &test_pgsql
 
 test_mysql: &test_mysql
   adapter: mysql2
+  encoding: utf8
+  pool: 5
   database: gitty_test
   username: root
   password:
@@ -31,7 +35,7 @@ test_sqlite: &test_sqlite
   adapter: sqlite3
   database: db/test.sqlite3
   timeout: 5000
-  
+
 # use *dev_pgsql or *dev_mysql, depending on which db engine you want
 development:
   <<: *dev_mysql
