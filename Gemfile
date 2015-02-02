@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '>= 4.1.8'
+gem 'rails', '>= 4.2.0'
 
 gem 'mysql2', '>= 0.3.17'
 gem 'sqlite3', '>= 1.3.10'
@@ -10,7 +10,7 @@ gem 'configvars_rails', '>= 0.6.1'
 gem 'gravatar-ultimate', '>= 2.0.0'
 gem 'grit', git: 'https://github.com/pwnall/grit.git', branch: 'gitty'
 gem 'markdpwn', '>= 0.2.0'
-gem 'net-ssh', '>= 2.7.0', require: 'net/ssh'
+gem 'net-ssh', '>= 2.9.2', require: 'net/ssh'
 gem 'posix-spawn', '>= 0.3.8'
 gem 'rbtree', '>= 0.4.2', platform: :mri
 gem 'rbtree-pure', '>= 0.1.1', require: 'rbtree', platforms: [:jruby, :rbx]
@@ -21,8 +21,8 @@ gem 'topological_sort', '>= 0.1.1'
 
 # CSS gems.
 gem 'sass-rails', '>= 4.0.3'
-gem 'foundation-rails', '>= 5.4.5.0'
-gem 'font-awesome-rails', '>= 4.2.0.0'
+gem 'foundation-rails', '>= 5.5.1.0'
+gem 'font-awesome-rails', '>= 4.3.0.0'
 
 # JavaScript gems.
 gem 'coffee-rails', '>= 4.1.0'
