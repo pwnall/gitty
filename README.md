@@ -22,10 +22,16 @@ sudo systemctl start mysqld.service sshd.service
 On Ubuntu:
 
 ```bash
-sudo apt-get install -y git libmysqlclient-dev libssl-dev mysql-client mysql-server openssh-server
+sudo apt-get install -y git libmysqlclient-dev libssl-dev \
+    mysql-client mysql-server openssh-server
 ```
 
-On OSX, go to System Preferences > Sharing, check the Remote Login option.
+If you're using [Homebrew](http://brew.sh/), use the
+following to install MySQL.
+
+```bash
+brew install mysql
+```
 
 Gitty uses [markdpwn](https://github.com/pwnall/markdpwn) for source code
 highlighting, which has its own dependencies. If you can't get markdpwn's
@@ -64,6 +70,14 @@ login and the address used to send e-mails.
 ```bash
 http://localhost:3000/_/config_vars
 ```
+
+On OSX, openssh requires extra configuration. Go to System Preferences` >
+`Sharing` and check the `Remote Login` option for openssh. Look near
+`Allow access for:` and see if the `Only these users` options is checked
+(recommended). If it is, add the `git` user to the list of allowed users.
+
+Sadly, if using `Only these users` option, you'll have to temporarily
+switch to `All users` when running integration tests.
 
 
 ## Development

@@ -6,7 +6,7 @@ class CreateAclEntries < ActiveRecord::Migration
       t.string :subject_type, :null => false, :length => 16
       t.integer :principal_id, :null => false
       t.string :principal_type, :null => false, :length => 16
-      t.timestamps
+      t.timestamps :null => false
     end
 
     add_index :acl_entries, [:principal_id, :principal_type, :subject_id,

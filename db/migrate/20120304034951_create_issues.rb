@@ -1,7 +1,7 @@
 class CreateIssues < ActiveRecord::Migration
   def change
     create_table :issues do |t|
-      t.references :repository, :null  => false
+      t.references :repository, :null => false
       t.references :author, :null => false
       t.boolean :open, :default => true, :null => false
       t.boolean :sensitive, :default => false, :null => false
@@ -9,7 +9,7 @@ class CreateIssues < ActiveRecord::Migration
       t.text :description, :limit => 1.kilobyte, :null => false
       t.integer :number, :null => false
 
-      t.timestamps
+      t.timestamps :null => false
     end
 
     add_index :issues, [:author_id, :open], :unique => false

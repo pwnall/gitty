@@ -6,7 +6,7 @@ class CreateSshKeys < ActiveRecord::Migration
       t.string :name, :limit => 128, :null => false
       t.text :key_line, :limit => 1.kilobyte, :null => false
 
-      t.timestamps
+      t.timestamps :null => false
     end
     add_index :ssh_keys, :fprint, :unique => true
     add_index :ssh_keys, :user_id, :unique => false

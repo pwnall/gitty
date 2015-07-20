@@ -11,27 +11,27 @@ class SessionMailerTest < ActionMailer::TestCase
 
   test 'email verification email' do
     email = SessionMailer.email_verification_email(@verification_token,
-                                                   @root_url).deliver
+                                                   @root_url).deliver_now
     assert !ActionMailer::Base.deliveries.empty?
-    
+
     assert_equal 'test.host e-mail verification', email.subject
     assert_equal ['admin@gitty.org'], email.from
     assert_equal '"test.host staff" <admin@gitty.org>', email['from'].to_s
     assert_equal [@verification_email], email.to
     assert_match @verification_token.code, email.encoded
     assert_match @root_url, email.encoded
-  end  
+  end
 
   test 'password reset email' do
     email = SessionMailer.reset_password_email(@reset_email, @reset_token,
-                                               @root_url).deliver
+                                               @root_url).deliver_now
     assert !ActionMailer::Base.deliveries.empty?
-    
+
     assert_equal 'test.host password reset', email.subject
     assert_equal ['admin@gitty.org'], email.from
     assert_equal '"test.host staff" <admin@gitty.org>', email['from'].to_s
     assert_equal [@reset_email], email.to
     assert_match @reset_token.code, email.encoded
     assert_match @root_url, email.encoded
-  end  
+  end
 end

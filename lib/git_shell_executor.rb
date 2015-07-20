@@ -14,6 +14,10 @@ class GitShellExecutor
   # If the arguments are incorrect, the shell is terminated by a call to
   # GitShellExecutor#error.
   def read_args(args)
+    if args.length != 4
+      error 'This shell only accepts git+ssh.'
+    end
+
     @ssh_key_id = args[0]
     @backend_url = File.join args[1], '_'
     @command = args[2]
@@ -21,11 +25,10 @@ class GitShellExecutor
 
     commands = ['git-receive-pack', 'git-upload-archive', 'git-upload-pack']
     commit_commands = ['git-receive-pack']
-    if args.length != 4 || !commands.include?(@command)
+    unless commands.include? @command
       error 'This shell only accepts git+ssh.'
-    else
-      @commit_access = commit_commands.include? @command
     end
+    @commit_access = commit_commands.include? @command
 
     quotes = ["'", '"']
     if quotes.include?(@repository[0, 1]) && quotes.include?(@repository[-1, 1])

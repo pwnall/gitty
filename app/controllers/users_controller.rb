@@ -68,7 +68,7 @@ class UsersController < ApplicationController
       if @user.save
         if ConfigVar['signup.email_check'] == 'enabled'
           token = Tokens::EmailVerification.random_for @user.email_credential
-          SessionMailer.email_verification_email(token, root_url).deliver
+          SessionMailer.email_verification_email(token, root_url).deliver_now
 
           format.html do
             redirect_to new_session_url,

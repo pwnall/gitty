@@ -7,7 +7,7 @@ class CreateRepositories < ActiveRecord::Migration
       t.string :url, :limit => 256, :null => true
       t.boolean :public, :null => false, :default => false
 
-      t.timestamps
+      t.timestamps :null => false
     end
     add_index :repositories, [:profile_id, :name], :unique => true
   end

@@ -35,6 +35,12 @@ class GitShellExecutorTest < ActiveSupport::TestCase
     @repo_dir = 'repos/' + @repo_path
   end
 
+  test 'argument-less invocation' do
+    assert_raise ShellExitError do
+      @executor.run []
+    end
+  end
+
   test 'invalid command' do
     assert_raise ShellExitError do
       @executor.run [@key_id, @server, 'ls', '-l']

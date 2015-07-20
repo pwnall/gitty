@@ -10,7 +10,7 @@ class CreateProfiles < ActiveRecord::Migration
       t.string :language, :limit => 64, :null => true
       t.text :about, :limit => 8.kilobytes, :null => true
 
-      t.timestamps
+      t.timestamps :null => false
     end
     add_index :profiles, :name, :unique => true
   end
